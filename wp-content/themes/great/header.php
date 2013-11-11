@@ -35,23 +35,21 @@
 	</div>
 
 	<div id="main-header">
-		<div id="header"">
-			<div class="container">
+		<div id="header">
+			<div class="container flat">
 				
 						 	<div id="logo">
-								<a href="<?php echo home_url(); ?>"><img src="./wp-content/themes/great/images/logo.png" alt="<?php bloginfo( 'name' ); ?>"></a>
+								<a href="<?php echo home_url(); ?>">Cidade.vc</a>
 							</div><!-- END #logo -->
 				
 				
 				
 
 				<div id="orcamento">
-					<span>Orçamento grátis</span>
+					
 				</div>
 				
-				<div id="orc-descricao">
-					Quero fazer um site e minhas ações digitais com vocês!
-				</div>
+				
 				
 				
 				

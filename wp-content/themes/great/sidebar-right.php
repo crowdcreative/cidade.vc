@@ -1,4 +1,4 @@
-<div id="sidebar" class="c-4-12">
+<div id="sidebar-right" class=" flat">
 <div id="sidebars" class="g">
 	<div class="sidebar">
 

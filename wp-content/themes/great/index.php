@@ -2,7 +2,7 @@
 <?php get_header(); ?>
 
 
-	<div id="introducao">
+	<div id="introducao" style="display:none">
 		<div id="apresentacao">
 					<div><span id="seusua" style="padding-right: 6px;">Seu</span> <span style="background: #D61F3B; padding: 0px 3px;" id="target"></span> <span style=" padding-right: 6px;">em destaque na internet.</span></div><br/>
 					<span class="small">Encontre profissionais criativos para lhe ajudar;<br>
@@ -14,12 +14,12 @@
 
 <div class="main-container">
 
-<div id="page">
-	<div class="content">
+	<div id="page">
+		<div class="content">
 
-		<?php get_sidebar(); ?>
+		<?php get_sidebar('left'); ?>
 		
-		<article class="article">
+		<article class="article flat">
 			<div id="content_box">
 			
 			
@@ -36,7 +36,7 @@
 				<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 				
 				
-<!-- POST LINK ######## -->
+				<!-- POST LINK ######## -->
 
 
 				<?php if ('link' == get_post_type()){ ?>
@@ -82,7 +82,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 					</div><!--.post excerpt-->
 					
 					
-<!-- POST EBOOK ###### -->	
+					<!-- POST EBOOK ###### -->	
 
 
 				<?php }elseif ('ebooks' == get_post_type()){ ?>  
@@ -161,7 +161,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 					
 				<?php } elseif('infografico' == get_post_type()){?>
 				
-<!-- POST INFOGRAFICO ####### -->
+					<!-- POST INFOGRAFICO ####### -->
 
 				
 					<?php $postID =  get_the_ID(); ?>
@@ -211,7 +211,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 				
 				
 				
-<!-- POST COMUM ####### -->
+					<!-- POST COMUM ####### -->
 
 				
 					<?php $postID =  get_the_ID(); ?>
@@ -279,6 +279,9 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 				<?php } ?>			
 			</div>
 		</article>
+
+
+		<?php get_sidebar('right'); ?>
 
 		
 		

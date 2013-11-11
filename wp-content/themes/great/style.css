@@ -180,6 +180,7 @@ a:link, a:visited, a:active { text-decoration: none }
     opacity: 0.05;
     position: fixed;
     width: 100%;
+    top: 0;
 }
 
 #bloqueio{
@@ -225,16 +226,7 @@ a:link, a:visited, a:active { text-decoration: none }
 }
 	
 #orcamento{
-    background: none repeat scroll 0 0 #D61F3B;
-    border-radius: 3px;
-    color: #FFFFFF;
-    cursor: pointer;
-    float: right;
-    font-family: Gudea,serif;
-    font-size: 11px;
-    margin: 30px 0 0;
-    padding: 6px 10px;
-    text-transform: uppercase;
+
 }
 
 #orc-descricao{
@@ -290,16 +282,24 @@ time {
 	display:none;
 }
 
+.flat{
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
 .main-container {
-   clear: both;
-    margin: 35px auto 30px;
+    clear: both;
+    margin: 99px auto 30px;
     max-width: 95%;
     padding: 0;
     width: 1020px;
 }
 #page, .container {
-    min-width: 240px;
-    overflow: visible;
+    height: 97px;
+    margin: 25px auto 0;
+    width: 1224px;
+    z-index: 99;
 }
 #page {
     padding-top: 45px;
@@ -316,8 +316,6 @@ body > header {
     position: relative;
 }
 #main-header {
-    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.97);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     float: left;
     height: 97px;
     position: fixed;
@@ -525,9 +523,8 @@ body > header {
 }
 /*-[ Content ]--------------------*/
 .article {
-    width: 65.6%;
-    float: right;
-    margin-bottom: 10px;
+    float: left;
+    width: 50%;
 }
 
 #introducao{
@@ -745,7 +742,7 @@ body > header {
 }
 
 .post-info span{
-    background: none repeat scroll 0 0 #F5F5ED;
+    background: none repeat scroll 0 0 #ffffff;
     float: left;
     margin-right: 6px;
     margin-top: -11px;
@@ -1080,12 +1077,16 @@ nav #searchform fieldset {
 #sidebars p { line-height: 20px }
 
 #sidebar{
-  position: absolute;
-  top: 0;
-  /* just used to show how to include the margin in the effect */
-  margin-top: 20px;
-  border-top: 1px solid purple;
-  padding-top: 19px;
+    float: left;
+    margin-right: 4%;
+    max-width: 300px;
+    width: 18%;
+}
+
+#sidebar-right{
+    float: right;
+    width: 31.2%;
+    max-width: 300px;
 }
 
 #sidebar .fixed{
@@ -1094,10 +1095,9 @@ nav #searchform fieldset {
 }
 
 #sidebar.c-4-12 {
-    float: left;
-    width: 31.2%;
-    max-width: 300px;
+
 }
+
 .widget {
     margin-bottom: 27px;
     overflow: hidden;
