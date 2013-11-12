@@ -79,7 +79,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 						
 					</div><!--.post excerpt-->
 					
-				<!-- POST LUGARES ######## -->
+				<!-- POST LUGAR ######## -->
 
 
 				<?php }elseif ('lugar' == get_post_type()){ ?>
@@ -103,7 +103,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 							</a>
 					
 							<div class="post-info">
-								<span class="uppercase"><?php $category = get_the_category(); echo '<a href="'.get_category_link($category[0]->cat_ID).'">' . $category[0]->cat_name .'</a>';?> </span><span>Compartilhado por <?php the_author_meta("display_name"); ?></span><span>de</span><span><?php the_field("escrito_por"); ?></span> 
+								<span class="uppercase"><?php $category = get_the_category(); echo '<a href="'.get_category_link($category[0]->cat_ID).'">' . $category[0]->cat_name .'</a>';?> </span><span>Compartilhado por <?php the_author_meta("display_name"); ?></span>
 							</div>
 					
 							<h2 class="title">
@@ -115,7 +115,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 						<div class="post-content image-caption-format-1">
 		
 								<?php echo excerpt(35);?>
-								<a class="readMore" href="<?php the_field('link_para_o _artigo_externo');  ?>" title="<?php the_title(); ?>" rel="nofollow">Ler mais...</a><span class="time"><?php echo time_ago(); ?></span>
+								<a class="readMore" href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="nofollow">Ler mais...</a><span class="time"><?php echo time_ago(); ?></span>
 						
 						</div>
 						
