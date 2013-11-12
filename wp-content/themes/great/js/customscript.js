@@ -146,7 +146,7 @@
 
 $(document).ready(function() {
 
-	// Fazer a sidebar seguir o scroll
+	/* Fazer a sidebar seguir o scroll
 
 	var top = $('#sidebar').offset().top - parseFloat($('#sidebar').css('marginTop').replace(/auto/, 0));
     $(window).scroll(function (event) {
@@ -169,7 +169,9 @@ $(document).ready(function() {
 		  $('#main-header').css({"height":"98px"});
 		  $('#main-header').removeClass("header-ativo");
 		}
-   });
+   }); 
+
+	*/
 
 
 

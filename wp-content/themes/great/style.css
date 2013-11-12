@@ -296,9 +296,8 @@ time {
     width: 1020px;
 }
 #page, .container {
-    height: 97px;
     margin: 25px auto 0;
-    width: 1224px;
+    width: 1264px;
     z-index: 99;
 }
 #page {
@@ -318,7 +317,7 @@ body > header {
 #main-header {
     float: left;
     height: 97px;
-    position: fixed;
+    position: relative;
     width: 100%;
     z-index: 99;
     top: 0;
@@ -1681,12 +1680,12 @@ ol.commentlist { margin-left: 0 }
 /* Responsive
 /*---------------------------------------------*/
 
-@media only screen and (min-width: 1224px) {
+@media only screen and (min-width: 1264px) {
 body.home .container {
-    width: 1224px;
+    width: 1264px;
 }
 body.home .main-container {
-    width: 1224px;
+    width: 1264px;
 }
 }
 
