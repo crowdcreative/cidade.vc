@@ -146,6 +146,12 @@
 
 $(document).ready(function() {
 
+	var map = L.map('map').setView([-30.036384, -51.216524], 13);
+	L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: false}).addTo(map);
+
+
+
+
 	/* Fazer a sidebar seguir o scroll
 
 	var top = $('#sidebar').offset().top - parseFloat($('#sidebar').css('marginTop').replace(/auto/, 0));

@@ -314,6 +314,14 @@ body > header {
     width: 100%;
     position: relative;
 }
+
+#map {
+    height: 250px;
+    margin-bottom: 25px;
+    position: relative;
+    width: 100%;
+}
+
 #main-header {
     float: left;
     height: 97px;
@@ -524,6 +532,7 @@ body > header {
 .article {
     float: left;
     width: 50%;
+    position: relative;
 }
 
 #introducao{
