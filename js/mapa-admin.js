@@ -1,11 +1,19 @@
 $(document).ready(function() {
 
-	var map = L.map('map').setView([-30.036384, -51.216524], 13);
-	L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: false}).addTo(map);
 
-	new L.Control.GeoSearch({
-	    provider: new L.GeoSearch.Provider.OpenStreetMap(),
-	    position: 'topcenter',
-	    showMarker: true
-	}).addTo(map);
+	var openstreetUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	var basemap = new L.TileLayer(openstreetUrl, {maxZoom: 18});
+
+	var map = new L.Map('map', {
+		layers: [basemap],
+		center: new L.LatLng(-30.036384, -51.216524), zoom: 13
+	});
+
+    new L.Control.GeoSearch({
+        provider: new L.GeoSearch.Provider.OpenStreetMap()
+    }).addTo(map);
+
+
+   
+
 });
