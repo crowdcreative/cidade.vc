@@ -127,8 +127,7 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					        <br /><span class="description">'.$field['desc'].'</span>';  
 						break; 
 					case 'mapa':
-						echo '<textarea name="'.$field['id'].'" id="'.$field['id'].'" cols="60" rows="4">'.$meta.'</textarea>
-							<br /><span class="description">'.$field['desc'].'</span>';
+						echo '<div id="map" style="height: 250px; margin-bottom: 25px; position: relative; width: 100%;"></div>';
 						break;
 				} //end switch
 		echo '</tr>';
@@ -173,9 +172,14 @@ add_action('save_post', 'save_custom_meta');
 // Adicionar scripts do mapa jquery
 function pw_load_scripts() {
 	wp_enqueue_script('leaflet.js', 'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js');
+	wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
+	wp_enqueue_script( 'mapa-admin.js', 'http://127.0.0.1/projects/cidade.vc/js/mapa-admin.js');
+	wp_enqueue_script( 'l.geosearch.provider.openstreetmap.js', 'http://127.0.0.1/projects/cidade.vc/js/l.geosearch.provider.openstreetmap.js');
+	wp_enqueue_script( 'l.control.geosearch.js', 'http://127.0.0.1/projects/cidade.vc/js/l.control.geosearch.js');
 }
 function pw_load_styles() {
 	wp_enqueue_style('leaflet.css', 'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css');
+	wp_enqueue_style('l.geosearch.css', 'http://127.0.0.1/projects/cidade.vc/css/l.geosearch.css');
 }
 add_action('admin_enqueue_scripts', 'pw_load_scripts');
 add_action('admin_enqueue_scripts', 'pw_load_styles');
