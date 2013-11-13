@@ -67,10 +67,10 @@ $custom_meta_fields = array(
 		'type'	=> 'text'
 	),
 	array(
-		'label'=> 'Textarea',
-		'desc'	=> 'A description for the field.',
+		'label'=> 'Mapa',
+		'desc'	=> 'Um mapa bonito.',
 		'id'	=> $prefix.'textarea',
-		'type'	=> 'textarea'
+		'type'	=> 'mapa'
 	),
 	array(
 		'label'=> 'Checkbox Input',
@@ -126,7 +126,7 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					    echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" /> 
 					        <br /><span class="description">'.$field['desc'].'</span>';  
 						break; 
-					case 'textarea':
+					case 'mapa':
 						echo '<textarea name="'.$field['id'].'" id="'.$field['id'].'" cols="60" rows="4">'.$meta.'</textarea>
 							<br /><span class="description">'.$field['desc'].'</span>';
 						break;
@@ -168,6 +168,17 @@ function save_custom_meta($post_id) {
 	} // end foreach
 }
 add_action('save_post', 'save_custom_meta');  
+
+
+// Adicionar scripts do mapa jquery
+function pw_load_scripts() {
+	wp_enqueue_script('leaflet.js', 'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js');
+}
+function pw_load_styles() {
+	wp_enqueue_style('leaflet.css', 'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css');
+}
+add_action('admin_enqueue_scripts', 'pw_load_scripts');
+add_action('admin_enqueue_scripts', 'pw_load_styles');
 
 
 /*-----------------------------------------------------------------------------------*/
