@@ -14,6 +14,8 @@ $(document).ready(function() {
     }).addTo(map);
 
 
-   
+   map.on('geosearch_showlocation', function (result) {
+    L.marker([result.x, result.y]).addTo(map)
+});
 
 });
