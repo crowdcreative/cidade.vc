@@ -47,14 +47,13 @@ if ( function_exists('add_theme_support') ) add_theme_support('automatic-feed-li
 // Adicionar scripts do mapa jquery
 function pw_load_scripts() {
 	wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
-	wp_enqueue_script('leaflet.js', 'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js');
-	wp_enqueue_script( 'l.control.geosearch.js', 'http://127.0.0.1/projects/cidade.vc/js/l.control.geosearch.js');
-	wp_enqueue_script( 'l.geosearch.provider.openstreetmap.js', 'http://127.0.0.1/projects/cidade.vc/js/l.geosearch.provider.openstreetmap.js');
-	wp_enqueue_script( 'mapa-admin.js', 'http://127.0.0.1/projects/cidade.vc/js/mapa-admin.js');
+	wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
+	// wp_enqueue_script( 'l.control.geosearch.js', 'http://127.0.0.1/projects/cidade.vc/js/l.control.geosearch.js');
+	// wp_enqueue_script( 'l.geosearch.provider.openstreetmap.js', 'http://127.0.0.1/projects/cidade.vc/js/l.geosearch.provider.openstreetmap.js');
+	wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map.js');
 }
 function pw_load_styles() {
-	wp_enqueue_style('leaflet.css', 'http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css');
-	wp_enqueue_style('l.geosearch.css', 'http://127.0.0.1/projects/cidade.vc/css/l.geosearch.css');
+	wp_enqueue_style('site.css', 'http://127.0.0.1/projects/cidade.vc/css/site.css');
 }
 add_action('admin_enqueue_scripts', 'pw_load_scripts');
 add_action('admin_enqueue_scripts', 'pw_load_styles');
@@ -145,7 +144,14 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					        <br /><span class="description">'.$field['desc'].'</span>';  
 						break; 
 					case 'mapa':
-						echo '<div id="map" style="position: absolute; top: 0; left: 0; height: 450px; margin-bottom: 25px; position: relative; width: 100%;"></div>';
+						echo '<div id="map-canvas" style="position: absolute; top: 0; left: 0; height: 450px; margin-bottom: 25px; position: relative; width: 100%;"></div>';
+						echo '
+							<div id="search">
+								<input type="text" name="addr" value="" id="addr" size="10" />
+								<button type="button" onclick="addr_search();">Search</button>
+								<div id="results"/>
+							</div>
+						';
 						break;
 				} //end switch
 		echo '</tr>';

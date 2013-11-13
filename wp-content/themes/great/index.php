@@ -16,7 +16,9 @@
 		<article class="article flat">
 
 
-			<div id="map"></div>
+			<div id="map-canvas">
+
+			</div>
 
 			<div id="content_box">
 			

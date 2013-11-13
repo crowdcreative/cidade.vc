@@ -315,12 +315,13 @@ body > header {
     position: relative;
 }
 
-#map {
+#map-canvas {
     height: 250px;
     margin-bottom: 25px;
     position: relative;
     width: 100%;
 }
+
 
 #main-header {
     float: left;

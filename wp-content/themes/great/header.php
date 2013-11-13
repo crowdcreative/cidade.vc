@@ -17,8 +17,11 @@
 	
 	<link href='http://fonts.googleapis.com/css?family=Gudea:400,400italic,700' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="./wp-content/themes/great/images/favicon.png">
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css"/>
-	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true"></script>
+
+
+
 
 
 </head>
