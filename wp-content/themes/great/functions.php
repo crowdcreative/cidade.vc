@@ -147,21 +147,8 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					        <br /><span class="description">'.$field['desc'].'</span>';  
 						break; 
 					case 'mapa':
+						echo '<input type="text" id="search_address" style="width:100%" value=""/>';
 						echo '<div id="map-canvas" style="position: absolute; top: 0; left: 0; height: 450px; margin-bottom: 25px; position: relative; width: 100%;"></div>';
-						echo '
-							<div id="search">
-								<input type="text" id="search_address" value=""/>
-<button onclick="search();">Search</button>
-							</div>
-							<div id="infoPanel">
-						    <b>Marker status:</b>
-						    <div id="markerStatus"><i>Click and drag the marker.</i></div>
-						    <b>Current position:</b>
-						    <div id="info"></div>
-						    <b>Closest matching address:</b>
-						    <div id="address"></div>
-						  </div>
-						';
 						break;
 				} //end switch
 		echo '</tr>';
