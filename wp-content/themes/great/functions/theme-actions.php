@@ -22,10 +22,7 @@ if ( ! function_exists( 'mts_head' ) ) {
 	function mts_head() { 
 	global $options
 ?>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script src="<?php echo get_template_directory_uri(); ?>/js/modernizr.min.js"></script>
 <script src="<?php echo get_template_directory_uri(); ?>/js/customscript.js" type="text/javascript"></script>
-<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 <style type="text/css">
 	<?php if($options['mts_bg_color'] != '') { ?>
 		body {background-color:<?php echo $options['mts_bg_color']; ?>;}
