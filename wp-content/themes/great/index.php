@@ -15,9 +15,17 @@
 		
 		<article class="article flat">
 
-
 			<div id="map-canvas">
 
+			</div>
+
+			<div id="infoPanel">
+			    <b>Marker status:</b>
+			    <div id="markerStatus"><i>Click and drag the marker.</i></div>
+			    <b>Current position:</b>
+			    <div id="info"></div>
+			    <b>Closest matching address:</b>
+			    <div id="address"></div>
 			</div>
 
 			<div id="content_box">
