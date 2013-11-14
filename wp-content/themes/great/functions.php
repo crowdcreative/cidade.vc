@@ -50,10 +50,13 @@ function pw_load_scripts() {
 	wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
 	// wp_enqueue_script( 'l.control.geosearch.js', 'http://127.0.0.1/projects/cidade.vc/js/l.control.geosearch.js');
 	// wp_enqueue_script( 'l.geosearch.provider.openstreetmap.js', 'http://127.0.0.1/projects/cidade.vc/js/l.geosearch.provider.openstreetmap.js');
+	wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');
 	wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map.js');
+	wp_enqueue_script( 'jquery-ui.min.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js');
 }
 function pw_load_styles() {
 	wp_enqueue_style('site.css', 'http://127.0.0.1/projects/cidade.vc/css/site.css');
+	wp_enqueue_style('jquery-ui.css', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css');
 }
 add_action('admin_enqueue_scripts', 'pw_load_scripts');
 add_action('admin_enqueue_scripts', 'pw_load_styles');
@@ -147,10 +150,17 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 						echo '<div id="map-canvas" style="position: absolute; top: 0; left: 0; height: 450px; margin-bottom: 25px; position: relative; width: 100%;"></div>';
 						echo '
 							<div id="search">
-								<input type="text" name="addr" value="" id="addr" size="10" />
-								<button type="button" onclick="addr_search();">Search</button>
-								<div id="results"/>
+								<input type="text" id="search_address" value=""/>
+<button onclick="search();">Search</button>
 							</div>
+							<div id="infoPanel">
+						    <b>Marker status:</b>
+						    <div id="markerStatus"><i>Click and drag the marker.</i></div>
+						    <b>Current position:</b>
+						    <div id="info"></div>
+						    <b>Closest matching address:</b>
+						    <div id="address"></div>
+						  </div>
 						';
 						break;
 				} //end switch
