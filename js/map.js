@@ -1,11 +1,14 @@
 $(document).ready(function(){
 
+		// chama o geocoder do Google
 		var geocoder = new google.maps.Geocoder();
 
+		// Efetua o corte de parte da string retornada do geocoder - endereço
 		function contains(str, text) {
   		 	return (str.indexOf(text) >= 0);
 		}
 
+		// Criação do mapa
 		$('#map-canvas').gmap3({
 			map: {
 				options: {
@@ -26,7 +29,7 @@ $(document).ready(function(){
 				options: {
 					draggable: true
 				},
-				events: {
+				events: { 
 					dragend: function(marker) {
 						$(this).gmap3({
 							getaddress: {
@@ -39,17 +42,18 @@ $(document).ready(function(){
 									
 									content = results && results[1] ? results && results[0].formatted_address : "no address";
 
+									// Corta a string do endereco se tiver a palavra Porto Alegre
 									if(contains(content, 'Porto Alegre')) {
 										contentEcho = content.split(', Porto Alegre')[0];
 									}else{
 										contentEcho = content;
 									}
 
-
+									// Exibe o endereco recortado na barra de busca
 									$('#search_address').val(contentEcho);
 
 
-										
+									// Cria o balão de informação com o endereço do marcador - dragend	
 									if (infowindow) {
 										infowindow.open(map, marker);
 										infowindow.setContent(contentEcho);
@@ -84,7 +88,52 @@ $(document).ready(function(){
 						if (!results) return;
 						$(this).gmap3({
 							marker: {
-								latLng: results[0].geometry.location
+								latLng: results[0].geometry.location,
+								options:{
+									draggable:true
+								},
+								events: {
+									dragend: function(marker) {
+										$(this).gmap3({
+											getaddress: {
+												latLng: marker.getPosition(),
+												callback: function(results) {
+													var map = $(this).gmap3("get"),
+													infowindow = $(this).gmap3({
+														get: "infowindow"
+													}),
+													
+													content = results && results[1] ? results && results[0].formatted_address : "no address";
+
+													if(contains(content, 'Porto Alegre')) {
+														contentEcho = content.split(', Porto Alegre')[0];
+													}else{
+														contentEcho = content;
+													}
+
+
+													$('#search_address').val(contentEcho);
+
+
+														
+													if (infowindow) {
+														infowindow.open(map, marker);
+														infowindow.setContent(contentEcho);
+													} else {
+														$(this).gmap3({
+															infowindow: {
+																anchor: marker,
+																options: {
+																	content: contentEcho
+																}
+															}
+														});
+													}
+												}
+											},
+										});
+									}
+								}
 							}
 						});
 						var map = $(this).gmap3("get");
@@ -96,8 +145,11 @@ $(document).ready(function(){
 			});
 		}
 	
-		buscaLatlong("Rua Rivadávia Correia 08");
-		  
+		// Botao para chamar o endereço no mapa
+		$("#botao").click(function(){
+			var endereco = $("#search_address").val();
+			buscaLatlong(endereco);
+		});
 	
 
 		
