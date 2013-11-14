@@ -2,6 +2,10 @@ $(document).ready(function(){
 
 		var geocoder = new google.maps.Geocoder();
 
+		function contains(str, text) {
+  		 	return (str.indexOf(text) >= 0);
+		}
+
 		$('#map-canvas').gmap3({
 			map: {
 				options: {
@@ -29,69 +33,70 @@ $(document).ready(function(){
 								latLng: marker.getPosition(),
 								callback: function(results) {
 									var map = $(this).gmap3("get"),
-										infowindow = $(this).gmap3({
-											get: "infowindow"
-										}),
-										content = results && results[1] ? results && results[0].formatted_address : "no address";
-										contentCut = content.split(', Porto Alegre')[0];
+									infowindow = $(this).gmap3({
+										get: "infowindow"
+									}),
+									
+									content = results && results[1] ? results && results[0].formatted_address : "no address";
+
+									if(contains(content, 'Porto Alegre')) {
+										contentEcho = content.split(', Porto Alegre')[0];
+									}else{
+										contentEcho = content;
+									}
+
+
+									$('#search_address').val(contentEcho);
+
+
+										
 									if (infowindow) {
 										infowindow.open(map, marker);
-										infowindow.setContent(contentCut);
+										infowindow.setContent(contentEcho);
 									} else {
 										$(this).gmap3({
 											infowindow: {
 												anchor: marker,
 												options: {
-													content: content
+													content: contentEcho
 												}
 											}
 										});
 									}
 								}
-							}
+							},
 						});
-					},
-					drag: function() {
-						updateMarkerStatus('Dragging...');
 					}
-
 				}
 			}
 		});
 
 		var map = $(this).gmap3("get");
 		
+		function buscaLatlong(endereco) {
+			$("#map-canvas").gmap3({
+				clear: {
+					name: "marker"
+				},
+				getlatlng: {
+					address: endereco,
+					callback: function(results) {
+						if (!results) return;
+						$(this).gmap3({
+							marker: {
+								latLng: results[0].geometry.location
+							}
+						});
+						var map = $(this).gmap3("get");
+						var latLng = results[0].geometry.location; //Makes a latlng
+      					map.panTo(latLng); //Make map global
 
-		function geocodePosition(pos) {
-		  geocoder.geocode({
-		    latLng: pos
-		  }, function(responses) {
-		    if (responses && responses.length > 0) {
-		      updateMarkerAddress(responses[0].formatted_address);
-		    } else {
-		      updateMarkerAddress('Cannot determine address at this location.');
-		    }
-		  });
+					}
+				},
+			});
 		}
-
-		function updateMarkerStatus(str) {
-		  document.getElementById('markerStatus').innerHTML = str;
-		}
-
-		function updateMarkerPosition(latLng) {
-		  	$("#info").text(latLng);
-		
-		
-		}
-
-		function updateMarkerAddress(str) {
-		  $("address").text(str);
-		}
-
-
-		  // Update current position info.
-		  updateMarkerPosition(latLng);
-		  geocodePosition(latLng);
+	
+		buscaLatlong("Rua Rivadávia Correia 08");
 		  
 	
 
