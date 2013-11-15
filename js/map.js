@@ -1,5 +1,14 @@
 $(document).ready(function(){
 
+
+		// Adiciona o map-canvas abaixo do input buscador
+		$("<div id='map-canvas'></div>").insertAfter("#acf-endereço");
+		$("#acf-endereço").css({"width":"100%"});
+ 
+		// Adiciona o botao abaixo do mapa
+		$("<div id='botao'><span>Buscar endereço</span></div>").insertAfter("#acf-endereço");
+		$("#botao").css({"width":"100%"});
+
 		// chama o geocoder do Google
 		var geocoder = new google.maps.Geocoder();
 
@@ -40,7 +49,7 @@ $(document).ready(function(){
 										get: "infowindow"
 									}),
 									
-									content = results && results[1] ? results && results[0].formatted_address : "no address";
+									content = results && results[0] ? results && results[0].formatted_address : "no address";
 
 									// Corta a string do endereco se tiver a palavra Porto Alegre
 									if(contains(content, 'Porto Alegre')) {
@@ -50,7 +59,7 @@ $(document).ready(function(){
 									}
 
 									// Exibe o endereco recortado na barra de busca
-									$('#search_address').val(contentEcho);
+									$('#acf-field-endereço').val(contentEcho);
 
 
 									// Cria o balão de informação com o endereço do marcador - dragend	
@@ -103,7 +112,7 @@ $(document).ready(function(){
 														get: "infowindow"
 													}),
 													
-													content = results && results[1] ? results && results[0].formatted_address : "no address";
+													content = results && results[0] ? results && results[0].formatted_address : "Endereço não encontrado =(";
 
 													if(contains(content, 'Porto Alegre')) {
 														contentEcho = content.split(', Porto Alegre')[0];
@@ -112,7 +121,7 @@ $(document).ready(function(){
 													}
 
 
-													$('#search_address').val(contentEcho);
+													$('#acf-field-endereço').val(contentEcho);
 
 
 														
@@ -147,7 +156,7 @@ $(document).ready(function(){
 	
 		// Botao para chamar o endereço no mapa
 		$("#botao").click(function(){
-			var endereco = $("#search_address").val();
+			var endereco = $("#acf-field-endereço").val();
 			buscaLatlong(endereco);
 		});
 	
