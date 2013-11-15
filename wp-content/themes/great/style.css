@@ -104,7 +104,7 @@ body {
     line-height: 1;
     font: 14px/19px arial, sans-serif;
     color: #555555;
-    background-color: #ffffff !important;
+    background-color: #f1f1f1 !important;
 }
 ::-moz-selection {
     background: #222;
@@ -1051,11 +1051,6 @@ nav #searchform fieldset {
 
 
 /*-[ Custom Bootstrap ]-------------------*/
-
-.panel{
-    overflow: hidden;
-}
-
 
 
 

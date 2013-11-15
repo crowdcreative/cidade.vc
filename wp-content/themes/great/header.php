@@ -17,7 +17,7 @@
 	
 	<link href='http://fonts.googleapis.com/css?family=Gudea:400,400italic,700' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="./wp-content/themes/great/images/favicon.png">
-	<link href="http://127.0.0.1/projects/cidade.vc/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="http://127.0.0.1/projects/cidade.vc/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true"></script>

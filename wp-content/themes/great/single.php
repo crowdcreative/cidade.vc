@@ -22,28 +22,27 @@
 									
 									<div class="bloco">
 										<?php if(get_field("imagem_de_capa")){ ?>
-											<h3>Imagem</h3>
 											<p><img src="<?php the_field("imagem_de_capa"); ?>" class="img-thumbnail"/></p>
 										<?php } ?>
 									</div>
 
 									<div class="bloco">
 										<?php if(get_field("endereço")){ ?>
-											<h3>Endereço</h3>
+											<h2>Endereço</h2>
 											<p><?php the_field("endereço"); ?></p>
 										<?php } ?>
 									</div>
 
 									<div class="bloco">
 										<?php if(get_field("telefone")){ ?>
-											<h3>Telefone</h3>
+											<h2>Telefone</h2>
 											<p><?php the_field("telefone"); ?></p>
 										<?php } ?>
 									</div>
 
 									<div class="bloco">
 										<?php if(get_field("site")){ ?>
-											<h3>Site</h3>
+											<h2>Site</h2>
 											<p>
 											<?php 
 												$url = get_field("site"); 
@@ -56,7 +55,7 @@
 
 									<div class="bloco">
 										<?php if(get_field("bairro")){ ?>
-											<h3>Bairro</h3>
+											<h2>Bairro</h2>
 											<?php 
 											$taxonomyID = get_field("bairro");
 											$taxonomyID = (int)$taxonomyID;
@@ -67,14 +66,14 @@
 
 									<div class="bloco">
 										<?php if(get_field("descrição_do_lugar")){ ?>
-											<h3>Descrição do lugar</h3>
+											<h2>Descrição do lugar</h2>
 											<p><?php the_field("descrição_do_lugar"); ?></p>
 										<?php } ?>
 									</div>
 
 									<div class="bloco">
 										<?php if(get_field("serviços_oferecidos")){ ?>
-											<h3>Serviços oferecidos</h3>
+											<h2>Serviços oferecidos</h2>
 											<p>
 											<?php 
 											$term_list = wp_get_post_terms($postID, 'serviços', array("fields" => "all")); 
@@ -92,14 +91,14 @@
 
 									<div class="bloco">
 										<?php if(get_field("tambem_são_realizados")){ ?>
-											<h3>Também são realizados:</h3>
+											<h2>Também são realizados:</h2>
 											<p><?php the_field("tambem_são_realizados"); ?></p>
 										<?php } ?>
 									</div>
 
 									<div class="bloco">
 										<?php if(get_field("como_ter_acesso")){ ?>
-											<h3>Como ter acesso</h3>
+											<h2>Como ter acesso</h2>
 											<p><?php the_field("como_ter_acesso"); ?></p>
 										<?php } ?>
 									</div>

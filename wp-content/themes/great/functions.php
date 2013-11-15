@@ -46,7 +46,7 @@ if ( function_exists('add_theme_support') ) add_theme_support('automatic-feed-li
 
 // Adicionar scripts do mapa jquery  ESTE SCRIPT ATRAPALHAM O GRAB DO ADVANCE CUSTOM FIELDS =O
 function pw_load_scripts() {
-	// wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
+	wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
 	wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
 	wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');
 	wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map.js');
