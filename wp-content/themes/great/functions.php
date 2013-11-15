@@ -44,18 +44,15 @@ if ( function_exists('add_theme_support') ) add_theme_support('automatic-feed-li
 /*-----------------------------------------------------------------------------------*/
 
 
-// Adicionar scripts do mapa jquery
+// Adicionar scripts do mapa jquery  ESTE SCRIPT ATRAPALHAM O GRAB DO ADVANCE CUSTOM FIELDS =O
 function pw_load_scripts() {
-	wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
+	// wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
 	wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
-	// wp_enqueue_script( 'l.control.geosearch.js', 'http://127.0.0.1/projects/cidade.vc/js/l.control.geosearch.js');
-	// wp_enqueue_script( 'l.geosearch.provider.openstreetmap.js', 'http://127.0.0.1/projects/cidade.vc/js/l.geosearch.provider.openstreetmap.js');
 	wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');
 	wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map.js');
-	wp_enqueue_script( 'jquery-ui.min.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js');
 }
 function pw_load_styles() {
-	wp_enqueue_style('site.css', 'http://127.0.0.1/projects/cidade.vc/css/site.css');
+	wp_enqueue_style('dashboard.css', 'http://127.0.0.1/projects/cidade.vc/css/dashboard.css');
 	wp_enqueue_style('jquery-ui.css', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css');
 }
 add_action('admin_enqueue_scripts', 'pw_load_scripts');
@@ -64,7 +61,7 @@ add_action('admin_enqueue_scripts', 'pw_load_styles');
 
 
 // Cria a metabox
-function add_custom_meta_box() {
+/*function add_custom_meta_box() {
     add_meta_box(
 		'mapa_meta_box', // $id
 		'Mapa', // $title 
@@ -147,8 +144,6 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					        <br /><span class="description">'.$field['desc'].'</span>';  
 						break; 
 					case 'mapa':
-						echo '<input type="text" id="search_address" style="width:80%; height: 30px" value=""/><div id="botao" style="width:20%">Buscar</div>';
-						echo '<div id="map-canvas" style="position: absolute; top: 0; left: 0; height: 450px; margin-bottom: 25px; position: relative; width: 100%;"></div>';
 						break;
 				} //end switch
 		echo '</tr>';
@@ -190,7 +185,7 @@ function save_custom_meta($post_id) {
 add_action('save_post', 'save_custom_meta');  
 
 
-
+*/
 
 
 /*-----------------------------------------------------------------------------------*/
