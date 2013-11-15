@@ -188,6 +188,25 @@ add_action('save_post', 'save_custom_meta');
 */
 
 
+
+
+function NewUrl($x) {
+   $url = $x;
+   if ( substr($url, 0, 7) == 'http://') { $url = substr($url, 7); }
+   if ( substr($url, 0, 8) == 'https://') { $url = substr($url, 8); }
+   if ( substr($url, 0, 4) == 'www.') { $url = substr($url, 4); }
+   if ( strpos($url, '/') !== false) {
+      $ex = explode('/', $url);
+      $url = $ex['0'];
+   }
+
+      return $url;
+}
+
+
+
+
+
 /*-----------------------------------------------------------------------------------*/
 /*	Load Widgets & Shortcodes
 /*-----------------------------------------------------------------------------------*/

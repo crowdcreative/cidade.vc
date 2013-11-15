@@ -1,19 +1,23 @@
-<div id="sidebar-right" class=" flat">
-<div id="sidebars" class="g">
-	<div class="sidebar">
+<div class="col-md-4">
 
-	<!-- <?php if ( ! dynamic_sidebar( 'Sidebar' )) : ?><?php endif; ?> -->
-	
-	<ul class="sidebar_list">
-			<li>
-				teste
-			</li>
-				
-			<li>
-				teste 2
-			</li>
-	</ul>
+	<div class="panel panel-default">
+
+		<div class="panel-body">
+			
+			<!-- <?php if ( ! dynamic_sidebar( 'Sidebar' )) : ?><?php endif; ?> -->
+		
+			<ul class="sidebar_list">
+					<li>
+						teste
+					</li>
+						
+					<li>
+						teste 2
+					</li>
+			</ul>
+
+		</div>
 
 	</div>
-</div><!--sidebars-->
+
 </div>

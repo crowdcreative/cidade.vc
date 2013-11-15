@@ -175,12 +175,7 @@ a:link, a:visited, a:active { text-decoration: none }
 }
 
 #rede{
-    background: url("../great/images/mask-content.png") no-repeat scroll center -220px rgba(0, 0, 0, 0);
-    height: 1800px;
-    opacity: 0.05;
-    position: fixed;
-    width: 100%;
-    top: 0;
+
 }
 
 #bloqueio{
@@ -297,16 +292,10 @@ time {
 }
 #page, .container {
     margin: 25px auto 0;
-    width: 1264px;
+    width: 1264px !important;
     z-index: 99;
 }
-#page {
-    padding-top: 45px;
-    min-height: 100px;
-    float: none;
-    clear: both;
-    overflow: hidden;
-}
+
 
 /*-[ Header ]-----------------------*/
 body > header {
@@ -324,13 +313,9 @@ body > header {
 
 
 #main-header {
-    float: left;
-    height: 97px;
     position: relative;
     width: 100%;
     z-index: 99;
-    top: 0;
-    left: 0;
 }
 #header {
     position: relative;
@@ -530,6 +515,27 @@ body > header {
     top: 3px;
 }
 /*-[ Content ]--------------------*/
+
+.bloco{
+    display: block;
+    margin: 35px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.bloco ul {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.bloco li {
+    float: left;
+    list-style: none outside none;
+    margin: 0 3% 0 0;
+    padding: 0;
+    width: 30%;
+}
+
 .article {
     float: left;
     width: 50%;
@@ -550,7 +556,6 @@ body > header {
     width: 100%;
 }
 .post {
-    float: left;
     width: 100%;
 }
 .post .time{
@@ -561,7 +566,6 @@ body > header {
 }
 .single_post {
     background-color: #fff;
-    float: left;
     width: 100%;
 }
 .single_page { background-color: white }
@@ -575,7 +579,6 @@ body > header {
 }
 .post-single-content {
     font-size: 14px;
-    float: left;
     clear: both;
     width: 100%;
     line-height: 22px;
@@ -1043,26 +1046,23 @@ nav #searchform fieldset {
     text-align: center;
 }
 .sidebar .sbutton { padding-top: 10px }
-.breadcrumbs-wrap {
-    border-top: 1px solid #E9E9E9;
-    border-bottom: 1px solid #E9E9E9;
-    padding: 4px 0;
-    width: 100%;
-    float: left;
-    margin-bottom: 30px;
-    background: #fff;
+
+
+
+
+/*-[ Custom Bootstrap ]-------------------*/
+
+.panel{
+    overflow: hidden;
 }
-.breadcrumbs {
-    background: #51a2c1;
-    padding: 20px 0;
-}
-.breadcrumb {
-    margin: 0 auto;
-    max-width: 960px;
-    line-height: 24px;
-    color: #ddd;
-}
-.breadcrumb a, .breadcrumb a:hover { color: #fff }
+
+
+
+
+
+
+
+
 /*-[ Read More ]-------------------*/
 .read-more {
     margin: 0 0 0 10px;
@@ -1747,7 +1747,7 @@ body.home .main-container {
         float: right;
         margin-right: 15px;
     }
-    .breadcrumb { padding: 0 2% }
+    .breadcrumb {margin: 10px 0;}
 }
 @media screen and (max-width:760px) { 
     #header { margin: 0 }

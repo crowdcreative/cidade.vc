@@ -100,7 +100,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 						
 						
 						<header>
-							<a href="<?php the_field('link_para_o _artigo_externo');  ?>" title="<?php the_title(); ?>" rel="nofollow" id="featured-thumbnail">
+							<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="nofollow" id="featured-thumbnail">
 							<?php if (get_field('imagem_de_capa')) { ?> 
 							
 							<img src="<?php the_field('imagem_de_capa') ?>">
@@ -117,7 +117,7 @@ humbnail">'; the_post_thumbnail('image-link',array('title' => '')); echo '</div>
 							</div>
 					
 							<h2 class="title">
-								<a href="<?php the_field('link_para_o _artigo_externo'); ?>" title="<?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a><span class="leitura help" title="Tempo médio de leitura"><?php the_field("tempo_de_leitura"); ?></span>
+								<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a><span class="leitura help" title="Tempo médio de leitura"><?php the_field("tempo_de_leitura"); ?></span>
 							</h2>
 							
 						</header><!--.header-->
