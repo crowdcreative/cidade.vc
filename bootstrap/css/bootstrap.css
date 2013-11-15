@@ -388,6 +388,7 @@ hr {
 }
 
 p {
+  line-height: 1.8em;
   margin: 0 0 10px;
 }
 
@@ -482,7 +483,7 @@ h6,
 .h5,
 .h6 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 1.1;
   color: inherit;
 }
@@ -545,27 +546,27 @@ h6 small,
 h4 .small,
 h5 .small,
 h6 .small {
-  font-size: 75%;
+  font-size: 65%;
 }
 
 h1,
 .h1 {
-  font-size: 36px;
+  font-size: 22px;
 }
 
 h2,
 .h2 {
-  font-size: 30px;
+  font-size: 20px;
 }
 
 h3,
 .h3 {
-  font-size: 24px;
+  font-size: 18px;
 }
 
 h4,
 .h4 {
-  font-size: 18px;
+  font-size:16px;
 }
 
 h5,
@@ -5629,7 +5630,7 @@ a.list-group-item.active:focus .list-group-item-text {
 }
 
 .panel-body {
-  padding: 15px;
+    padding: 15px 25px;
 }
 
 .panel-body:before,
