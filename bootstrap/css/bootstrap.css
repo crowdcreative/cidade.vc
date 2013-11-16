@@ -485,7 +485,7 @@ h6,
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
   line-height: 1.1;
-  color: inherit;
+  color: rgba(0, 0, 0, 0.8);
 }
 
 h1 small,
@@ -530,7 +530,8 @@ h3 small,
 h1 .small,
 h2 .small,
 h3 .small {
-  font-size: 65%;
+    font-size: 60%;
+    margin: 0 0 0 6px;
 }
 
 h4,
@@ -5119,6 +5120,19 @@ textarea.input-group-sm > .input-group-btn > .btn {
   border-radius: .25em;
 }
 
+.label-small {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 50%;
+  font-weight: bold;
+  line-height: 1;
+  color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
 .label[href]:hover,
 .label[href]:focus {
   color: #ffffff;
@@ -5630,7 +5644,7 @@ a.list-group-item.active:focus .list-group-item-text {
 }
 
 .panel-body {
-    padding: 15px 25px;
+    padding: 20px 20px;
 }
 
 .panel-body:before,
@@ -5748,7 +5762,7 @@ a.list-group-item.active:focus .list-group-item-text {
 .panel-title {
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 16px;
+  font-size: 22px;
 }
 
 .panel-title > a {

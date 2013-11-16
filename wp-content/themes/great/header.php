@@ -32,7 +32,7 @@
 <?php flush(); ?>
 <body id ="blog" <?php body_class('main'); ?>>
 
-	
+
 	
 	<div id="bloqueio">
 		<div class="conteudo">
@@ -77,7 +77,7 @@
 	</div>
 	<?php if (is_single() || is_page()) { ?>
 		
-		<div class="container">	
+		<div class="container" style="display:none">	
 			<div class="panel panel-default">
 				<div id="breadcrumb"><?php the_breadcrumb(); ?></div>
 			</div>
