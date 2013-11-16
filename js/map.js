@@ -1,6 +1,27 @@
 $(document).ready(function(){
 
 
+		// gravamos a url de ajax do wordpress a um objeto chamado ajaxUrl que vai ficar vinculado pelo jQuery ao body da página a ser aberta
+
+		var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
+		
+
+		// jQuey ajax para chamar latlong
+
+			$.ajax({
+				url: ajaxUrl,
+				cache: false,
+				data: {'action':'getlatlong', 'test':'Testando'},
+				dataType: 'JSON',
+				success: function(dados){
+					console.log(dados);
+				}
+			});
+	
+
+
+
+
 		// Adiciona o map-canvas abaixo do input buscador
 		$("<div id='map-canvas'></div>").insertAfter("#acf-endereço");
 		$("#acf-endereço").css({"width":"100%"});
@@ -16,6 +37,8 @@ $(document).ready(function(){
 		function contains(str, text) {
   		 	return (str.indexOf(text) >= 0);
 		}
+
+
 
 		// Criação do mapa
 		$('#map-canvas').gmap3({
@@ -79,6 +102,10 @@ $(document).ready(function(){
 								}
 							},
 						});
+						
+						var latlng = marker.getPosition();
+						$('#acf-field-latlong').val(latlng);
+
 					}
 				}
 			}
@@ -138,6 +165,9 @@ $(document).ready(function(){
 															}
 														});
 													}
+
+													var latlng = marker.getPosition();
+													$('#acf-field-latlong').val(latlng);
 												}
 											},
 										});
@@ -148,6 +178,9 @@ $(document).ready(function(){
 						var map = $(this).gmap3("get");
 						var latLng = results[0].geometry.location; //Makes a latlng
       					map.panTo(latLng); //Make map global
+
+      					
+						$('#acf-field-latlong').val(latLng);
 
 					}
 				},
@@ -160,8 +193,7 @@ $(document).ready(function(){
 			buscaLatlong(endereco);
 		});
 	
-
-		
+	
 	
 
   });
