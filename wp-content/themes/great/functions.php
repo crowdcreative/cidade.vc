@@ -49,7 +49,7 @@ function pw_load_scripts() {
 	wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
 	wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
 	wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');
-	wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map.js');
+	wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map-dashboard.js');
 }
 function pw_load_styles() {
 	wp_enqueue_style('dashboard.css', 'http://127.0.0.1/projects/cidade.vc/css/dashboard.css');
@@ -188,8 +188,20 @@ add_action('save_post', 'save_custom_meta');
 */
 
 
+// Função para pegar Lat e Long para o mapa
+
+add_action('wp_ajax_getlatlong', 'getlatlong');
+add_action('wp_ajax_nopriv_getlatlong', 'getlatlong');
+
+function getlatlong(){
+	$waka = $_REQUEST['test'];
+	$waka = json_encode($waka);
+	echo $waka;
+	die();
+}
 
 
+// Deixa a url do 'site' limpa
 function NewUrl($x) {
    $url = $x;
    if ( substr($url, 0, 7) == 'http://') { $url = substr($url, 7); }
