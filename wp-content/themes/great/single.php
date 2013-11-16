@@ -83,11 +83,12 @@ $(document).ready(function(){
 								<?php 
 								global $post; 
 								$postID = get_the_ID();
+								$valorID = get_field("preço");
 								?>
 
 
 								<div class="panel-heading">
-									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><span class="label-small label-success">gratuito</span></h1>
+									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><span class="label-small label-success"><?php preco($valorID); ?></span></h1>
 								</div>	
 									
 								<div class="panel-body">
