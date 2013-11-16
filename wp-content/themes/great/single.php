@@ -63,6 +63,10 @@ $(document).ready(function(){
 
 </script>
 
+
+	<div id="map-canvas"> </div>
+
+
 <div id="page" class="single container">
 	
 		<div class="row">
@@ -112,9 +116,7 @@ $(document).ready(function(){
 
 
 
-									<div id="map-canvas">
-
-									</div>
+									
 					
 
 								
