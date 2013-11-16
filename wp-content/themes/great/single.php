@@ -1,59 +1,127 @@
 <?php get_header(); ?>
 <?php $options = get_option('great'); ?>
+
+<!-- Define vars para o mapa -->
+	
+	<?php
+	$latlong = get_field('latlong');
+	$latlong = str_replace('(', '', $latlong);
+	$latlong = str_replace(')', '', $latlong);
+	?>
+
+
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+		// Adiciona o map-canvas abaixo do input buscador
+		$("<div id='map-canvas'></div>").insertAfter("#acf-endereço");
+		$("#acf-endereço").css({"width":"100%"});
+ 
+		// Adiciona o botao abaixo do mapa
+		$("<div id='botao'><span>Buscar endereço</span></div>").insertAfter("#acf-endereço");
+		$("#botao").css({"width":"100%"});
+
+		// chama o geocoder do Google
+		var geocoder = new google.maps.Geocoder();
+
+		// Efetua o corte de parte da string retornada do geocoder - endereço
+		function contains(str, text) {
+  		 	return (str.indexOf(text) >= 0);
+		}
+
+
+
+		// Criação do mapa
+		$('#map-canvas').gmap3({
+			map: {
+				options: {
+					center: [<?php echo $latlong; ?>],
+					zoom: 13,
+					mapTypeId: google.maps.MapTypeId.ROADMAP,
+					mapTypeControl: true,
+					mapTypeControlOptions: {
+						style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+					},
+					navigationControl: true,
+					scrollwheel: true,
+					streetViewControl: true
+				}
+			},
+			marker: {
+				latLng: [<?php echo $latlong; ?>],
+				options: {
+					draggable: true
+				}
+			}
+		});
+
+		var map = $(this).gmap3("get");
+
+  });
+
+</script>
+
 <div id="page" class="single container">
 	
 		<div class="row">
-			<div class="col-lg-8" >
+
+
+			<?php get_sidebar('right'); ?>
+
+
+			<div class="col-lg-6" >
 				<div class="panel-default panel">
 					<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 						<div id="post-<?php the_ID(); ?>" class="panel-body">
 							<div class="single_post">
-								<header>
-									<h1 class="single-title"><?php the_title(); ?></h1>
-									
-								</header><!--.headline_area-->
+								
 
-								<div class="post-single-content box mark-links">
 
 									<?php 
 									global $post; 
 									$postID = get_the_ID();
 									?>
+
+
 									
 									<div class="bloco">
-										<?php if(get_field("imagem_de_capa")){ ?>
-											<p><img src="<?php the_field("imagem_de_capa"); ?>" class="img-thumbnail"/></p>
-										<?php } ?>
+
+										<div class="left avatar-box">
+
+											<?php if(get_field("imagem_de_capa")){ ?>
+												<img id="avatar" src="<?php the_field("imagem_de_capa"); ?>" class="img-thumbnail"/>
+											<?php } ?>
+
+										</div>
+
+										<div class="nofloat endereco-box">
+
+											<h1 id="titulo" class="single-title"><?php the_title(); ?></h1>
+											<ul>
+												<li><b>Endereço:</b> <?php the_field("endereço"); ?></li>
+												<li><b>Telefone:</b> <?php the_field("telefone"); ?></li>
+												<li><b>Site:</b> <?php $url = get_field("site"); $url = NewUrl($url); echo($url); ?></li> 
+											</ul>
+
+
+										</div>
+
 									</div>
 
-									<div class="bloco">
-										<?php if(get_field("endereço")){ ?>
-											<h2>Endereço</h2>
-											<p><?php the_field("endereço"); ?></p>
-										<?php } ?>
-									</div>
 
-									<div class="bloco">
-										<?php if(get_field("telefone")){ ?>
-											<h2>Telefone</h2>
-											<p><?php the_field("telefone"); ?></p>
-										<?php } ?>
-									</div>
 
-									<div class="bloco">
-										<?php if(get_field("site")){ ?>
-											<h2>Site</h2>
-											<p>
-											<?php 
-												$url = get_field("site"); 
-												$url = NewUrl($url);
-												echo($url);
-											?>
-											</p>
-										<?php } ?>
-									</div>
+									<div id="map-canvas">
 
-									<div class="bloco">
+									</div>
+					
+
+								
+
+									
+
+									<div class="bloco" style="display:none">
 										<?php if(get_field("bairro")){ ?>
 											<h2>Bairro</h2>
 											<?php 
@@ -71,7 +139,7 @@
 										<?php } ?>
 									</div>
 
-									<div class="bloco">
+									<div class="bloco servicos">
 										<?php if(get_field("serviços_oferecidos")){ ?>
 											<h2>Serviços oferecidos</h2>
 											<p>
@@ -91,7 +159,7 @@
 
 									<div class="bloco">
 										<?php if(get_field("tambem_são_realizados")){ ?>
-											<h2>Também são realizados:</h2>
+											<h2>Também são realizados</h2>
 											<p><?php the_field("tambem_são_realizados"); ?></p>
 										<?php } ?>
 									</div>
@@ -103,7 +171,7 @@
 										<?php } ?>
 									</div>
 
-								</div>
+								
 							</div><!--.post-content box mark-links-->
 							
 					
@@ -113,5 +181,8 @@
 				</div>
 			</div>
 	
-		<?php get_sidebar('right'); ?>
-<?php get_footer(); ?>
+		
+
+
+
+		<?php get_footer(); ?>
