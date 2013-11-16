@@ -290,7 +290,6 @@ time {
     width: 1020px;
 }
 #page, .container {
-    width: 1264px !important;
     z-index: 99;
 }
 
@@ -303,8 +302,9 @@ body > header {
 }
 
 #map-canvas {
-    height: 250px;
-    margin-bottom: 25px;
+    border-radius: 3px;
+    height: 280px;
+    margin: 20px 0;
     position: relative;
     width: 100%;
 }
@@ -312,7 +312,6 @@ body > header {
 
 #main-header {
     position: relative;
-    width: 100%;
     z-index: 99;
 }
 #header {
@@ -516,9 +515,13 @@ body > header {
 
 .bloco{
     display: block;
-    margin: 35px 0;
+    margin: 0 0 35px 0;
     overflow: hidden;
     position: relative;
+}
+
+.bloco > p {
+    color: rgba(0, 0, 0, 0.7);
 }
 
 .bloco ul {
@@ -527,12 +530,9 @@ body > header {
 }
 
 .servicos li {
-    float: left;
     line-height: 2em;
     list-style: none outside none;
-    margin: 0 3% 0 0;
     padding: 0;
-    width: 30%;
 }
 
 .article {
@@ -1044,7 +1044,7 @@ nav #searchform fieldset {
 #avatar{
     float: left;
     position: relative;
-    width: 185px;
+    width: 100%;
 }
 
 .nofloat{
@@ -1060,22 +1060,31 @@ nav #searchform fieldset {
 }
 
 .avatar-box{
-    width: 215px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    overflow: hidden;
+    width: 100%;
 }
 
 #titulo {
 
 }
 
+#titulo > .label-small {
+    float: right;
+    line-height: 1em;
+    padding: 3.5px 5px;
+    text-align: center;
+}
+
 .single-title {
-    float: left;
     font-size: 24px;
     line-height: 28px;
     padding: 0;
 }
 
 .endereco-box ul{
-    float: left;
+
 }
 
 .endereco-box ul li{
@@ -1083,8 +1092,16 @@ nav #searchform fieldset {
     display: block;
     float: left;
     list-style: none outside none;
-    margin: 3px 0;
+    margin: 8px 0;
 }
+
+#single-col-left{
+
+}
+
+
+
+
 
 
 

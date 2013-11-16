@@ -64,7 +64,7 @@ $(document).ready(function(){
 </script>
 
 
-	<div id="map-canvas"> </div>
+	
 
 
 <div id="page" class="single container">
@@ -75,53 +75,22 @@ $(document).ready(function(){
 			<?php get_sidebar('right'); ?>
 
 
-			<div class="col-lg-6" >
+			<div class="col-md-9" >
 				<div class="panel-default panel">
 					<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
-						<div id="post-<?php the_ID(); ?>" class="panel-body">
-							<div class="single_post">
-								
+						
+							
+								<?php 
+								global $post; 
+								$postID = get_the_ID();
+								?>
 
 
-									<?php 
-									global $post; 
-									$postID = get_the_ID();
-									?>
-
-
+								<div class="panel-heading">
+									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><span class="label-small label-success">gratuito</span></h1>
+								</div>	
 									
-									<div class="bloco">
-
-										<div class="left avatar-box">
-
-											<?php if(get_field("imagem_de_capa")){ ?>
-												<img id="avatar" src="<?php the_field("imagem_de_capa"); ?>" class="img-thumbnail"/>
-											<?php } ?>
-
-										</div>
-
-										<div class="nofloat endereco-box">
-
-											<h1 id="titulo" class="single-title"><?php the_title(); ?></h1>
-											<ul>
-												<li><b>Endereço:</b> <?php the_field("endereço"); ?></li>
-												<li><b>Telefone:</b> <?php the_field("telefone"); ?></li>
-												<li><b>Site:</b> <?php $url = get_field("site"); $url = NewUrl($url); echo($url); ?></li> 
-											</ul>
-
-
-										</div>
-
-									</div>
-
-
-
-									
-					
-
-								
-
-									
+								<div class="panel-body">
 
 									<div class="bloco" style="display:none">
 										<?php if(get_field("bairro")){ ?>
@@ -136,7 +105,7 @@ $(document).ready(function(){
 
 									<div class="bloco">
 										<?php if(get_field("descrição_do_lugar")){ ?>
-											<h2>Descrição do lugar</h2>
+										
 											<p><?php the_field("descrição_do_lugar"); ?></p>
 										<?php } ?>
 									</div>
@@ -147,12 +116,19 @@ $(document).ready(function(){
 											<p>
 											<?php 
 											$term_list = wp_get_post_terms($postID, 'serviços', array("fields" => "all")); 
-											echo "<ul>";
+											echo "<ul class='row'>";
 											foreach ($term_list as $term) {
 												$termEcho = $term->name;
-												$termEcho = substr($termEcho, 0, 22);
-												echo "<li>" . $termEcho . "</li>";
-												
+												$termEcholen = strlen($termEcho); // pega o tamanho da string
+
+												$termEchocut = substr($termEcho, 0, 30); // corta a string
+
+												if($termEcholen > 30){
+													echo "<li class='col-sm-4'>" . $termEchocut . " ...</li>";
+												}else{
+													echo "<li class='col-sm-4'>" . $termEcho . "</li>";
+												}
+
 											}
 											echo "</ul>";
 											?></p>
@@ -173,11 +149,35 @@ $(document).ready(function(){
 										<?php } ?>
 									</div>
 
+
+									<div class="bloco">
+										<h2>Localização no mapa<small> <?php the_field("endereço"); ?></small></h2>
+										<div id="map-canvas"> </div>
+
+											
+
+							
+
+										
+									<ul>
+										<li></li>
+									</ul>
+										
+
+
+									
+
+									
+
+		
+
+									</div>
+
 								
 							</div><!--.post-content box mark-links-->
 							
 					
-					</div><!--.g post-->
+					
 					<?php comments_template( '', true ); ?>
 				<?php endwhile; /* end loop */ ?>
 				</div>
