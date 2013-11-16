@@ -120,7 +120,6 @@ body {
     position: relative;
     margin-right: auto;
     margin-left: auto;
-    overflow: hidden;
     height: 100%;
 }
 h1, h2, h3, h4, h5, h6 {
@@ -528,8 +527,9 @@ body > header {
     padding: 0 !important;
 }
 
-.bloco li {
+.servicos li {
     float: left;
+    line-height: 2em;
     list-style: none outside none;
     margin: 0 3% 0 0;
     padding: 0;
@@ -565,7 +565,7 @@ body > header {
     margin: 0 0 0 12px;
 }
 .single_post {
-    background-color: #fff;
+
     width: 100%;
 }
 .single_page { background-color: white }
@@ -709,17 +709,7 @@ body > header {
     margin-bottom: 0;
     width: 100%;
 }
-.title {
-    margin-bottom: 5px;
-    font-size: 18px;
-    line-height: 22px;
-}
-.single-title {
-    font-size: 24px;
-    line-height: 28px;
-    float: left;
-    padding: 0 0 0 0;
-}
+
 #single-featured {
     width: 100%;
     float: left;
@@ -1052,9 +1042,50 @@ nav #searchform fieldset {
 
 /*-[ Custom Bootstrap ]-------------------*/
 
+#avatar{
+    float: left;
+    position: relative;
+    width: 185px;
+}
 
+.nofloat{
+    float: none !important;
+}
 
+.left{
+    float: left;
+}
 
+.right{
+    float: right;
+}
+
+.avatar-box{
+    width: 215px;
+}
+
+#titulo {
+
+}
+
+.single-title {
+    float: left;
+    font-size: 24px;
+    line-height: 28px;
+    padding: 0;
+}
+
+.endereco-box ul{
+    float: left;
+}
+
+.endereco-box ul li{
+    clear: both;
+    display: block;
+    float: left;
+    list-style: none outside none;
+    margin: 3px 0;
+}
 
 
 
