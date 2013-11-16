@@ -1,4 +1,4 @@
-<div class="col-md-4">
+<div class="col-md-3">
 
 	<div class="panel panel-default">
 
@@ -7,13 +7,9 @@
 			<!-- <?php if ( ! dynamic_sidebar( 'Sidebar' )) : ?><?php endif; ?> -->
 		
 			<ul class="sidebar_list">
-					<li>
-						teste
-					</li>
-						
-					<li>
-						teste 2
-					</li>
+					
+
+
 			</ul>
 
 		</div>
