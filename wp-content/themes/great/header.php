@@ -22,18 +22,17 @@
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true"></script>
 	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/gmap3.js"></script>
-	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/map.js"></script>
+	<!-- <script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/map.js"></script> -->
 	<script src="http://127.0.0.1/projects/cidade.vc/bootstrap/js/bootstrap.min.js"></script>
 	
-	<script>document.write('<script src="http://' + (location.host || 'localhost')
-.split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+	
 
 
 </head>
 <?php flush(); ?>
 <body id ="blog" <?php body_class('main'); ?>>
 
-
+	
 	
 	<div id="bloqueio">
 		<div class="conteudo">
