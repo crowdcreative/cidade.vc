@@ -290,7 +290,6 @@ time {
     width: 1020px;
 }
 #page, .container {
-    margin: 25px auto 0;
     width: 1264px !important;
     z-index: 99;
 }
