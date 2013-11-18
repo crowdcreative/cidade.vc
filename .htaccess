@@ -9,4 +9,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /projects/cidade.vc/index.php [L]
 </IfModule>
 
+<IfModule mod_headers.c>
+   Header add Access-Control-Allow-Origin: "http://www.poatransporte.com.br"
+</IfModule>
+
 # END WordPress
