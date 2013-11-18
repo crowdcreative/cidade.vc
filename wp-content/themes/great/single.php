@@ -13,7 +13,44 @@
 
 <script type="text/javascript">
 
+	// Deslizar de forma suave (http://css-tricks.com/snippets/jquery/smooth-scrolling/)	
+	$(function() {
+		$('a[href*=#]:not([href=#])').click(function() {
+			if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+				var target = $(this.hash);
+				target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+				if (target.length) {
+					$('html,body').animate({
+						scrollTop: target.offset().top
+					}, 1000);
+					return false;
+				}
+			}
+		});
+	});
+	
+
+
 $(document).ready(function(){
+
+
+		var top = $('#anchorlinks').offset().top - parseFloat($('#anchorlinks').css('marginTop').replace(/auto/, 0));
+		$(window).scroll(function(event) {
+			var y = $(this).scrollTop() + 30;
+			//if y > top, it means that if we scroll down any more, parts of our element will be outside the viewport
+			//so we move the element down so that it remains in view.
+
+			if (y >= top) {
+				var difference = y - top;
+				$('#anchorlinks').css("top", difference);
+				$('#anchorlinks').css("position", "absolute");
+				var widthCopy = $('.copy-width').width();
+				$('#anchorlinks').css("width", widthCopy);
+			} else {
+				$('#anchorlinks').css("top", 0);
+			}
+
+		});
 
 		// Adiciona o map-canvas abaixo do input buscador
 		$("<div id='map-canvas'></div>").insertAfter("#acf-endereço");
@@ -31,7 +68,18 @@ $(document).ready(function(){
   		 	return (str.indexOf(text) >= 0);
 		}
 
+		// Mostra o scroll-top após rolar a tela
 
+		$(window).scroll(function(event) {
+
+			var y = $(this).scrollTop();
+
+			if (y >= 500) {
+				$('#buttonScroll-top').fadeIn();
+			} else {
+				$('#buttonScroll-top').fadeOut();
+			}
+		});
 
 		// Criação do mapa
 		$('#map-canvas').gmap3({
@@ -57,14 +105,37 @@ $(document).ready(function(){
 			}
 		});
 
+
+		// Scroll to top
+	    $('a[href=#top]').click(function(){
+	        $('html, body').animate({scrollTop:0}, 'slow');
+	        return false;
+	    });
+
+
+
 		var map = $(this).gmap3("get");
+
+
+
+		
+		
+	
+
+		
+
+
+   
+   
+
+
 
   });
 
 </script>
 
 
-	
+<a href="#top"><div id="buttonScroll-top" class="glyphicon glyphicon-circle-arrow-up" style="display:none"></div></a>
 
 
 <div id="page" class="single container">
@@ -75,7 +146,7 @@ $(document).ready(function(){
 			<?php get_sidebar('right'); ?>
 
 
-			<div class="col-md-9" >
+			<div class="col-md-9">
 				<div class="panel-default panel">
 					<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 						
@@ -104,14 +175,14 @@ $(document).ready(function(){
 										<?php } ?>
 									</div>
 
-									<div class="bloco">
+									<div class="bloco" id="descricao_do_lugar">
 										<?php if(get_field("descrição_do_lugar")){ ?>
 										
 											<p><?php the_field("descrição_do_lugar"); ?></p>
 										<?php } ?>
 									</div>
 
-									<div class="bloco servicos">
+									<div class="bloco servicos" id="servicos_oferecidos">
 										<?php if(get_field("serviços_oferecidos")){ ?>
 											<h2>Serviços oferecidos</h2>
 											<p>
@@ -136,14 +207,14 @@ $(document).ready(function(){
 										<?php } ?>
 									</div>
 
-									<div class="bloco">
+									<div class="bloco" id="tambem_sao_realizados">
 										<?php if(get_field("tambem_são_realizados")){ ?>
 											<h2>Também são realizados</h2>
 											<p><?php the_field("tambem_são_realizados"); ?></p>
 										<?php } ?>
 									</div>
 
-									<div class="bloco">
+									<div class="bloco" id="como_ter_acesso">
 										<?php if(get_field("como_ter_acesso")){ ?>
 											<h2>Como ter acesso</h2>
 											<p><?php the_field("como_ter_acesso"); ?></p>
@@ -151,28 +222,15 @@ $(document).ready(function(){
 									</div>
 
 
-									<div class="bloco">
+									<div class="bloco" id="localizacao_no_mapa">
 										<h2>Localização no mapa<small> <?php the_field("endereço"); ?></small></h2>
 										<div id="map-canvas"> </div>
-
-											
-
-							
-
-										
-									<ul>
-										<li></li>
-									</ul>
-										
-
-
-									
-
-									
-
-		
-
 									</div>
+
+									<?php 
+										$data = json_decode(file_get_contents('http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=2821&t=o'));
+										echo $data[0]->nome;
+									?>
 
 								
 							</div><!--.post-content box mark-links-->
