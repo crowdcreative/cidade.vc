@@ -10,8 +10,7 @@
 	?>
 
 
-
-<script type="text/javascript">
+		<script type="text/javascript">
 
 	// Deslizar de forma suave (http://css-tricks.com/snippets/jquery/smooth-scrolling/)	
 	$(function() {
@@ -112,27 +111,65 @@ $(document).ready(function(){
 	        return false;
 	    });
 
+	    var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
+
+		var map = $("#map-canvas").gmap3("get");
 
 
-		var map = $(this).gmap3("get");
+		// Adiciona o circulo no mapa
+		var circle = new google.maps.Circle({
+			map: map,
+			radius: 1000, // metres
+			fillColor: '#AA0000'
+		});
+
+		var marker = new google.maps.Marker({
+			map: map,
+			position: new google.maps.LatLng(<?php echo $latlong; ?>),
+		});
+
+		circle.bindTo('center', marker, 'position');
 
 
+        google.maps.event.addListener(map, 'bounds_changed', function() {
+         	var bounds = circle.getBounds();
+         	var bounds = bounds.toString();
+         	pegaBound(bounds);
+		});
+
+		// Url do ajax do wordpress
+   		var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
+		
+
+		// jQuey ajax para chamar latlong
+		function pegaBound(bounds){
+
+
+			$.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+				data: {
+					'action': 'getbounds',
+					'minmaxlatlong': bounds
+				},
+				success: function(dados) {
+					console.log(dados);
+				},
+				error: function(errorThrown) {
+					console.log(errorThrown);
+				}
+
+			});
+
+		}
 
 		
-		
-	
-
-		
-
-
-   
-   
-
 
 
   });
 
 </script>
+
 
 
 <a href="#top"><div id="buttonScroll-top" class="glyphicon glyphicon-circle-arrow-up" style="display:none"></div></a>
@@ -228,11 +265,27 @@ $(document).ready(function(){
 									</div>
 
 									<?php 
-										$data = json_decode(file_get_contents('http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=2821&t=o'));
-										echo $data[0]->nome;
+										// Pega o JSON do poatransporte
+										$data = json_decode(file_get_contents("http://www.poatransporte.com.br/php/facades/process.php?a=tp&p=%28%28-30.083747652841197%2C+-51.14574888083473%29%2C+%28-30.065781347158804%2C+-51.1249875191653%29%29"));
+										$data = array_map("unserialize", array_unique(array_map("serialize", $data)));
+									
+
+										for ($i=0; $i < 10; $i++) { 
+											foreach ($data[$i] as $key => $value) {
+												$linhas = $data[$i]->linhas;
+												$numero = sizeof($linhas);
+												echo '<b>'.$i.'</b>';
+
+												for($a=0; $a < $numero; $a++) {
+													$linhaResultado = $data[$i]->linhas[$a]->nomeLinha;
+													echo $linhaResultado;
+												}
+											}
+										}
+
 									?>
 
-								
+
 							</div><!--.post-content box mark-links-->
 							
 					
@@ -242,7 +295,7 @@ $(document).ready(function(){
 				</div>
 			</div>
 	
-		
+
 
 
 
