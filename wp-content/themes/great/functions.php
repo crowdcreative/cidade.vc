@@ -223,7 +223,7 @@ function getbounds(){
 	$bounds = $_REQUEST['minmaxlatlong'];
 	$bounds = urlencode($bounds);
 	$data = json_decode(file_get_contents('http://www.poatransporte.com.br/php/facades/process.php?a=tp&p='.$bounds));
-	echo $bounds;
+	echo $data;
 	die();
 }
 
