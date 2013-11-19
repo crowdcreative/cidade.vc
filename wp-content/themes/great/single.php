@@ -265,23 +265,42 @@ $(document).ready(function(){
 									</div>
 
 									<?php 
-										// Pega o JSON do poatransporte
-										$data = json_decode(file_get_contents("http://www.poatransporte.com.br/php/facades/process.php?a=tp&p=%28%28-30.083747652841197%2C+-51.14574888083473%29%2C+%28-30.065781347158804%2C+-51.1249875191653%29%29"));
-										$data = array_map("unserialize", array_unique(array_map("serialize", $data)));
-									
 
-										for ($i=0; $i < 10; $i++) { 
-											foreach ($data[$i] as $key => $value) {
-												$linhas = $data[$i]->linhas;
-												$numero = sizeof($linhas);
-												echo '<b>'.$i.'</b>';
+										function super_unique($array){
+											$result = array_map("unserialize", array_unique(array_map("serialize", $array)));
 
-												for($a=0; $a < $numero; $a++) {
-													$linhaResultado = $data[$i]->linhas[$a]->nomeLinha;
-													echo $linhaResultado;
+											foreach ($result as $key => $value){
+												if ( is_array($value) ){
+												  	$result[$key] = super_unique($value);
 												}
 											}
+
+											return $result;
 										}
+
+										// Pega o JSON do poatransporte
+										$data = json_decode(file_get_contents("http://www.poatransporte.com.br/php/facades/process.php?a=tp&p=%28%28-30.083747652841197%2C+-51.14574888083473%29%2C+%28-30.065781347158804%2C+-51.1249875191653%29%29"));
+
+										$arrayPronta = array(); //Array que criamos para pegar as linhas sem duplicação
+
+										for ($i=0; $i < 20; $i++) { // pegamos no máximo 20 linhas
+											
+											echo '<b>Parada: '.$i.'</b><br/>';
+											$linhasArray = $data[$i]->linhas;
+											$numerodeLinhas = sizeof($linhasArray);
+
+											for ($iL=0; $iL < $numerodeLinhas; $iL++) { 
+												$idLinha = $linhasArray[$iL]->idLinha;
+												$codigoLinha = $linhasArray[$iL]->codigoLinha;
+
+												$linha = '<p>'.$codigoLinha.' - '.$linhasArray[$iL]->nomeLinha.'</p>';
+
+												$arrayPronta[$idLinha] = $linha;
+											}
+										}
+
+										$arrayFiltrada = array_unique($arrayPronta);  // Removemos valores e chaves duplicados, caso ainda haja
+										print_r($arrayFiltrada);
 
 									?>
 
