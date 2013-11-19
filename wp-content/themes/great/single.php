@@ -219,7 +219,7 @@ $(document).ready(function(){
 										<?php } ?>
 									</div>
 
-									<div class="bloco servicos" id="servicos_oferecidos">
+									<div class="bloco li-default" id="servicos_oferecidos">
 										<?php if(get_field("serviços_oferecidos")){ ?>
 											<h2>Serviços oferecidos</h2>
 											<p>
@@ -265,18 +265,7 @@ $(document).ready(function(){
 									</div>
 
 									<?php 
-
-										function super_unique($array){
-											$result = array_map("unserialize", array_unique(array_map("serialize", $array)));
-
-											foreach ($result as $key => $value){
-												if ( is_array($value) ){
-												  	$result[$key] = super_unique($value);
-												}
-											}
-
-											return $result;
-										}
+										// #####  Exibi as linhas próximas ao marcador via 'bounds' do 'circle'
 
 										// Pega o JSON do poatransporte
 										$data = json_decode(file_get_contents("http://www.poatransporte.com.br/php/facades/process.php?a=tp&p=%28%28-30.083747652841197%2C+-51.14574888083473%29%2C+%28-30.065781347158804%2C+-51.1249875191653%29%29"));
@@ -285,7 +274,6 @@ $(document).ready(function(){
 
 										for ($i=0; $i < 20; $i++) { // pegamos no máximo 20 linhas
 											
-											echo '<b>Parada: '.$i.'</b><br/>';
 											$linhasArray = $data[$i]->linhas;
 											$numerodeLinhas = sizeof($linhasArray);
 
@@ -293,16 +281,28 @@ $(document).ready(function(){
 												$idLinha = $linhasArray[$iL]->idLinha;
 												$codigoLinha = $linhasArray[$iL]->codigoLinha;
 
-												$linha = '<p>'.$codigoLinha.' - '.$linhasArray[$iL]->nomeLinha.'</p>';
+												$linha = $linhasArray[$iL]->nomeLinha;
 
-												$arrayPronta[$idLinha] = $linha;
+												$arrayPronta['ID'.$idLinha] = $linha;
 											}
 										}
 
 										$arrayFiltrada = array_unique($arrayPronta);  // Removemos valores e chaves duplicados, caso ainda haja
-										print_r($arrayFiltrada);
 
 									?>
+
+									<div class="bloco li-default" id="onibus_que_passao_perto">
+										<h2>Ônibus que passam perto</h2>
+										<ul class="row">
+											<?php
+												$qtdLinhas = sizeof($arrayFiltrada);
+												foreach ($arrayFiltrada as $key => $value) {
+													$value = ucfirst(strtolower($value));
+													echo "<li class='col-sm-4'>".$value."</li>";
+												}
+											?>
+										</ul>
+									</div>
 
 
 							</div><!--.post-content box mark-links-->
