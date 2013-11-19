@@ -230,22 +230,5 @@ $('#cursor').teletype({
 	
 	}); //END -- JQUERY document.ready
 	
-jQuery(document).ready(function(){
-
-        
-// Scroll to Top script
-jQuery(document).ready(function($){
-    $('a[href=#top]').click(function(){
-        $('html, body').animate({scrollTop:0}, 'slow');
-        return false;
-    });
-$(".togglec").hide();
-    	
-    	$(".togglet").click(function(){
-    	
-    	$(this).toggleClass("toggleta").next(".togglec").slideToggle("normal");
-    	   return true;
-    	});
-});
 
 
