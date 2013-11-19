@@ -157,9 +157,6 @@ p { margin-bottom: 20px }
 a {
     text-decoration: none;
     color: #2DB2EB;
-    -webkit-transition: background-color, color 0.2s linear;
-    -moz-transition: background-color, color 0.2s linear;
-    transition: background-color, color 0.2s linear;
 }
 a:hover { color: #00A8FF }
 a:link, a:visited, a:active { text-decoration: none }
