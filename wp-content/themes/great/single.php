@@ -119,8 +119,10 @@ $(document).ready(function(){
 		// Adiciona o circulo no mapa
 		var circle = new google.maps.Circle({
 			map: map,
-			radius: 1000, // metres
-			fillColor: '#AA0000'
+			radius: 600, // metres
+			strokeWeight: 0,
+			fillOpacity: 0.1,
+			clickable: false,
 		});
 
 		var marker = new google.maps.Marker({
@@ -291,14 +293,23 @@ $(document).ready(function(){
 
 									?>
 
-									<div class="bloco li-default" id="onibus_que_passao_perto">
+									<div class="bloco li-default li-default-capitalize" id="onibus_que_passao_perto">
 										<h2>Ônibus que passam perto</h2>
 										<ul class="row">
 											<?php
-												$qtdLinhas = sizeof($arrayFiltrada);
+
 												foreach ($arrayFiltrada as $key => $value) {
-													$value = ucfirst(strtolower($value));
-													echo "<li class='col-sm-4'>".$value."</li>";
+													$value = trim(ucfirst(strtolower($value))); // Deixa os caracteres em minúsculo, depois o primeiro em maísculo e depois remove espaços em branco
+													$valueLen = strlen($value); // pega o tamanho da string
+													
+													if($valueLen > 30){
+														$value = substr($value, 0, 30); // corta a string
+														echo "<li class='col-sm-4'>".$value." ...</li>";
+													}else{
+														echo "<li class='col-sm-4'>".$value."</li>";
+													}
+
+													
 												}
 											?>
 										</ul>
