@@ -527,10 +527,10 @@ body > header {
     padding: 0 !important;
 }
 
-.servicos li {
-    line-height: 2em;
+.li-default li {
+    line-height: 1.2em;
     list-style: none outside none;
-    padding: 0;
+    padding: 0 15px 1.3em 0;
 }
 
 .article {
