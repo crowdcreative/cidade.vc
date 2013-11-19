@@ -38,6 +38,8 @@
 			<?php if(get_field("tambem_são_realizados")){ ?><li><a href="#tambem_sao_realizados">Também são realizados</a></li><?php } ?>
 			<?php if(get_field("como_ter_acesso")){ ?><li><a href="#como_ter_acesso" >Como ter acesso</a></li><?php } ?>
 			<?php if(get_field("endereço")){ ?><li><a href="#localizacao_no_mapa">Localização no mapa</a></li><?php } ?>
+			<?php if(get_field("endereço")){ ?><li><a href="#onibus_que_passao_perto">Ônibus que passam perto</a></li><?php } ?>
+
 		</ul>
 	</nav>					
 
