@@ -213,6 +213,22 @@ function getlatlong(){
 }
 
 
+
+// Função para pegar os bounds do mapa - min e max lat long
+
+add_action('wp_ajax_getbounds', 'getbounds');
+add_action('wp_ajax_nopriv_getbounds', 'getbounds');
+
+function getbounds(){
+	$bounds = $_REQUEST['minmaxlatlong'];
+	$bounds = urlencode($bounds);
+	$data = json_decode(file_get_contents('http://www.poatransporte.com.br/php/facades/process.php?a=tp&p='.$bounds));
+	echo $bounds;
+	die();
+}
+
+
+
 // Deixa a url do 'site' limpa
 function NewUrl($x) {
    $url = $x;
