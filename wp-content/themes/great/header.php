@@ -15,8 +15,7 @@
 	<!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
-	<?php mts_head(); ?>
-	<?php wp_head(); ?>
+	
 	
 	<link href='http://fonts.googleapis.com/css?family=Gudea:400,400italic,700' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="./wp-content/themes/great/images/favicon.png">
@@ -26,8 +25,10 @@
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true"></script>
 	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/gmap3.js"></script>
 	<!-- <script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/map.js"></script> -->
-	<script src="http://127.0.0.1/projects/cidade.vc/bootstrap/js/bootstrap.min.js"></script>
+	<script src="http://127.0.0.1/projects/cidade.vc/bootstrap/js/bootstrap.js"></script>
 	
+	<?php mts_head(); ?>
+	<?php wp_head(); ?>
 	
 
 
