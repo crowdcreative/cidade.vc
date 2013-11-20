@@ -285,11 +285,14 @@ $(document).ready(function(){
 
 												$linha = $linhasArray[$iL]->nomeLinha;
 
-												$arrayPronta['ID'.$idLinha] = $linha;
+												$arrayPronta[$iL] = array('linha' => $linha, 'codigo' => $codigoLinha, 'id' => $idLinha);
+												
+				
 											}
 										}
 
-										$arrayFiltrada = array_unique($arrayPronta);  // Removemos valores e chaves duplicados, caso ainda haja
+					
+
 
 									?>
 
@@ -298,22 +301,29 @@ $(document).ready(function(){
 										<ul class="row">
 											<?php
 
-												foreach ($arrayFiltrada as $key => $value) {
-													$value = trim(ucfirst(strtolower($value))); // Deixa os caracteres em minúsculo, depois o primeiro em maísculo e depois remove espaços em branco
-													$valueLen = strlen($value); // pega o tamanho da string
-													
-													if($valueLen > 30){
-														$value = substr($value, 0, 30); // corta a string
-														echo "<li class='col-sm-4'>".$value." ...</li>";
-													}else{
-														echo "<li class='col-sm-4'>".$value."</li>";
-													}
+												$arrayProntaLen = sizeof($arrayPronta);
 
+												for ($i=0; $i < $arrayProntaLen; $i++) { 
 													
+													$linha = $arrayPronta[$i]['linha'];
+
+													$linha = trim(ucfirst(strtolower($linha))); // Deixa os caracteres em minúsculo, depois o primeiro em maísculo e depois remove espaços em branco
+													$valueLen = strlen($linha); // pega o tamanho da string
+													
+													if($valueLen > 40){
+														$valueCut = substr($linha, 0, 40); // corta a string
+														echo "<li class='col-sm-6'><span rel='tooltip' data-toggle='tooltip' title='".$linha."'>".$valueCut." ...</span></li>";
+													}else{
+														echo "<li class='col-sm-6'><span>".$linha."</span></li>";
+													}
+												
 												}
+
+												
 											?>
 										</ul>
 									</div>
+
 
 
 							</div><!--.post-content box mark-links-->
