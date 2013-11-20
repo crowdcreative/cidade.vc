@@ -530,7 +530,7 @@ body > header {
 .li-default li {
     line-height: 1.2em;
     list-style: none outside none;
-    padding: 0 15px 1.3em 0;
+    padding: 0.7em 15px 0.7em 0;
 }
 
 .li-default-capitalize li {
@@ -1235,9 +1235,11 @@ ul.nav-tabs li:last-child a {
 }
 /*-[ Footer ]-------------------*/
 body > footer {
+    border-top: 1px solid #DDDDDD;
+    margin: 50px 0 0;
     overflow: hidden;
+    padding: 20px;
     width: 100%;
-	display:none;
 }
 body > footer .footeText {
     width: 960px;
