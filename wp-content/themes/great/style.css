@@ -1043,6 +1043,10 @@ nav #searchform fieldset {
 
 /*-[ Custom Bootstrap ]-------------------*/
 
+#onibus_que_passao_perto li i{
+
+}
+
 #avatar{
     float: left;
     position: relative;
