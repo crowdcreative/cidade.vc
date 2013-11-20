@@ -235,9 +235,9 @@ $(document).ready(function(){
 												$termEchocut = substr($termEcho, 0, 30); // corta a string
 
 												if($termEcholen > 30){
-													echo "<li class='col-sm-4'>" . $termEchocut . " ...</li>";
+													echo "<li class='col-sm-4'><span style='cursor:help' rel='tooltip' title='".$termEcho."'>" . $termEchocut . " ...</span></li>";
 												}else{
-													echo "<li class='col-sm-4'>" . $termEcho . "</li>";
+													echo "<li class='col-sm-4'><span>" . $termEcho . "</span></li>";
 												}
 
 											}
@@ -258,6 +258,67 @@ $(document).ready(function(){
 											<h2>Como ter acesso</h2>
 											<p><?php the_field("como_ter_acesso"); ?></p>
 										<?php } ?>
+									</div>
+
+									<div class="bloco li-default" id="dias_de_funcionamento">
+										<?php if(get_field("dias_de_funcionamento")){ ?>
+											<h2>Dias e horários de funcionamento</h2>
+										
+											<p>
+											<?php // Puxa as taxonomies dos dias de funcionamento
+											$term_list = wp_get_object_terms($postID, 'dias_de_funcionamento', array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'all')); 
+											$term_listArray = array(); // cria uma array para as taxonomies
+											$term_listArray = $term_list; // coloca as taxonomies 
+											sort($term_listArray); // coloca as taxonomies (dis de funcionamento) em ordem
+											?>
+											<div class='row'>
+												<div class='col-sm-7'>
+													<ul class='row'>
+														<?php
+														foreach ($term_listArray as $term) {
+															$termEcho = $term->name;
+															if ($termEcho == 'Segunda'){ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_segunda') . "</span></li>";
+															}
+															elseif ($termEcho == 'Terça'){ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_terca') . "</span></li>";
+															}
+															elseif ($termEcho == 'Quarta'){ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_quarta') . "</span></li>";
+															}
+															elseif ($termEcho == 'Quinta'){ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_quinta') . "</span></li>";
+															}
+															elseif ($termEcho == 'Sexta'){ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_sexta') . "</span></li>";
+															}
+															elseif ($termEcho == 'Sábado'){ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_sabado') . "</span></li>";
+															}
+															elseif ($termEcho == 'Domingo'){ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_domingo') . "</span></li>";
+															}
+															else{ 
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span></li>";
+															}
+														}
+
+														?>
+													</ul>
+												</div>
+
+												<div class='col-sm-5'>
+													
+
+												</div>
+											</div>
+											
+											</p>
+
+										<?php } ?>
+
+
+								
 									</div>
 
 
@@ -306,15 +367,16 @@ $(document).ready(function(){
 												for ($i=0; $i < $arrayProntaLen; $i++) { 
 													
 													$linha = $arrayPronta[$i]['linha'];
+													$codigo = $arrayPronta[$i]['codigo'];
 
 													$linha = trim(ucfirst(strtolower($linha))); // Deixa os caracteres em minúsculo, depois o primeiro em maísculo e depois remove espaços em branco
 													$valueLen = strlen($linha); // pega o tamanho da string
 													
-													if($valueLen > 40){
-														$valueCut = substr($linha, 0, 40); // corta a string
-														echo "<li class='col-sm-6'><span rel='tooltip' data-toggle='tooltip' title='".$linha."'>".$valueCut." ...</span></li>";
+													if($valueLen > 30){
+														$linhaCut = substr($linha, 0, 30); // corta a string
+														echo "<li class='col-sm-6'><span rel='tooltip' style='cursor:help' title='".$linha."'><span class='badge'>".$codigo."</span> ".$linhaCut." ...</span></li>";
 													}else{
-														echo "<li class='col-sm-6'><span>".$linha."</span></li>";
+														echo "<li class='col-sm-6'><span><span class='badge'>".$codigo."</span> ".$linha."</span></li>";
 													}
 												
 												}
