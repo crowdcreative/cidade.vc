@@ -126,9 +126,15 @@
 	  });
 	}(jQuery));
 
+
+	
+		  	
+		
+
 $(document).ready(function() {
 
-
+	// Habilita a tooltip do bootstrap
+	$('[rel=tooltip]').tooltip({placement:'top'});
 
 
 
