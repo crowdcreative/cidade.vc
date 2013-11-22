@@ -512,8 +512,7 @@ body > header {
 
 .bloco{
     display: block;
-    margin: 0 0 35px 0;
-    overflow: hidden;
+    margin: 0 0 55px 0;
     padding: 0;
     position: relative;
 }
