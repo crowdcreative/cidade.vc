@@ -57,12 +57,20 @@ function preco($valorID){
 
 
 // Adicionar scripts do mapa jquery  ESTE SCRIPT ATRAPALHAM O GRAB DO ADVANCE CUSTOM FIELDS =O
-function pw_load_scripts() {
-	wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
-	wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
-	wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');
-	wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map-dashboard.js');
+function pw_load_scripts($hook) {
+	
+	global $post;
+
+    if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
+        if ( 'lugar' === $post->post_type ) {   
+			wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
+			wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
+			wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');
+			wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map-dashboard.js');
+		}
+	}
 }
+
 function pw_load_styles() {
 	wp_enqueue_style('dashboard.css', 'http://127.0.0.1/projects/cidade.vc/css/dashboard.css');
 	wp_enqueue_style('jquery-ui.css', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css');
@@ -223,7 +231,53 @@ function getbounds(){
 	$bounds = $_REQUEST['minmaxlatlong'];
 	$bounds = urlencode($bounds);
 	$data = json_decode(file_get_contents('http://www.poatransporte.com.br/php/facades/process.php?a=tp&p='.$bounds));
-	echo $data;
+
+	// #####  Exibi as linhas próximas ao marcador via 'bounds' do 'circle'
+
+	// Pega o JSON do poatransporte
+
+	$arrayPronta = array(); //Array que criamos para pegar as linhas sem duplicação
+
+	for ($i=0; $i < 20; $i++) { // pegamos no máximo 20 linhas
+		
+		$linhasArray = $data[$i]->linhas;
+		$numerodeLinhas = sizeof($linhasArray);
+
+		for ($iL=0; $iL < $numerodeLinhas; $iL++) { 
+			$idLinha = $linhasArray[$iL]->idLinha;
+			$codigoLinha = $linhasArray[$iL]->codigoLinha;
+
+			$linha = $linhasArray[$iL]->nomeLinha;
+
+			$arrayPronta[$iL] = array('linha' => $linha, 'codigo' => $codigoLinha, 'id' => $idLinha);
+			
+
+		}
+	}
+
+
+
+
+	$arrayProntaLen = sizeof($arrayPronta);
+
+	for ($i=0; $i < $arrayProntaLen; $i++) { 
+		
+		$linha = $arrayPronta[$i]['linha'];
+		$codigo = $arrayPronta[$i]['codigo'];
+
+		$linha = trim($linha); // Deixa os caracteres em minúsculo, depois o primeiro em maísculo e depois remove espaços em branco
+		$valueLen = strlen($linha); // pega o tamanho da string
+		
+		if($valueLen > 30){
+			$linhaCut = substr($linha, 0, 30); // corta a string
+			echo "<li class='col-sm-6'><span class='badge'>".$codigo."</span><span rel='tooltip-border' style='cursor:help' title='".$linha."'> ".$linhaCut." ...</span></li>";
+		}else{
+			echo "<li class='col-sm-6'><span><span class='badge'>".$codigo."</span> ".$linha."</span></li>";
+		}
+	
+	}
+
+
 	die();
 }
 

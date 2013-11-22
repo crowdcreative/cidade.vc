@@ -41,11 +41,12 @@ $(document).ready(function(){
 
 			if (y >= top) {
 				var difference = y - top;
-				$('#anchorlinks').css("top", difference);
-				$('#anchorlinks').css("position", "absolute");
+				$('#anchorlinks').css("position", "fixed");
+				$('#anchorlinks').css("top", "30px");
 				var widthCopy = $('.copy-width').width();
 				$('#anchorlinks').css("width", widthCopy);
 			} else {
+				$('#anchorlinks').css("position", "relative");
 				$('#anchorlinks').css("top", 0);
 			}
 
@@ -133,7 +134,7 @@ $(document).ready(function(){
 		circle.bindTo('center', marker, 'position');
 
 
-        google.maps.event.addListener(map, 'bounds_changed', function() {
+        google.maps.event.addListenerOnce(map, 'idle', function(){
          	var bounds = circle.getBounds();
          	var bounds = bounds.toString();
          	pegaBound(bounds);
@@ -150,12 +151,24 @@ $(document).ready(function(){
 			$.ajax({
 				url: ajaxUrl,
 				type: 'POST',
+
 				data: {
 					'action': 'getbounds',
 					'minmaxlatlong': bounds
 				},
 				success: function(dados) {
-					console.log(dados);
+					$('#onibus_que_passao_perto ul').html(dados);
+						// Habilita a tooltip do bootstrap
+						$('[rel=tooltip]').tooltip({placement:'top'});
+						$('[rel=tooltip-border]').tooltip({placement:'top'});
+
+						// Adicionar borda pontilhada no holover do link com tooltip
+						$('[rel=tooltip-border]').hover(function(){
+							$(this).css({'border-bottom':'1px dotted #cccccc','padding-bottom':'2px'});
+						},
+						function(){
+							$(this).css({'border-bottom':'0','padding-bottom':'0'});
+						});
 				},
 				error: function(errorThrown) {
 					console.log(errorThrown);
@@ -198,7 +211,7 @@ $(document).ready(function(){
 
 
 								<div class="panel-heading">
-									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><span class="label-small label-success"><?php preco($valorID); ?></span></h1>
+									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php preco($valorID); ?></span><?php } ?></h1>
 								</div>	
 									
 								<div class="panel-body">
@@ -223,7 +236,7 @@ $(document).ready(function(){
 
 									<div class="bloco li-default" id="servicos_oferecidos">
 										<?php if(get_field("serviços_oferecidos")){ ?>
-											<h2>Serviços oferecidos</h2>
+											<h2>Serviços oferecidos<small style='cursor:help' rel='tooltip' title='Alguns dos serviços listados abaixo são oferecidos somente em alguns dias e horários da semana. Sempre ligue antes para confirmar os serviços e dias de atendimento.' class='glyphicon glyphicon-exclamation-sign'></small></h2>
 											<p>
 											<?php 
 											$term_list = wp_get_post_terms($postID, 'serviços', array("fields" => "all")); 
@@ -235,7 +248,7 @@ $(document).ready(function(){
 												$termEchocut = substr($termEcho, 0, 30); // corta a string
 
 												if($termEcholen > 30){
-													echo "<li class='col-sm-4'><span style='cursor:help' rel='tooltip' title='".$termEcho."'>" . $termEchocut . " ...</span></li>";
+													echo "<li class='col-sm-4'><span style='cursor:help' rel='tooltip-border' title='".$termEcho."'>" . $termEchocut . " ...</span></li>";
 												}else{
 													echo "<li class='col-sm-4'><span>" . $termEcho . "</span></li>";
 												}
@@ -246,22 +259,27 @@ $(document).ready(function(){
 										<?php } ?>
 									</div>
 
+									<?php if(get_field("tambem_são_realizados")){ ?>
 									<div class="bloco" id="tambem_sao_realizados">
-										<?php if(get_field("tambem_são_realizados")){ ?>
+										
 											<h2>Também são realizados</h2>
 											<p><?php the_field("tambem_são_realizados"); ?></p>
-										<?php } ?>
+										
 									</div>
+									<?php } ?>
 
+									<?php if(get_field("como_ter_acesso")){ ?>
 									<div class="bloco" id="como_ter_acesso">
-										<?php if(get_field("como_ter_acesso")){ ?>
+										
 											<h2>Como ter acesso</h2>
 											<p><?php the_field("como_ter_acesso"); ?></p>
-										<?php } ?>
+										
 									</div>
+									<?php } ?>
 
+									<?php if(get_field("dias_de_funcionamento")){ ?>
 									<div class="bloco li-default" id="dias_de_funcionamento">
-										<?php if(get_field("dias_de_funcionamento")){ ?>
+										
 											<h2>Dias e horários de funcionamento</h2>
 										
 											<p>
@@ -272,7 +290,7 @@ $(document).ready(function(){
 											sort($term_listArray); // coloca as taxonomies (dis de funcionamento) em ordem
 											?>
 											<div class='row'>
-												<div class='col-sm-7'>
+												<div class='col-sm-6'>
 													<ul class='row'>
 														<?php
 														foreach ($term_listArray as $term) {
@@ -307,84 +325,45 @@ $(document).ready(function(){
 													</ul>
 												</div>
 
-												<div class='col-sm-5'>
-													
-
+												<div class='col-sm-6'>
+													<?php if(get_field('observações')){ ?>
+													<span style='margin: 10px 0px 5px; cursor:help' rel='tooltip' title='Informações sobre alguns serviços que são oferecidos somente em alguns dias e horários da semana' class='badge'>Observações</span>
+													<span style='display:block; font-size:85%'>
+														<p><?php the_field('observações'); ?></p>
+													</span>
+													<?php } ?>
 												</div>
 											</div>
 											
 											</p>
 
-										<?php } ?>
-
-
-								
+										
 									</div>
+									<?php } ?>
 
-
+									<?php if(get_field("endereço")){ ?>
 									<div class="bloco" id="localizacao_no_mapa">
 										<h2>Localização no mapa<small> <?php the_field("endereço"); ?></small></h2>
 										<div id="map-canvas"> </div>
 									</div>
+									<?php } ?>
 
 									<?php 
-										// #####  Exibi as linhas próximas ao marcador via 'bounds' do 'circle'
 
-										// Pega o JSON do poatransporte
-										$data = json_decode(file_get_contents("http://www.poatransporte.com.br/php/facades/process.php?a=tp&p=%28%28-30.083747652841197%2C+-51.14574888083473%29%2C+%28-30.065781347158804%2C+-51.1249875191653%29%29"));
-
-										$arrayPronta = array(); //Array que criamos para pegar as linhas sem duplicação
-
-										for ($i=0; $i < 20; $i++) { // pegamos no máximo 20 linhas
-											
-											$linhasArray = $data[$i]->linhas;
-											$numerodeLinhas = sizeof($linhasArray);
-
-											for ($iL=0; $iL < $numerodeLinhas; $iL++) { 
-												$idLinha = $linhasArray[$iL]->idLinha;
-												$codigoLinha = $linhasArray[$iL]->codigoLinha;
-
-												$linha = $linhasArray[$iL]->nomeLinha;
-
-												$arrayPronta[$iL] = array('linha' => $linha, 'codigo' => $codigoLinha, 'id' => $idLinha);
-												
-				
-											}
-										}
 
 					
 
 
 									?>
 
+									<?php if(get_field("endereço")){ ?>
 									<div class="bloco li-default li-default-capitalize" id="onibus_que_passao_perto">
 										<h2>Ônibus que passam perto</h2>
 										<ul class="row">
-											<?php
-
-												$arrayProntaLen = sizeof($arrayPronta);
-
-												for ($i=0; $i < $arrayProntaLen; $i++) { 
-													
-													$linha = $arrayPronta[$i]['linha'];
-													$codigo = $arrayPronta[$i]['codigo'];
-
-													$linha = trim(ucfirst(strtolower($linha))); // Deixa os caracteres em minúsculo, depois o primeiro em maísculo e depois remove espaços em branco
-													$valueLen = strlen($linha); // pega o tamanho da string
-													
-													if($valueLen > 30){
-														$linhaCut = substr($linha, 0, 30); // corta a string
-														echo "<li class='col-sm-6'><span rel='tooltip' style='cursor:help' title='".$linha."'><span class='badge'>".$codigo."</span> ".$linhaCut." ...</span></li>";
-													}else{
-														echo "<li class='col-sm-6'><span><span class='badge'>".$codigo."</span> ".$linha."</span></li>";
-													}
-												
-												}
-
-												
-											?>
+											Carregando...
 										</ul>
 									</div>
+									<?php } ?>
 
 
 
