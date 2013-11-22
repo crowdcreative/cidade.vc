@@ -135,6 +135,15 @@ $(document).ready(function() {
 
 	// Habilita a tooltip do bootstrap
 	$('[rel=tooltip]').tooltip({placement:'top'});
+	$('[rel=tooltip-border]').tooltip({placement:'top'});
+
+	// Adicionar borda pontilhada no holover do link com tooltip
+	$('[rel=tooltip-border]').hover(function(){
+		$(this).css({'border-bottom':'1px dotted #cccccc','padding-bottom':'2px'});
+	},
+	function(){
+		$(this).css({'border-bottom':'0','padding-bottom':'0'});
+	});
 
 
 
