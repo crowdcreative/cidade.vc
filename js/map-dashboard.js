@@ -98,7 +98,9 @@ $(document).ready(function(){
 				getlatlng: {
 					address: endereco,
 					callback: function(results) {
-						if (!results) return;
+						if (!results){ 
+							alert('Endereço não encontrado. Tente buscar outro.');
+						}else{
 						$(this).gmap3({
 							marker: {
 								latLng: results[0].geometry.location,
@@ -125,7 +127,7 @@ $(document).ready(function(){
 													}
 
 
-													$('#acf-field-endereço').val(contentEcho);
+													$('#acf-field-endereço').val(contentEcho); 
 
 
 														
@@ -142,9 +144,11 @@ $(document).ready(function(){
 															}
 														});
 													}
-
+													
+													// Coloca o latlong no input
 													var latlng = marker.getPosition();
-													$('#acf-field-latlong').val(latlng);
+													$('#acf-field-latlong').val(latlng); 
+
 												}
 											},
 										});
@@ -152,6 +156,7 @@ $(document).ready(function(){
 								}
 							}
 						});
+						}
 						var map = $(this).gmap3("get");
 						var latLng = results[0].geometry.location; //Makes a latlng
       					map.panTo(latLng); //Make map global
