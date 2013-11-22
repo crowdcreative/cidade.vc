@@ -52,6 +52,12 @@ $(document).ready(function(){
 
 		});
 
+		// Ajeita o tamnho da sidebar ao alterar o tamanho da janela do browser
+		$(window).resize(function(event) {
+			var widthCopy = $('.copy-width').width();
+			$('#anchorlinks').css("width", widthCopy);
+		});
+
 		// Adiciona o map-canvas abaixo do input buscador
 		$("<div id='map-canvas'></div>").insertAfter("#acf-endereço");
 		$("#acf-endereço").css({"width":"100%"});
