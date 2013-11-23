@@ -40,39 +40,12 @@ $(document).ready(function(){
 					scrollwheel: true,
 					streetViewControl: true
 				}
-			},
-			marker: {
-				latLng: [<?php echo $latlong; ?>],
-				options: {
-					draggable: true
-				}
 			}
 		});
 
-		var map = $("#map-canvas").gmap3("get");
+		var map = $("#map-canvas-home").gmap3("get");
 
 
-		// Adiciona o circulo no mapa
-		var circle = new google.maps.Circle({
-			map: map,
-			radius: 600, // metres
-			strokeWeight: 0,
-			fillOpacity: 0.1,
-			clickable: false,
-		});
-
-		var marker = new google.maps.Marker({
-			map: map,
-			position: new google.maps.LatLng(<?php echo $latlong; ?>),
-		});
-
-		circle.bindTo('center', marker, 'position');
-
-
-        google.maps.event.addListenerOnce(map, 'idle', function(){
-         	var bounds = circle.getBounds();
-         	var bounds = bounds.toString();
-		});
 	
 
 
@@ -118,6 +91,30 @@ $(document).ready(function(){
 						
 						
 							<?php if ('lugar' == get_post_type()){ ?>
+
+							<?php  
+								$latlong = get_field('latlong');
+								$latlong = str_replace('(', '', $latlong);
+								$latlong = str_replace(')', '', $latlong);
+							?>
+
+							<script type="text/javascript">
+								// Adiciona o circulo no mapa
+								$("#map-canvas-home").gmap3({
+									marker: {
+										latLng: [<?php echo $latlong ?>],
+										options: {
+											
+										},
+										events: {
+							
+										},
+										callback: function() {
+											
+										}
+									}
+								});
+							</script>
 
 							<?php if(get_field('bairro')){ 
 								$taxonomyID = get_field('bairro');
