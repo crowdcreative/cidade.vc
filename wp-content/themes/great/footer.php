@@ -1,6 +1,7 @@
 <?php $options = get_option('great'); ?>
-	</div><!--#page-->
-</div><!--.container-->
+
+
+</div><!--#page-->
 </div>
 
 
