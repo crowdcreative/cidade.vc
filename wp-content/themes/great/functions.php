@@ -268,8 +268,8 @@ function getbounds(){
 		$linha = trim($linha); // Deixa os caracteres em minúsculo, depois o primeiro em maísculo e depois remove espaços em branco
 		$valueLen = strlen($linha); // pega o tamanho da string
 		
-		if($valueLen > 30){
-			$linhaCut = substr($linha, 0, 30); // corta a string
+		if($valueLen > 25){
+			$linhaCut = substr($linha, 0, 25); // corta a string
 			echo "<li class='col-sm-6'><span class='badge'>".$codigo."</span><span rel='tooltip-border' style='cursor:help' title='".$linha."'> ".$linhaCut." ...</span></li>";
 		}else{
 			echo "<li class='col-sm-6'><span><span class='badge'>".$codigo."</span> ".$linha."</span></li>";
