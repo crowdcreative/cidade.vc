@@ -105,6 +105,7 @@ body {
     font: 14px/19px arial, sans-serif;
     color: #555555;
     background-color: #f1f1f1 !important;
+    padding-top: 70px;
 }
 ::-moz-selection {
     background: #222;
@@ -287,7 +288,7 @@ time {
     width: 1020px;
 }
 #page, .container {
-    z-index: 99;
+    z-index: 98;
 }
 
 
@@ -306,6 +307,12 @@ body > header {
     width: 100%;
 }
 
+#map-canvas-home {
+    border-radius: 4px;
+    height: 250px;
+    position: relative;
+    width: 100%;
+}
 
 #main-header {
     position: relative;
@@ -512,8 +519,7 @@ body > header {
 
 .bloco{
     display: block;
-    margin: 0 0 55px 0;
-    padding: 0;
+    padding: 6px 0 35px;
     position: relative;
 }
 
@@ -555,6 +561,15 @@ body > header {
     float: left;
     width: 100%;
 }
+
+#content_box .row{
+    margin-bottom: 55px;
+}
+
+#content_box h2{
+    margin:0;
+}
+
 .post {
     width: 100%;
 }
@@ -574,7 +589,7 @@ body > header {
     font-size: 14px;
     line-height: 22px;
     margin-bottom: 0;
-    margin-top: 15px;
+    margin-top: 6px;
     padding-bottom: 6px;
 }
 .post-single-content {
@@ -699,7 +714,7 @@ body > header {
     float: left;
     margin-right: 4%;
     padding: 0;
-    width: 24%;
+    width: 100%;
     -webkit-transition: all 0.25s linear;
     -moz-transition: all 0.25s linear;
     transition: all 0.25s linear;
@@ -739,15 +754,15 @@ body > header {
     font-size: 10px;
     font-style: italic;
     height: 10px;
-    margin: 0 0 7px -6px;
-    width: 45.9%;
+    margin: 0 0 4px -6px;
+    width: 100%;
 }
 
 .post-info span{
     background: none repeat scroll 0 0 #ffffff;
     float: left;
     margin-right: 6px;
-    margin-top: -11px;
+    margin-top: -8px;
     padding: 0 6px;
 }
 
@@ -1122,6 +1137,7 @@ ul.nav-tabs li.active a, ul.nav-tabs li.active a:hover{
     border: 1px solid #0088CC;
     color: #FFFFFF;
     margin-top: -1px;
+    outline: none;
 }
 
 .nav-tabs > li:first-child > a {

@@ -48,38 +48,22 @@
 	
 
 	<div id="main-header" class="container">
-		<div class="panel panel-default">
-			<div class="panel-body">
-				
-						 	<div id="logo">
-								<a href="<?php echo home_url(); ?>">Cidade.vc</a>
-							</div><!-- END #logo -->
-				
-				
-				
 
-				<div id="orcamento">
-					
-				</div>
-				
-				
-				
-				
-				
-				<div class="secondary-navigation" style="display:none">
-					<nav id="navigation" >
-						<?php if ( has_nav_menu( 'primary-menu' ) ) { ?>
-							<?php wp_nav_menu( array( 'theme_location' => 'primary-menu', 'menu_class' => 'menu', 'container' => '' ) ); ?>
-						<?php } else { ?>
-							<ul class="menu">
-								<?php wp_list_categories('title_li='); ?>
-							</ul>
-						<?php } ?>
-					</nav>
-				</div>     
-			</div>        
-		</div><!--#header-->  
+	 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="container">
+			<div class="row">
+					<div class="col-md-3">
+						<a class="navbar-brand" href="<?php echo home_url(); ?>">Cidade.vc</a>						
+					</div>
+					<div class="col-md-9">
+						<button type="button" class="btn btn-primary navbar-btn pull-right">Criar lugar</button>
+					</div>
+				</div>	
+			</div>
+		</nav>
+		 
 	</div>
+
 	<?php if (is_single() || is_page()) { ?>
 		
 		<div class="container" style="display:none">	
