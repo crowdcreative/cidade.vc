@@ -201,7 +201,7 @@ $(document).ready(function(){
 		<div class="row">
 
 
-			<?php get_sidebar('right'); ?>
+			<?php get_sidebar('left'); ?>
 
 
 			<div class="col-md-9">
