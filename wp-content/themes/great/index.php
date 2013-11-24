@@ -89,7 +89,7 @@ $(document).ready(function(){
 						
 						// Mais de um posttype em um Loop --> link: http://wordpress.stackexchange.com/quest
 						global $query_string;
-						$posts = query_posts( array( 'posts_per_page' => -1, 'post_type' => array('lugar')));
+						$posts = query_posts( array( 'posts_per_page' => -1, 'post_type' => array('lugar-saude')));
 						$contadorPin = 1;
 						$contadorArray = array();
 						$contadorArray[$contadorPin] = 1;
@@ -100,7 +100,7 @@ $(document).ready(function(){
 						<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 						
 						
-							<?php if ('lugar' == get_post_type()){ ?>
+							<?php if ('lugar-saude' == get_post_type()){ ?>
 
 							<?php  
 								$latlong = get_field('latlong');
