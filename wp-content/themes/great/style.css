@@ -105,7 +105,7 @@ body {
     font: 14px/19px arial, sans-serif;
     color: #555555;
     background-color: #f1f1f1 !important;
-    padding-top: 70px;
+    padding-top: 75px;
 }
 ::-moz-selection {
     background: #222;
@@ -382,6 +382,12 @@ body > header {
 }
 
 
+/*-[ Google Maps ]-----------------*/
+
+.gm-style .gm-style-iw, .gm-style .gm-style-iw a, .gm-style .gm-style-iw span, .gm-style .gm-style-iw label, .gm-style .gm-style-iw div {
+    font-size: 11px !important;
+    text-align: center !important;
+}
 
 
 /*-[ Navigation ]-----------------*/
@@ -570,6 +576,19 @@ body > header {
     margin:0;
 }
 
+#content_box .label-small {
+    border-radius: 0.25em;
+    color: #FFFFFF;
+    display: inline;
+    font-size: 45%;
+    font-weight: bold;
+    line-height: 1;
+    padding: 0.2em 0.6em 0.3em;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
 .post {
     width: 100%;
 }
@@ -603,7 +622,7 @@ body > header {
     float: left;
 }
 .readMore {
-    color: #D61F3B;
+    color: #428BCA;
     display: inline-block;
     margin-left: 0;
 	-webkit-transition: all 0.25s linear;
@@ -741,13 +760,12 @@ body > header {
     width: 620px;
 }
 .title a {
-    color: #D61F3B;
+    color: #428BCA;
     font-family: Gudea,serif;
  }
 .page h1.title { margin-bottom: 20px }
 
 .post-info {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
     color: #555555;
     float: left;
     font-family: gudea;
@@ -1001,9 +1019,7 @@ hr {
 }
 /*-[ Search Form ]------------------*/
 #searchform {
-    float: left;
-    clear: both;
-    width: 100%;
+
 }
 nav #searchform { float: right }
 nav #searchform fieldset {
@@ -1012,7 +1028,7 @@ nav #searchform fieldset {
     border-left: 1px solid #eee;
 }
 #searchform fieldset { float: left }
-#searchform input { border: 0 }
+
 .sbutton {
     padding: 8px 12px 10px 12px;
     border: 1px solid #e8e5de!important;

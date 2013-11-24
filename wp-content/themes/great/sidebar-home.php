@@ -8,10 +8,17 @@
 
 		
 
+			<div class="form-group">
+				
+				<?php get_search_form(); ?>
+
+			</div>
+
+		
 				
 		<nav class="panel panel-default">
 
-			<div class="panel-heading">Categorias</div>
+			<div class="panel-heading"><b>Categorias</b></div>
 
 			<ul id="anchorlinks" class="list-group">
 
@@ -28,7 +35,7 @@
 
 		<nav class="panel panel-default">
 
-			<div class="panel-heading">Bairros</div>
+			<div class="panel-heading"><b>Bairros</b></div>
 
 			<ul id="anchorlinks" class="list-group">
 

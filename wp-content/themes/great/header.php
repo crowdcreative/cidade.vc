@@ -56,6 +56,19 @@
 						<a class="navbar-brand" href="<?php echo home_url(); ?>">Cidade.vc</a>						
 					</div>
 					<div class="col-md-9">
+						<div class="pull-left">
+							<?php 
+							$userID = get_current_user_id(); // pega id do usuário
+							$userInfo = get_userdata($userID); // vê se está logado
+							if ( 0 == $userInfo->ID ) {
+							    echo "<span class='navbar-text'>Entrar</span>";
+							} else {
+								echo "<span class='navbar-text' style='margin-right:0'>".get_avatar( $userID, 24)."</span>";
+							    echo "<span class='navbar-text'>".$userInfo->first_name."</span>";
+							}
+							?>
+
+						</div>
 						<button type="button" class="btn btn-primary navbar-btn pull-right">Criar lugar</button>
 					</div>
 				</div>	

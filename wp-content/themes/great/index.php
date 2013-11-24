@@ -39,12 +39,20 @@ $(document).ready(function(){
 					navigationControl: true,
 					scrollwheel: true,
 					streetViewControl: true
+				
 				}
 			}
 		});
 
 		var map = $("#map-canvas-home").gmap3("get");
 
+		$("#content_box .titulo").hover(function(){
+			var getlatLng = $(this).attr("latlong");
+			var csplit = getlatLng.split(",");
+			var latLng = new google.maps.LatLng(csplit[0], csplit[1]); //Makes a latlng
+			map.panTo(latLng);
+			return false;
+		});
 
 	
 
@@ -69,7 +77,7 @@ $(document).ready(function(){
 			<div class="panel panel-default">
 
 				<div class="panel-heading">
-					<h1 id="titulo" class="single-title panel-title">Ultimos lugares criados</h1>
+					<b>Ultimos lugares criados</b>
 				</div>
 
 				<div class="panel-body">
@@ -82,10 +90,12 @@ $(document).ready(function(){
 						// Mais de um posttype em um Loop --> link: http://wordpress.stackexchange.com/quest
 						global $query_string;
 						$posts = query_posts( array( 'posts_per_page' => -1, 'post_type' => array('lugar')));
-
-						
+						$contadorPin = 1;
+						$contadorArray = array();
+						$contadorArray[$contadorPin] = 1;
 						?>
 					
+
 					
 						<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 						
@@ -104,19 +114,48 @@ $(document).ready(function(){
 									marker: {
 										latLng: [<?php echo $latlong ?>],
 										options: {
-											
+											 icon: '<?php echo "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=".$contadorArray[$contadorPin]."|428BCA|ffffff"; ?>'
 										},
 										events: {
-							
-										},
-										callback: function() {
-											
+											mouseover: function(marker, event, context) {
+												var map = $(this).gmap3("get");
+												var conteudo = "<?php the_title() ?>";
+												var	infowindow = $(this).gmap3({
+														get: {
+															name: "infowindow"
+														}
+													});
+												if (infowindow) {
+													infowindow.open(map, marker);
+													infowindow.setContent(conteudo);
+												} else {
+													$(this).gmap3({
+														infowindow: {
+															anchor: marker,
+															options: {
+																content: conteudo
+															}
+														}
+													});
+												}
+											},
+											mouseout: function() {
+												var infowindow = $(this).gmap3({
+													get: {
+														name: "infowindow"
+													}
+												});
+												if (infowindow) {
+													infowindow.close();
+												}
+											}
 										}
 									}
 								});
 							</script>
 
 							<?php if(get_field('bairro')){ 
+								global $wp; 
 								$taxonomyID = get_field('bairro');
 									$taxonomyID = (int)$taxonomyID;
 									$taxonomy = get_term($taxonomyID, 'bairros'); 
@@ -125,6 +164,7 @@ $(document).ready(function(){
 									$descricao = strip_tags($descricao);
 									$descricao = substr($descricao, 0, 300);
 								$postID =  get_the_ID(); 
+								$valorID = get_field("preço");
 							} ?>
 
 						
@@ -142,10 +182,10 @@ $(document).ready(function(){
 						
 								<div class="col-sm-9">
 
-									<div class="post-info"> <span class="uppercase"><?php $category = get_the_category(); echo '<a href="'.get_category_link($category[0]->cat_ID).'">' . $category[0]->cat_name .'</a>';?> </span><span><?php echo $bairro; ?></span><span style='display:none'>Compartilhado por <?php the_author_meta("display_name"); ?></span> </div>
+									<div class="post-info"> <span class="uppercase"><?php $category = get_the_category(); echo '<a href="'.get_category_link($category[0]->cat_ID).'">' . $category[0]->cat_name .'</a>';?> </span><span><?php echo $bairro; ?></span><span style='display:none'>Compartilhado por <?php the_author_meta("display_name"); ?></span></div>
 
 									<h2 class="title">
-										<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a><span class="leitura help" title="Tempo médio de leitura"><?php the_field("tempo_de_leitura"); ?></span>
+										<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark" class="titulo" latlong="<?php echo $latlong ?>"><span class='contadorPin'><?php echo $contadorArray[$contadorPin].". "; ?></span><?php the_title(); ?></a><span class="leitura help" title="Tempo médio de leitura"><?php the_field("tempo_de_leitura"); ?></span><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php preco($valorID); ?></span><?php } ?>
 									</h2>
 										
 									<div class="post-content image-caption-format-1">
@@ -162,6 +202,10 @@ $(document).ready(function(){
 
 						<?php } ?>  
 						
+						<?php 
+						$contadorPin++; 
+						$contadorArray[$contadorPin] = $contadorPin;
+						?>
 							
 						<?php endwhile;  wp_reset_query(); else: ?>
 							<div class="post excerpt">
@@ -172,6 +216,8 @@ $(document).ready(function(){
 								</div><!--noResults-->
 							</div>
 						<?php endif; ?>
+
+
 						<?php if ($options['mts_pagenavigation'] == '1') { ?>
 							<?php pagination($additional_loop->max_num_pages);?>
 						<?php } else { ?>

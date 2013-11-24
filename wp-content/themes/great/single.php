@@ -35,14 +35,14 @@ $(document).ready(function(){
 
 		var top = $('#anchorlinks').offset().top - parseFloat($('#anchorlinks').css('marginTop').replace(/auto/, 0));
 		$(window).scroll(function(event) {
-			var y = $(this).scrollTop() + 30;
+			var y = $(this).scrollTop() + 70;
 			//if y > top, it means that if we scroll down any more, parts of our element will be outside the viewport
 			//so we move the element down so that it remains in view.
 
 			if (y >= top) {
 				var difference = y - top;
 				$('#anchorlinks').css("position", "fixed");
-				$('#anchorlinks').css("top", "30px");
+				$('#anchorlinks').css("top", "70px");
 				var widthCopy = $('.copy-width').width();
 				$('#anchorlinks').css("width", widthCopy);
 			} else {
