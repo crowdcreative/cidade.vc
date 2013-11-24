@@ -62,7 +62,7 @@ function pw_load_scripts($hook) {
 	global $post;
 
     if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
-        if ( 'lugar-saude' === $post->post_type ) {   
+        if ( 'lugar-saude' === $post->post_type || 'lugar-lazer' === $post->post_type ) {   
 			wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
 			wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
 			wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');

@@ -240,8 +240,8 @@ $(document).ready(function(){
 										<?php } ?>
 									</div>
 
+									<?php if(get_field("serviços_oferecidos")){ ?>
 									<div class="bloco li-default" id="servicos_oferecidos">
-										<?php if(get_field("serviços_oferecidos")){ ?>
 											<h2>Serviços oferecidos<small style='cursor:help' rel='tooltip' title='Alguns dos serviços listados abaixo são oferecidos somente em alguns dias e horários da semana. Sempre ligue antes para confirmar os serviços e dias de atendimento.' class='glyphicon glyphicon-exclamation-sign'></small></h2>
 											<p>
 											<?php 
@@ -262,8 +262,8 @@ $(document).ready(function(){
 											}
 											echo "</ul>";
 											?></p>
-										<?php } ?>
 									</div>
+									<?php } ?>
 
 									<?php if(get_field("tambem_são_realizados")){ ?>
 									<div class="bloco" id="tambem_sao_realizados">

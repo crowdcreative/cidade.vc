@@ -89,7 +89,7 @@ $(document).ready(function(){
 						
 						// Mais de um posttype em um Loop --> link: http://wordpress.stackexchange.com/quest
 						global $query_string;
-						$posts = query_posts( array( 'posts_per_page' => -1, 'post_type' => array('lugar-saude')));
+						$posts = query_posts( array( 'posts_per_page' => -1, 'post_type' => array('lugar-saude','lugar-lazer')));
 						$contadorPin = 1;
 						$contadorArray = array();
 						$contadorArray[$contadorPin] = 1;
@@ -100,7 +100,7 @@ $(document).ready(function(){
 						<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 						
 						
-							<?php if ('lugar-saude' == get_post_type()){ ?>
+							<?php if ('lugar-saude' == get_post_type() || 'lugar-lazer' == get_post_type()){ ?>
 
 							<?php  
 								$latlong = get_field('latlong');
@@ -154,7 +154,7 @@ $(document).ready(function(){
 								});
 							</script>
 
-							<?php if(get_field('bairro')){ 
+							<?php 
 								global $wp; 
 								$taxonomyID = get_field('bairro');
 									$taxonomyID = (int)$taxonomyID;
@@ -165,7 +165,7 @@ $(document).ready(function(){
 									$descricao = substr($descricao, 0, 300);
 								$postID =  get_the_ID(); 
 								$valorID = get_field("preço");
-							} ?>
+							?>
 
 						
 							
@@ -185,7 +185,7 @@ $(document).ready(function(){
 									<div class="post-info"> <span class="uppercase"><?php $category = get_the_category(); echo '<a href="'.get_category_link($category[0]->cat_ID).'">' . $category[0]->cat_name .'</a>';?> </span><span><?php echo $bairro; ?></span><span style='display:none'>Compartilhado por <?php the_author_meta("display_name"); ?></span></div>
 
 									<h2 class="title">
-										<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark" class="titulo" latlong="<?php echo $latlong ?>"><span class='contadorPin'><?php echo $contadorArray[$contadorPin].". "; ?></span><?php the_title(); ?></a><span class="leitura help" title="Tempo médio de leitura"><?php the_field("tempo_de_leitura"); ?></span><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php preco($valorID); ?></span><?php } ?>
+										<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark" class="titulo" latlong="<?php echo $latlong ?>"><span class='contadorPin'><?php echo $contadorArray[$contadorPin].". "; ?></span><?php the_title(); ?></a><span class="leitura help" title="Tempo médio de leitura"><?php the_field("tempo_de_leitura"); ?></span><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php if(is_array($valorID)){ preco($valorID[0]);}else{preco($valorID);} ?></span><?php } ?>
 									</h2>
 										
 									<div class="post-content image-caption-format-1">
