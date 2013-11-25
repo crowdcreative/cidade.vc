@@ -208,7 +208,8 @@ $(document).ready(function(){
 				<div class="panel-default panel">
 					<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 						
-							
+							<?php if ('lugar-saude' == get_post_type()){ ?>
+
 								<?php 
 								global $post; 
 								$postID = get_the_ID();
@@ -217,7 +218,7 @@ $(document).ready(function(){
 
 
 								<div class="panel-heading">
-									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php preco($valorID); ?></span><?php } ?></h1>
+									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php if(is_array($valorID)){ preco($valorID[0]);}else{preco($valorID);} ?></span><?php } ?></h1>
 								</div>	
 									
 								<div class="panel-body">
@@ -317,10 +318,10 @@ $(document).ready(function(){
 																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_sexta') . "</span></li>";
 															}
 															elseif ($termEcho == 'Sábado'){ 
-																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_sabado') . "</span></li>";
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_no_sabado') . "</span></li>";
 															}
 															elseif ($termEcho == 'Domingo'){ 
-																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_domingo') . "</span></li>";
+																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_no_domingo') . "</span></li>";
 															}
 															else{ 
 																echo "<li class='col-sm-6'><span class='badge'>" . $termEcho . "</span></li>";
@@ -354,13 +355,6 @@ $(document).ready(function(){
 									</div>
 									<?php } ?>
 
-									<?php 
-
-
-					
-
-
-									?>
 
 									<?php if(get_field("endereço")){ ?>
 									<div class="bloco li-default li-default-capitalize" id="onibus_que_passao_perto">
@@ -373,8 +367,177 @@ $(document).ready(function(){
 
 
 
-							</div><!--.post-content box mark-links-->
-							
+								</div><!--.post-content box mark-links-->
+					
+							<?php }elseif ('lugar-lazer' == get_post_type()){ ?>
+
+								<?php 
+								global $post; 
+								$postID = get_the_ID();
+								$valorID = get_field("preço");
+								?>
+
+
+								<div class="panel-heading">
+									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php if(is_array($valorID)){ preco($valorID[0]);}else{preco($valorID);} ?></span><?php } ?></h1>
+								</div>	
+									
+								<div class="panel-body">
+
+									<div class="bloco" style="display:none">
+										<?php if(get_field("bairro")){ ?>
+											<h2>Bairro</h2>
+											<?php 
+											$taxonomyID = get_field("bairro");
+											$taxonomyID = (int)$taxonomyID;
+											 ?>
+											<p><?php $taxonomy = get_term($taxonomyID, 'bairros'); echo $taxonomy->slug; ?></p>
+										<?php } ?>
+									</div>
+
+									<div class="bloco" id="descricao_do_lugar">
+										<?php if(get_field("descrição_do_lugar")){ ?>
+										
+											<p><?php the_field("descrição_do_lugar"); ?></p>
+										<?php } ?>
+									</div>
+
+									<?php if(get_field("atividades_possiveis")){ ?>
+									<div class="bloco li-default" id="atividades_possiveis">
+											<h2>Atividades possíveis</h2>
+											<p>
+											<?php 
+											$term_list = wp_get_post_terms($postID, 'atividades-possiveis', array("fields" => "all")); 
+											echo "<ul class='row'>";
+											foreach ($term_list as $term) {
+												$termEcho = $term->name;
+												$termEcholen = strlen($termEcho); // pega o tamanho da string
+
+												$termEchocut = substr($termEcho, 0, 30); // corta a string
+
+												if($termEcholen > 30){
+													echo "<li class='col-sm-3'><span style='cursor:help' rel='tooltip-border' title='".$termEcho."'>" . $termEchocut . " ...</span></li>";
+												}else{
+													echo "<li class='col-sm-3'><span>" . $termEcho . "</span></li>";
+												}
+
+											}
+											echo "</ul>";
+											?></p>
+									</div>
+									<?php } ?>
+
+									<?php if(get_field("atividades_orientadas")){ ?>
+									<div class="bloco" id="atividades_orientadas">
+										<h2>Atividades orientadas</h2>
+										<p><?php the_field("atividades_orientadas"); ?></p>
+									</div>
+									<?php } ?>
+
+									<?php if(get_field("tambem_são_realizados")){ ?>
+									<div class="bloco" id="tambem_sao_realizados">
+										
+											<h2>Também são realizados</h2>
+											<p><?php the_field("tambem_são_realizados"); ?></p>
+										
+									</div>
+									<?php } ?>
+
+									<?php if(get_field("como_ter_acesso")){ ?>
+									<div class="bloco" id="como_ter_acesso">
+										
+											<h2>Como ter acesso</h2>
+											<p><?php the_field("como_ter_acesso"); ?></p>
+										
+									</div>
+									<?php } ?>
+
+									<?php if(get_field("dias_de_funcionamento")){ ?>
+									<div class="bloco li-default" id="dias_de_funcionamento">
+										
+											<h2>Dias e horários de funcionamento</h2>
+										
+											<p>
+											<?php // Puxa as taxonomies dos dias de funcionamento
+											$term_list = wp_get_object_terms($postID, 'dias_de_funcionamento', array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'all')); 
+											$term_listArray = array(); // cria uma array para as taxonomies
+											$term_listArray = $term_list; // coloca as taxonomies 
+											sort($term_listArray); // coloca as taxonomies (dis de funcionamento) em ordem
+											?>
+											<div class='row'>
+												<div class='col-sm-10'>
+													<ul class='row'>
+														<?php
+														foreach ($term_listArray as $term) {
+															$termEcho = $term->name;
+															if ($termEcho == 'Segunda'){ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_segunda') . "</span></li>";
+															}
+															elseif ($termEcho == 'Terça'){ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_terca') . "</span></li>";
+															}
+															elseif ($termEcho == 'Quarta'){ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_quarta') . "</span></li>";
+															}
+															elseif ($termEcho == 'Quinta'){ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_quinta') . "</span></li>";
+															}
+															elseif ($termEcho == 'Sexta'){ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_na_sexta') . "</span></li>";
+															}
+															elseif ($termEcho == 'Sábado'){ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_no_sabado') . "</span></li>";
+															}
+															elseif ($termEcho == 'Domingo'){ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span> <span style='font-size:85%'>" . get_field('horario_de_funcionamento_no_domingo') . "</span></li>";
+															}
+															else{ 
+																echo "<li class='col-sm-4'><span class='badge'>" . $termEcho . "</span></li>";
+															}
+														}
+
+														?>
+													</ul>
+												</div>
+
+												<div class='col-sm-2'>
+													<?php if(get_field('observações')){ ?>
+													<span style='margin: 10px 0px 5px; cursor:help' rel='tooltip' title='Informações sobre alguns serviços que são oferecidos somente em alguns dias e horários da semana' class='badge'>Observações</span>
+													<span style='display:block; font-size:85%'>
+														<p><?php the_field('observações'); ?></p>
+													</span>
+													<?php } ?>
+												</div>
+											</div>
+											
+											</p>
+
+										
+									</div>
+									<?php } ?>
+
+									<?php if(get_field("endereço")){ ?>
+									<div class="bloco" id="localizacao_no_mapa">
+										<h2>Localização no mapa<small> <?php the_field("endereço"); ?></small></h2>
+										<div id="map-canvas"> </div>
+									</div>
+									<?php } ?>
+
+
+									<?php if(get_field("endereço")){ ?>
+									<div class="bloco li-default li-default-capitalize" id="onibus_que_passao_perto">
+										<h2>Ônibus que passam perto</h2>
+										<ul class="row">
+											Carregando...
+										</ul>
+									</div>
+									<?php } ?>
+
+
+
+								</div><!--.post-content box mark-links-->
+					
+							<?php } ?>
 					
 					
 					<?php comments_template( '', true ); ?>

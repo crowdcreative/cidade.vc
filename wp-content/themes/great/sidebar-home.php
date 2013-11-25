@@ -42,7 +42,10 @@
 				<?php
 					foreach ($bairros as $bairro) {
 						if($bairro->name != "Sem categoria"){
-							echo "<li class='list-group-item'><a href='#'>".$bairro->name."</a><span class='badge'>".$bairro->count."</span></li>";
+							$bairroCount = $bairro->count;
+							if($bairroCount > 0){
+								echo "<li class='list-group-item'><a href='#'>".$bairro->name."</a><span class='badge'>".$bairroCount."</span></li>";
+							}
 						}
 					}
 				?>

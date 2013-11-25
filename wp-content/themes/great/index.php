@@ -114,7 +114,7 @@ $(document).ready(function(){
 									marker: {
 										latLng: [<?php echo $latlong ?>],
 										options: {
-											 icon: '<?php echo "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=".$contadorArray[$contadorPin]."|428BCA|ffffff"; ?>'
+											icon: '<?php echo "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=".$contadorArray[$contadorPin]."|428BCA|ffffff"; ?>'
 										},
 										events: {
 											mouseover: function(marker, event, context) {
@@ -148,6 +148,10 @@ $(document).ready(function(){
 												if (infowindow) {
 													infowindow.close();
 												}
+											},
+											click: function(){
+												var url = '<?php the_permalink() ?>';
+												window.location.href = url;
 											}
 										}
 									}
@@ -175,7 +179,11 @@ $(document).ready(function(){
 								<div class="col-sm-3">
 									<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="nofollow" id="featured-thumbnail">
 									<?php if (get_field('imagem_de_capa')) { ?> 
-										<img class="img-thumbnail" src="<?php the_field('imagem_de_capa') ?>">
+										<?php
+										$attachment_id = get_field("imagem_de_capa");
+										$atachment_url = wp_get_attachment_image_src( $attachment_id, 'image-lugar');
+										?>
+										<img id="avatar" src="<?php echo $atachment_url[0]; ?>" class="img-thumbnail"/>
 									<?php } ?>
 									</a>
 								</div>
