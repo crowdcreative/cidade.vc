@@ -77,22 +77,33 @@ add_action('admin_enqueue_scripts', 'pw_load_styles');
 
 
 
-// Cria a metabox
-/*function add_custom_meta_box() {
-    add_meta_box(
-		'mapa_meta_box', // $id
-		'Mapa', // $title 
-		'show_custom_meta_box', // $callback
-		'lugar', // $page
-		'normal', // $context
-		'high'); // $priority
+
+if(is_admin()) {
+	wp_enqueue_script('jquery.ui.datepicker.min',  get_template_directory_uri().'/js/jquery.ui.datepicker.min.js');
+	wp_enqueue_style('jquery-ui-custom', get_template_directory_uri().'/css/jquery-ui-custom.css');
+	wp_enqueue_style('bootstrap', 'http://127.0.0.1/projects/cidade.vc/bootstrap/css/bootstrap.css');
 }
-add_action('add_meta_boxes', 'add_custom_meta_box');
-  
+
+     
 
 
-// Criação das Field Array
-$prefix = 'custom_';
+
+// Cria a metabox 
+function add_custom_meta_box() {  
+    add_meta_box(  
+        'custom_meta_box', // $id  
+        'Custom Meta Box', // $title   
+        'show_custom_meta_box', // $callback  
+        'eventos', // $page  
+        'normal', // $context  
+        'high'); // $priority  
+}  
+add_action('add_meta_boxes', 'add_custom_meta_box'); 
+
+
+
+// Field Array
+$prefix = 'evento_';
 $custom_meta_fields = array(
 	array(
 		'label'=> 'Text Input',
@@ -101,42 +112,28 @@ $custom_meta_fields = array(
 		'type'	=> 'text'
 	),
 	array(
-		'label'=> 'Mapa',
-		'desc'	=> 'Um mapa bonito.',
-		'id'	=> $prefix.'textarea',
-		'type'	=> 'mapa'
+	'label' => 'Categoria',
+	'id'	=> 'category',
+	'type'	=> 'categoria'
 	),
 	array(
-		'label'=> 'Checkbox Input',
+		'label'=> 'Descrição',
 		'desc'	=> 'A description for the field.',
-		'id'	=> $prefix.'checkbox',
-		'type'	=> 'checkbox'
+		'id'	=> $prefix.'descricao',
+		'type'	=> 'textarea'
 	),
 	array(
-		'label'=> 'Select Box',
-		'desc'	=> 'A description for the field.',
-		'id'	=> $prefix.'select',
-		'type'	=> 'select',
-		'options' => array (
-			'one' => array (
-				'label' => 'Option One',
-				'value'	=> 'one'
-			),
-			'two' => array (
-				'label' => 'Option Two',
-				'value'	=> 'two'
-			),
-			'three' => array (
-				'label' => 'Option Three',
-				'value'	=> 'three'
-			)
-		)
-	)
+		'label' => 'Bairro',
+		'id'	=> 'bairros',
+		'type'	=> 'bairros'
+	),
+    array(  
+	    'label' => 'Data e hora',  
+	    'desc'  => 'A description for the field.',  
+	    'id'    => $prefix.'date',  
+	    'type'  => 'date'  
+    )  
 );
-
-
-
-
 
 
 // The Callback
@@ -146,26 +143,111 @@ global $custom_meta_fields, $post;
 echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce(basename(__FILE__)).'" />';
 	
 	// Begin the field table and loop
-	echo '<table class="form-table">';
+	echo '<div>';
+
+	echo '<div class="bloco"><h2>Resumo do evento</h2></div>';
+
 	foreach ($custom_meta_fields as $field) {
 		// get value of this field if it exists for this post
 		$meta = get_post_meta($post->ID, $field['id'], true);
 		// begin a table row with
-		echo '<tr>
-				<p class="label' . $field['id'] . $field['label'] .'">' . $field['label'] . '</p>';
-				switch($field['type']) {
-					// textarea
-					// text  
-					case 'text':  
-					    echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" /> 
-					        <br /><span class="description">'.$field['desc'].'</span>';  
-						break; 
-					case 'mapa':
-						break;
-				} //end switch
-		echo '</tr>';
+	
+					
+					
+					switch($field['type']) {
+						// text  
+					    case 'text':
+					    	echo '<div class="bloco"><div class="row">'; 
+						    	echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">';
+						        	echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" /> 
+						            <br /><span class="description">'.$field['desc'].'</span>';  
+						        echo '</div>';
+						    echo '</div></div>';
+					    break;
+					    // categoria  
+						case 'categoria':  
+							echo '<div class="bloco"><div class="row">';
+								echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">';
+							    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
+							            <option value="">Selecione uma categoria</option>'; // Select One  
+							    $terms = get_terms( 'category', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
+							    $selected = wp_get_object_terms($post->ID, $field['id']);  
+							    foreach ($terms as $term) {  
+							        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
+							            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
+							        else  
+							            echo '<option value="'.$term->slug.'">'.$term->name.'</option>';   
+							    }  
+							    $taxonomy = get_taxonomy($field['id']);  
+							    echo '</select><br /><span class="description"><a href="'.get_bloginfo('home').'/wp-admin/edit-tags.php?taxonomy='.$field['id'].'">Manage '.$taxonomy->label.'</a></span>';  
+								echo '</div>';
+							echo '</div></div>';
+						break;  
+					    // Descrição  
+					    case 'textarea': 
+					    	echo '<div class="bloco"><div class="row">';
+						    	echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">'; 
+						        echo '<textarea name="'.$field['id'].'" id="'.$field['id'].'" cols="60" rows="4">'.$meta.'</textarea> 
+						            <br /><span class="description">'.$field['desc'].'</span>';  
+						   		echo '</div>';
+						   	echo '</div></div>';
+					    break; 
+					} //end switch
+
+		
 	} // end foreach
-	echo '</table>'; // end table
+
+	echo '<div class="bloco"><h2>Localização</h2></div>';
+
+	foreach ($custom_meta_fields as $field) {
+		// get value of this field if it exists for this post
+		$meta = get_post_meta($post->ID, $field['id'], true);
+		// begin a table row with
+
+					switch($field['type']) {
+						// bairro  
+						case 'bairros':  
+							echo '<div class="bloco"><div class="row">';
+								echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">';
+							    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
+							            <option value="">Selecione um bairro</option>'; // Select One  
+							    $terms = get_terms( 'bairros', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
+							    $selected = wp_get_object_terms($post->ID, $field['id']);  
+							    foreach ($terms as $term) {  
+							        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
+							            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
+							        else  
+							            echo '<option value="'.$term->slug.'">'.$term->name.'</option>';   
+							    }  
+							    $taxonomy = get_taxonomy($field['id']);  
+							    echo '</select><br /><span class="description"><a href="'.get_bloginfo('home').'/wp-admin/edit-tags.php?taxonomy='.$field['id'].'">Manage '.$taxonomy->label.'</a></span>';  
+								echo '</div>';
+							echo '</div></div>';
+						break;
+						// data
+						case 'date':
+							echo '<div class="bloco"><div class="row">';
+								echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">';
+							 	echo '<div class="row">';
+									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_inicio_dia" id="evento_inicio_dia" value="'.$meta.'" size="15" /> <input type="time" name="evento_inicio_hora" placeholder="___:___" value="" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
+											<br /><span class="description">Início</span></div>';
+									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_fim_dia" id="evento_fim_dia" value="'.$meta.'" size="15" /> <input type="time" name="evento_fim_hora" placeholder="___:___" value="" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
+											<br /><span class="description">Fim</span></div>';
+								echo '</div>';
+								echo '</div>';
+							echo '</div></div>';
+						break;
+					} //end switch
+
+
+	} // end foreach
+
+	echo '</div>'; // end table
 }
 
 
@@ -181,7 +263,7 @@ function save_custom_meta($post_id) {
 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
 		return $post_id;
 	// check permissions
-	if ('page' == $_POST['post_type']) {
+	if ('page' == $_POST['eventos']) {
 		if (!current_user_can('edit_page', $post_id))
 			return $post_id;
 		} elseif (!current_user_can('edit_post', $post_id)) {
@@ -200,9 +282,39 @@ function save_custom_meta($post_id) {
 	} // end foreach
 }
 add_action('save_post', 'save_custom_meta');  
+  
 
 
-*/
+
+function add_custom_scripts() {
+
+    global $custom_meta_fields, $post_type;
+
+    if (($_GET['post_type'] == 'eventos') || ($post_type == 'eventos')) :
+
+        $output = '<script type="text/javascript">'; 
+        $output.= 'jQuery(function() {';  
+        $output.= '';
+              
+	    foreach ($custom_meta_fields as $field) { 
+	        if($field['type'] == 'date')  
+	            $output .= "jQuery('.datepicker').datepicker({dateFormat: 'dd/mm/yy', dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], dayNamesMin: ['D','S','T','Q','Q','S','S','D'], dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'], monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'], monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], nextText: 'Próximo', prevText: 'Anterior'});";
+	             
+  		}
+
+		$output .= '}); 
+		</script>';  
+          
+    echo $output;  
+
+    endif;
+
+}
+
+add_action('admin_head','add_custom_scripts'); 
+
+
+
 
 
 // Função para pegar Lat e Long para o mapa
