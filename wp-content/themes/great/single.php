@@ -429,8 +429,72 @@ $(document).ready(function(){
 
 									<?php if(get_field("atividades_orientadas")){ ?>
 									<div class="bloco" id="atividades_orientadas">
-										<h2>Atividades orientadas</h2>
-										<p><?php the_field("atividades_orientadas"); ?></p>
+										<h2>Eventos<small> atividades e eventos que acontecem neste local</small></h2>
+										
+										<?php
+										    $data = date('D');
+										    $mes = date('M');
+										    $dia = date('d');
+										    $ano = date('Y');
+										 
+										    $semana = array('Sun' => 'Domingo', 'Mon' => 'Segunda', 'Tue' => 'Terca', 'Wed' => 'Quarta', 'Thu' => 'Quinta', 'Fri' => 'Sexta', 'Sat' => 'Sábado');
+										    $hoje =  $semana["$data"];
+										?>
+
+
+										<div class="row">
+
+										<?php
+										$type = 'eventos';
+										$args = array('post_type' => $type, 'post_status' => 'publish', 'posts_per_page' => -1, 'caller_get_posts'=> 1);
+										$my_query = null;
+										$my_query = new WP_Query($args);
+										if( $my_query->have_posts() ) {
+										  	while ($my_query->have_posts()) : $my_query->the_post(); 
+					
+											    $eventoID = get_the_ID(); 	// pega o id do 'posttype' evento
+											    $lugarID = get_post_meta( $eventoID, 'evento_lugar', true ); 	// pega o ID do lugar ao qual o evento pertence
+											   
+											   	$titulo = get_the_title();
+
+											    if($postID == $lugarID){
+
+											    	echo '<div class="col-sm-4" style="margin-top:15px">';
+												    	echo "<p>";
+
+													    	echo '<b>'.$titulo.'</b><br/>';
+													    	
+													    	$diasSemana = get_post_meta( $eventoID, 'evento_dias_da_semana');
+													    	$tamanho = sizeof($diasSemana[0]);
+
+													    	$horaInicio = get_post_meta( $eventoID, 'evento_inicio_hora');
+													    	$horaTermino = get_post_meta( $eventoID, 'evento_termino_hora');
+
+													    	for ($i=0; $i < $tamanho; $i++) { 
+													    		if ($diasSemana[0][$i] == $hoje) {
+													    			echo $diasSemana[0][$i].' - '.$horaInicio[0].' até '.$horaTermino[0].' <span class="label label-default" style="text-transform: uppercase; font-size: 7px;">hoje</span><br/>';
+													    		}else{
+													    			echo $diasSemana[0][$i].' - '.$horaInicio[0].' até '.$horaTermino[0].'<br/>';
+													    		}
+													    			
+													    	}
+													    		
+
+												    	echo "</p>";
+												   	echo '</div>';
+											    }
+									  
+										  	
+
+											endwhile;
+										}
+										
+										wp_reset_query();  // Restore global post data stomped by the_post().
+										
+										?>
+
+										</div> <!-- Final do <row> -->
+
 									</div>
 									<?php } ?>
 

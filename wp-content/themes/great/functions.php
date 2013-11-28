@@ -68,22 +68,42 @@ function pw_load_scripts($hook) {
 	}
 }
 
+add_action('admin_enqueue_scripts', 'pw_load_scripts');
+
+
+
 function pw_load_styles() {
 	wp_enqueue_style('dashboard.css', 'http://127.0.0.1/projects/cidade.vc/css/dashboard.css');
 	wp_enqueue_style('jquery-ui.css', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css');
 }
-add_action('admin_enqueue_scripts', 'pw_load_scripts');
+
 add_action('admin_enqueue_scripts', 'pw_load_styles');
 
 
 
 
 if(is_admin()) {
-	wp_enqueue_script('jquery.ui.datepicker.min',  get_template_directory_uri().'/js/jquery.ui.datepicker.min.js');
 	wp_enqueue_style('jquery-ui-custom', get_template_directory_uri().'/css/jquery-ui-custom.css');
 	wp_enqueue_style('bootstrap', 'http://127.0.0.1/projects/cidade.vc/bootstrap/css/bootstrap.css');
 }
 
+
+function eventos_load_scripts($hook) {
+	
+	global $post;
+
+    if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
+        if ( 'eventos' === $post->post_type) {   
+			wp_enqueue_script('jquery-1.10.2.min.js', 'http://code.jquery.com/jquery-1.10.2.min.js');
+			wp_enqueue_script('jquery.ui.datepicker.min',  get_template_directory_uri().'/js/jquery.ui.datepicker.min.js');
+			wp_enqueue_script('','https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true');
+			wp_enqueue_script( 'gmap3.js', 'http://127.0.0.1/projects/cidade.vc/js/gmap3.js');
+			wp_enqueue_script( 'map.js', 'http://127.0.0.1/projects/cidade.vc/js/map-dashboard-eventos.js');
+		}
+	}
+}
+
+add_action('admin_enqueue_scripts', 'eventos_load_scripts');
      
 
 
@@ -106,15 +126,15 @@ add_action('add_meta_boxes', 'add_custom_meta_box');
 $prefix = 'evento_';
 $custom_meta_fields = array(
 	array(
-		'label'=> 'Text Input',
-		'desc'	=> 'A description for the field.',
-		'id'	=> $prefix.'text',
-		'type'	=> 'text'
+		'label'=> 'Nome do evento',
+		'desc'	=> '',
+		'id'	=> $prefix.'titulo',
+		'type'	=> 'titulo'
 	),
 	array(
-	'label' => 'Categoria',
-	'id'	=> 'category',
-	'type'	=> 'categoria'
+		'label' => 'Categoria',
+		'id'	=> 'category',
+		'type'	=> 'categoria'
 	),
 	array(
 		'label'=> 'Descrição',
@@ -127,12 +147,67 @@ $custom_meta_fields = array(
 		'id'	=> 'bairros',
 		'type'	=> 'bairros'
 	),
+	array(
+		'label'=> 'Endereço do local',
+		'desc'	=> '',
+		'id'	=> $prefix.'endereco',
+		'type'	=> 'endereco'
+	),
+	array(
+		'label'=> 'Latlong',
+		'desc'	=> '',
+		'id'	=> $prefix.'latlong',
+		'type'	=> 'latlong'
+	),
+	array(  
+        'label' => 'Nome do local (se existir)',  
+        'desc' => '',  
+        'id'    =>  $prefix.'lugar',  
+        'type' => 'lugar',  
+        'post_type' => array('lugar-lazer','lugar-saude')  
+    ),  
     array(  
 	    'label' => 'Data e hora',  
 	    'desc'  => 'A description for the field.',  
-	    'id'    => $prefix.'date',  
+	    'id'    => $prefix.'data',  
 	    'type'  => 'date'  
-    )  
+    ),
+    array (  
+    'label' => 'Checkbox Group',  
+    'desc'  => '',  
+    'id'    => 'dias_de_funcionamento',  
+    'type'  => 'dias_de_funcionamento',  
+    'options' => array (  
+        'segunda' => array (  
+            'label' => 'Segunda-feira',  
+            'value' => 'Segunda'  
+        ),  
+        'terça' => array (  
+            'label' => 'Terça-feira',  
+            'value' => 'Terça'  
+        ),  
+        'quarta' => array (  
+            'label' => 'Quarta-feira',  
+            'value' => 'Quarta'  
+        ),
+        'quinta' => array (  
+            'label' => 'Quinta-feira',  
+            'value' => 'Quinta'  
+        ),
+        'sexta' => array (  
+            'label' => 'Sexta-feira',  
+            'value' => 'Sexta'  
+        ),
+        'sábado' => array (  
+            'label' => 'Sábado',  
+            'value' => 'Sábado'  
+        ),
+        'domingo' => array (  
+            'label' => 'Domingo',  
+            'value' => 'Domingo'  
+        )
+    	)  
+	)  
 );
 
 
@@ -145,8 +220,6 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 	// Begin the field table and loop
 	echo '<div>';
 
-	echo '<div class="bloco"><h2>Resumo do evento</h2></div>';
-
 	foreach ($custom_meta_fields as $field) {
 		// get value of this field if it exists for this post
 		$meta = get_post_meta($post->ID, $field['id'], true);
@@ -155,12 +228,13 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					
 					
 					switch($field['type']) {
-						// text  
-					    case 'text':
+						// titulo  
+					    case 'titulo':
+					    	$titulo = get_the_title($post->ID);
 					    	echo '<div class="bloco"><div class="row">'; 
-						    	echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
-						        	echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" /> 
+						        	echo '<input type="text" name="post_title" id="'.$field['id'].'" value="'.$titulo.'" size="30" /> 
 						            <br /><span class="description">'.$field['desc'].'</span>';  
 						        echo '</div>';
 						    echo '</div></div>';
@@ -168,12 +242,13 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					    // categoria  
 						case 'categoria':  
 							echo '<div class="bloco"><div class="row">';
-								echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+								echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
+
 							    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
 							            <option value="">Selecione uma categoria</option>'; // Select One  
 							    $terms = get_terms( 'category', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
-							    $selected = wp_get_object_terms($post->ID, $field['id']);  
+							    $selected = wp_get_object_terms($post->ID, 'category');
 							    foreach ($terms as $term) {  
 							        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
 							            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
@@ -188,9 +263,9 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					    // Descrição  
 					    case 'textarea': 
 					    	echo '<div class="bloco"><div class="row">';
-						    	echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">'; 
-						        echo '<textarea name="'.$field['id'].'" id="'.$field['id'].'" cols="60" rows="4">'.$meta.'</textarea> 
+						        echo '<textarea name="'.$field['id'].'" id="'.$field['id'].'" style="width:100%" rows="5">'.$meta.'</textarea> 
 						            <br /><span class="description">'.$field['desc'].'</span>';  
 						   		echo '</div>';
 						   	echo '</div></div>';
@@ -211,36 +286,105 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 						// bairro  
 						case 'bairros':  
 							echo '<div class="bloco"><div class="row">';
-								echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+								echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
 							    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
 							            <option value="">Selecione um bairro</option>'; // Select One  
 							    $terms = get_terms( 'bairros', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
 							    $selected = wp_get_object_terms($post->ID, $field['id']);  
 							    foreach ($terms as $term) {  
-							        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
-							            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
-							        else  
-							            echo '<option value="'.$term->slug.'">'.$term->name.'</option>';   
+								        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
+								            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
+								        else  
+								            echo '<option value="'.$term->slug.'">'.$term->name.'</option>';   
 							    }  
 							    $taxonomy = get_taxonomy($field['id']);  
 							    echo '</select><br /><span class="description"><a href="'.get_bloginfo('home').'/wp-admin/edit-tags.php?taxonomy='.$field['id'].'">Manage '.$taxonomy->label.'</a></span>';  
 								echo '</div>';
 							echo '</div></div>';
 						break;
+						// endereço  
+					    case 'endereco':
+					    	echo '<div class="bloco"><div class="row">'; 
+						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">';
+						        	echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" placeholder="Ex:. Rua Rivadávia Correia, 08 - Partenon" style="width:100%" /> 
+						            <br /><span class="description">'.$field['desc'].'</span>';  
+						        echo '</div>';
+						    echo '</div></div>';
+					    break;
+					    // latlong  
+					    case 'latlong':
+						 	echo '<input type="hidden" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" size="30" />'; 
+					    break;
+					    // lugar  
+						case 'lugar':  
+						echo '<div class="bloco"><div class="row">';
+								echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">';
+									$items = get_posts( array (  
+									    'post_type' => $field['post_type'],  
+									    'posts_per_page' => -1  
+									));  
+								    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
+								            <option value="">Selecione um lugar</option>'; // Select One  
+								        foreach($items as $item) {  
+								            echo '<option value="'.$item->ID.'"',$meta == $item->ID ? ' selected="selected"' : '','>'.$item->post_title.'</option>';  
+								        } // end foreach  
+								    echo '</select><br /><span class="description">'.$field['desc'].'</span>'; 
+							echo '</div>';
+						echo '</div></div>';
+						break; 
+					} //end switch
+
+
+	} // end foreach
+
+
+	echo '<div class="bloco"><h2>Dias e horários</h2></div>';
+
+
+	foreach ($custom_meta_fields as $field) {
+		// get value of this field if it exists for this post
+		$meta = get_post_meta($post->ID, $field['id'], true);
+		// begin a table row with
+
+					switch($field['type']) {
 						// data
 						case 'date':
+							$evento_inicio_data = get_post_meta($post->ID, 'evento_inicio_dia', true);
+							$evento_inicio_hora = get_post_meta($post->ID, 'evento_inicio_hora', true);
+							$evento_termino_data = get_post_meta($post->ID, 'evento_termino_dia', true);
+							$evento_termino_hora = get_post_meta($post->ID, 'evento_termino_hora', true);
+						
 							echo '<div class="bloco"><div class="row">';
-								echo '<div class="col-sm-3"><label for="'.$field['id'].'">'.$field['label'].'</label></div>';
+								echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
 							 	echo '<div class="row">';
-									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_inicio_dia" id="evento_inicio_dia" value="'.$meta.'" size="15" /> <input type="time" name="evento_inicio_hora" placeholder="___:___" value="" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
+									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_inicio_dia" id="evento_inicio_dia" value="'.$evento_inicio_data.'" size="15" placeholder="Ex:.12/05/2013"/> <input type="time" name="evento_inicio_hora" id="evento_inicio_hora" placeholder="___:___" value="'.$evento_inicio_hora.'" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
 											<br /><span class="description">Início</span></div>';
-									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_fim_dia" id="evento_fim_dia" value="'.$meta.'" size="15" /> <input type="time" name="evento_fim_hora" placeholder="___:___" value="" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
-											<br /><span class="description">Fim</span></div>';
+									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_termino_dia" id="evento_termino_dia" value="'.$evento_termino_data.'" size="15" placeholder="Ex:.15/05/2013"/> <input type="time" name="evento_termino_hora" id="evento_termino_hora" placeholder="___:___" value="'.$evento_termino_hora.'" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
+											<br /><span class="description">Termino</span></div>';
 								echo '</div>';
 								echo '</div>';
 							echo '</div></div>';
+						break;
+						// dias da semana  
+						case 'dias_de_funcionamento':  
+						echo '<div class="bloco"><div class="row">';
+								echo '<div class="col-sm-3"><label class="pull-right" style="text-align:right" for="'.$field['id'].'">O evento acontece toda semana?</label></div>';
+						        echo '<div class="col-sm-9">';
+								    
+								    $meta = get_post_meta($post->ID, 'evento_dias_da_semana', true);
+								    $terms = get_terms( 'dias_de_funcionamento', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
+							        foreach ($terms as $term) {  
+							        	echo '<input type="checkbox" value="' . $term->name . '" name="checkbox[]" id="' . $term->id . '" '; if(is_array($meta)){ if(in_array($term->name, $meta)){echo 'checked="checked"> ';}else{echo '>';}}else{echo '>';}  
+							            echo '<span style="margin-right:12px">'.$term->name.'</span>';  
+								    }  
+				
+							echo '</div>';
+							echo '</div></div>';
+
 						break;
 					} //end switch
 
@@ -272,14 +416,84 @@ function save_custom_meta($post_id) {
 	
 	// loop through fields and save the data
 	foreach ($custom_meta_fields as $field) {
-		$old = get_post_meta($post_id, $field['id'], true);
-		$new = $_POST[$field['id']];
-		if ($new && $new != $old) {
-			update_post_meta($post_id, $field['id'], $new);
-		} elseif ('' == $new && $old) {
-			delete_post_meta($post_id, $field['id'], $old);
+
+
+		// salva a categoria
+		if($field['type'] == 'categoria'){
+			// save taxonomies  
+			$post = get_post($post_id);  
+			$category = $_POST['category'];  
+			wp_set_object_terms( $post_id, $category, 'category' );
 		}
+		elseif($field['type'] == 'bairros'){  // salva o bairro
+			// save taxonomies  
+			$post = get_post($post_id);  
+			$category = $_POST['bairros'];  
+			wp_set_object_terms( $post_id, $category, 'bairros' );
+		}
+		else{
+
+			$old = get_post_meta($post_id, $field['id'], true);
+			$new = $_POST[$field['id']];
+			if ($new && $new != $old) {
+				update_post_meta($post_id, $field['id'], $new);
+			} elseif ('' == $new && $old) {
+				delete_post_meta($post_id, $field['id'], $old);
+			}
+			
+		} 
+
+
+
 	} // end foreach
+
+	// salva a data de início
+	$old = get_post_meta($post_id, 'evento_inicio_dia', true);
+	$new = $_POST['evento_inicio_dia'];
+	if ($new && $new != $old) {
+		update_post_meta($post_id, 'evento_inicio_dia', $new);
+	} elseif ('' == $new && $old) {
+		delete_post_meta($post_id, 'evento_inicio_dia', $old);
+	}
+
+	// salva a hora de início
+	$old = get_post_meta($post_id, 'evento_inicio_hora', true);
+	$new = $_POST['evento_inicio_hora'];
+	if ($new && $new != $old) {
+		update_post_meta($post_id, 'evento_inicio_hora', $new);
+	} elseif ('' == $new && $old) {
+		delete_post_meta($post_id, 'evento_inicio_hora', $old);
+	}
+
+	// salva a data de termino
+	$old = get_post_meta($post_id, 'evento_termino_dia', true);
+	$new = $_POST['evento_termino_dia'];
+	if ($new && $new != $old) {
+		update_post_meta($post_id, 'evento_termino_dia', $new);
+	} elseif ('' == $new && $old) {
+		delete_post_meta($post_id, 'evento_termino_dia', $old);
+	}
+
+	// salva a hora de termino
+	$old = get_post_meta($post_id, 'evento_termino_hora', true);
+	$new = $_POST['evento_termino_hora'];
+	if ($new && $new != $old) {
+		update_post_meta($post_id, 'evento_termino_hora', $new);
+	} elseif ('' == $new && $old) {
+		delete_post_meta($post_id, 'evento_termino_hora', $old);
+	}
+
+
+	// salva os dias da semana
+	$old = get_post_meta($post_id, 'evento_dias_da_semana', true);
+	$new = $_POST['checkbox'];
+	if ($new && $new != $old) {
+		update_post_meta($post_id, 'evento_dias_da_semana', $new);
+	} elseif ('' == $new && $old) {
+		delete_post_meta($post_id, 'evento_dias_da_semana', $old);
+	}
+	
+
 }
 add_action('save_post', 'save_custom_meta');  
   
@@ -293,12 +507,12 @@ function add_custom_scripts() {
     if (($_GET['post_type'] == 'eventos') || ($post_type == 'eventos')) :
 
         $output = '<script type="text/javascript">'; 
-        $output.= 'jQuery(function() {';  
+        $output.= '$(function() {';  
         $output.= '';
               
 	    foreach ($custom_meta_fields as $field) { 
 	        if($field['type'] == 'date')  
-	            $output .= "jQuery('.datepicker').datepicker({dateFormat: 'dd/mm/yy', dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], dayNamesMin: ['D','S','T','Q','Q','S','S','D'], dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'], monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'], monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], nextText: 'Próximo', prevText: 'Anterior'});";
+	            $output .= "$('.datepicker').datepicker({dateFormat: 'dd/mm/yy', dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], dayNamesMin: ['D','S','T','Q','Q','S','S','D'], dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'], monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'], monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], nextText: 'Próximo', prevText: 'Anterior'});";
 	             
   		}
 

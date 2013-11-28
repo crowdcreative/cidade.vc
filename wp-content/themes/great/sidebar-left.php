@@ -6,8 +6,9 @@
 			<div class="left avatar-box">
 				<?php
 				$attachment_id = get_field("imagem_de_capa");
-				echo wp_get_attachment_image($attachment_id, 'image-lugar') ; 
+				$atachment_url = wp_get_attachment_image_src( $attachment_id, 'image-lugar');
 				?>
+				<img id="avatar" src="<?php echo $atachment_url[0]; ?>" class=""/>
 				
 			</div>
 			<?php } ?>
