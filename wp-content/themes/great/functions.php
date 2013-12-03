@@ -731,6 +731,41 @@ function time_ago( $type = 'post' ) {
 
 
 
+// Função que pega a 'key' a partir do nome dos bairros (usado para pegar horarios nas páginas de evento)
+
+function keyBairro($bairro){
+	switch ($bairro) {
+		case 'Domingo':
+			return 0;
+		break;
+	
+		case 'Segunda':
+			return 1;
+		break;
+
+		case 'Terça':
+			return 2;
+		break;
+
+		case 'Quarta':
+			return '3';
+		break;
+
+		case 'Quinta':
+			return '4';
+		break;
+
+		case 'Sexta':
+			return 5;
+		break;
+
+		case 'Sábado':
+			return 6;
+		break;
+
+	}
+}
+
 
 /*-----------------------------------------------------------------------------------*/
 /*	Custom Comments template

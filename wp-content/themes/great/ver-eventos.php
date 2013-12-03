@@ -240,7 +240,6 @@ $(document).ready(function(){
 
 			<tr>
 				<th>Nome do evento</th>
-				<th>Post Excerpt</th>
 				<th>Status</th>
 				<th>Ações</th>
 			</tr>
@@ -251,8 +250,7 @@ $(document).ready(function(){
 
 			<tr>
 				<td><?php echo get_the_title(); ?></td>
-				<td><?php the_excerpt(); ?></td>
-				<td><?php echo get_post_status( get_the_ID() ) ?></td>
+				<td><?php if(get_post_status(get_the_ID()) == 'publish'){echo 'publicado';}elseif(get_post_status(get_the_ID()) == 'pending'){echo 'em moderação';} ?></td>
 
 				<?php $edit_post = add_query_arg('post', get_the_ID(), get_permalink(111 + $_POST['_wp_http_referer'])); ?>
 

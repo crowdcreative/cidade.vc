@@ -437,7 +437,7 @@ $(document).ready(function(){
 										    $dia = date('d');
 										    $ano = date('Y');
 										 
-										    $semana = array('Sun' => 'Domingo', 'Mon' => 'Segunda', 'Tue' => 'Terca', 'Wed' => 'Quarta', 'Thu' => 'Quinta', 'Fri' => 'Sexta', 'Sat' => 'Sábado');
+										    $semana = array('Sun' => 'Domingo', 'Mon' => 'Segunda', 'Tue' => 'Terça', 'Wed' => 'Quarta', 'Thu' => 'Quinta', 'Fri' => 'Sexta', 'Sat' => 'Sábado');
 										    $hoje =  $semana["$data"];
 										?>
 

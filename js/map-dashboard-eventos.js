@@ -1,13 +1,9 @@
 $(document).ready(function(){
 
 
-		// Adiciona o map-canvas abaixo do input buscador
-		$("<div id='map-canvas'></div>").insertAfter("#evento_endereco");
-		$("#evento_endereco").css({"width":"100%"});
+
  
-		// Adiciona o botao abaixo do mapa
-		$("<div id='botao'><span>Buscar endereço</span></div>").insertAfter("#evento_endereco");
-		$("#botao").css({"width":"100%"});
+
 
 		// chama o geocoder do Google
 		var geocoder = new google.maps.Geocoder();
@@ -175,7 +171,7 @@ $(document).ready(function(){
 			buscaLatlong(endereco);
 		});
 	
-	
+		
 	
 
   });

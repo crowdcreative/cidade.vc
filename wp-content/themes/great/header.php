@@ -69,7 +69,7 @@
 							?>
 
 						</div>
-						<button type="button" class="btn btn-primary navbar-btn pull-right">Criar lugar</button>
+						<a href="criar-evento"><button type="button" class="btn btn-primary navbar-btn pull-right">Cocriar</button></a>
 					</div>
 				</div>	
 			</div>

@@ -16,28 +16,213 @@
 	?>
 
 
-		<script type="text/javascript">
+	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/jquery.ui.datepicker.min.js"></script>
+	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/jquery.maskedinput.min.js"></script>
 
-	// Deslizar de forma suave (http://css-tricks.com/snippets/jquery/smooth-scrolling/)	
-	$(function() {
-		$('a[href*=#]:not([href=#])').click(function() {
-			if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
-				var target = $(this.hash);
-				target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-				if (target.length) {
-					$('html,body').animate({
-						scrollTop: target.offset().top
-					}, 1000);
-					return false;
-				}
-			}
+	<script type="text/javascript">
+
+
+		jQuery(function($){
+			$(".data").mask("99/99/9999");
+			$(".hora").mask("99:99");
 		});
-	});
+
+
+		jQuery(function($){
+			$('.datepicker').datepicker({dateFormat: 'dd/mm/yy', dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], dayNamesMin: ['D','S','T','Q','Q','S','S','D'], dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'], monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'], monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], nextText: 'Próximo', prevText: 'Anterior'});
+		});
+
+		// Deslizar de forma suave (http://css-tricks.com/snippets/jquery/smooth-scrolling/)	
+		$(function() {
+			$('a[href*=#]:not([href=#])').click(function() {
+				if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+					var target = $(this.hash);
+					target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+					if (target.length) {
+						$('html,body').animate({
+							scrollTop: target.offset().top
+						}, 1000);
+						return false;
+					}
+				}
+			});
+		});
 	
 
 
-$(document).ready(function(){
+	$(document).ready(function(){
 
+
+
+		// Criação do mapa
+		$('#map-canvas').gmap3({
+			map: {
+				options: {
+					center: [-30.036363, -51.214786],
+					zoom: 13,
+					mapTypeId: google.maps.MapTypeId.ROADMAP,
+					mapTypeControl: true,
+					mapTypeControlOptions: {
+						style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+					},
+					navigationControl: true,
+					scrollwheel: true,
+					streetViewControl: true
+				}
+			},
+			marker: {
+				latLng: [-30.036363, -51.214786],
+				options: {
+					draggable: true
+				},
+				events: { 
+					dragend: function(marker) {
+						$(this).gmap3({
+							getaddress: {
+								latLng: marker.getPosition(),
+								callback: function(results) {
+									var map = $(this).gmap3("get"),
+									infowindow = $(this).gmap3({
+										get: "infowindow"
+									}),
+									
+									content = results && results[0] ? results && results[0].formatted_address : "no address";
+
+									// Corta a string do endereco se tiver a palavra Porto Alegre
+									if(contains(content, 'Porto Alegre')) {
+										contentEcho = content.split(', Porto Alegre')[0];
+									}else{
+										contentEcho = content;
+									}
+
+									// Exibe o endereco recortado na barra de busca
+									$('#evento_endereco').val(contentEcho);
+
+
+									// Cria o balão de informação com o endereço do marcador - dragend	
+									if (infowindow) {
+										infowindow.open(map, marker);
+										infowindow.setContent(contentEcho);
+									} else {
+										$(this).gmap3({
+											infowindow: {
+												anchor: marker,
+												options: {
+													content: contentEcho
+												}
+											}
+										});
+									}
+								}
+							},
+						});
+						
+						var latlng = marker.getPosition();
+						$('#evento_latlong').val(latlng);
+
+					}
+				}
+			}
+		});
+
+		var map = $(this).gmap3("get");
+		
+		function buscaLatlong(endereco) {
+			$("#map-canvas").gmap3({
+				clear: {
+					name: "marker"
+				},
+				getlatlng: {
+					address: endereco,
+					callback: function(results) {
+						if (!results){ 
+							alert('Endereço não encontrado. Tente buscar outro.');
+						}else{
+						$(this).gmap3({
+							marker: {
+								latLng: results[0].geometry.location,
+								options:{
+									draggable:true
+								},
+								events: {
+									dragend: function(marker) {
+										$(this).gmap3({
+											getaddress: {
+												latLng: marker.getPosition(),
+												callback: function(results) {
+													var map = $(this).gmap3("get"),
+													infowindow = $(this).gmap3({
+														get: "infowindow"
+													}),
+													
+													content = results && results[0] ? results && results[0].formatted_address : "Endereço não encontrado =(";
+
+													if(contains(content, 'Porto Alegre')) {
+														contentEcho = content.split(', Porto Alegre')[0];
+													}else{
+														contentEcho = content;
+													}
+
+
+													$('#evento_endereco').val(contentEcho); 
+
+
+														
+													if (infowindow) {
+														infowindow.open(map, marker);
+														infowindow.setContent(contentEcho);
+													} else {
+														$(this).gmap3({
+															infowindow: {
+																anchor: marker,
+																options: {
+																	content: contentEcho
+																}
+															}
+														});
+													}
+													
+													// Coloca o latlong no input
+													var latlng = marker.getPosition();
+													$('#evento_latlong').val(latlng); 
+
+												}
+											},
+										});
+									}
+								}
+							}
+						});
+						}
+						var map = $(this).gmap3("get");
+						var latLng = results[0].geometry.location; //Makes a latlng
+      					map.panTo(latLng); //Make map global
+
+      					
+						$('#evento_latlong').val(latLng);
+
+					}
+				},
+			});
+		}
+	
+		// Botao para chamar o endereço no mapa
+		$("#botao").click(function(){
+			var endereco = $("#evento_endereco").val();
+			buscaLatlong(endereco);
+		});
+
+
+		$('.especificas_ou_semana input').on('change', function(){
+			var marcado = $('input[name=grupo1]:checked', '.especificas_ou_semana').val();
+			if(marcado == 'datas_especificas'){
+				$('.especificas').fadeIn();
+				$('.semana').fadeOut();
+			}else{
+				$('.especificas').fadeOut();
+				$('.semana').fadeIn();
+			}
+		});
 
 		var top = $('#anchorlinks').offset().top - parseFloat($('#anchorlinks').css('marginTop').replace(/auto/, 0));
 		$(window).scroll(function(event) {
@@ -64,13 +249,6 @@ $(document).ready(function(){
 			$('#anchorlinks').css("width", widthCopy);
 		});
 
-		// Adiciona o map-canvas abaixo do input buscador
-		$("<div id='map-canvas'></div>").insertAfter("#acf-endereço");
-		$("#acf-endereço").css({"width":"100%"});
- 
-		// Adiciona o botao abaixo do mapa
-		$("<div id='botao'><span>Buscar endereço</span></div>").insertAfter("#acf-endereço");
-		$("#botao").css({"width":"100%"});
 
 		// chama o geocoder do Google
 		var geocoder = new google.maps.Geocoder();
@@ -93,29 +271,6 @@ $(document).ready(function(){
 			}
 		});
 
-		// Criação do mapa
-		$('#map-canvas').gmap3({
-			map: {
-				options: {
-					center: [<?php echo $latlong; ?>],
-					zoom: 13,
-					mapTypeId: google.maps.MapTypeId.ROADMAP,
-					mapTypeControl: true,
-					mapTypeControlOptions: {
-						style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-					},
-					navigationControl: true,
-					scrollwheel: true,
-					streetViewControl: true
-				}
-			},
-			marker: {
-				latLng: [<?php echo $latlong; ?>],
-				options: {
-					draggable: true
-				}
-			}
-		});
 
 
 		// Scroll to top
@@ -124,71 +279,6 @@ $(document).ready(function(){
 	        return false;
 	    });
 
-	    var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
-
-		var map = $("#map-canvas").gmap3("get");
-
-
-		// Adiciona o circulo no mapa
-		var circle = new google.maps.Circle({
-			map: map,
-			radius: 600, // metres
-			strokeWeight: 0,
-			fillOpacity: 0.1,
-			clickable: false,
-		});
-
-		var marker = new google.maps.Marker({
-			map: map,
-			position: new google.maps.LatLng(<?php echo $latlong; ?>),
-		});
-
-		circle.bindTo('center', marker, 'position');
-
-
-        google.maps.event.addListenerOnce(map, 'idle', function(){
-         	var bounds = circle.getBounds();
-         	var bounds = bounds.toString();
-         	pegaBound(bounds);
-		});
-
-		// Url do ajax do wordpress
-   		var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
-		
-
-		// jQuey ajax para chamar latlong
-		function pegaBound(bounds){
-
-
-			$.ajax({
-				url: ajaxUrl,
-				type: 'POST',
-
-				data: {
-					'action': 'getbounds',
-					'minmaxlatlong': bounds
-				},
-				success: function(dados) {
-					$('#onibus_que_passao_perto ul').html(dados);
-						// Habilita a tooltip do bootstrap
-						$('[rel=tooltip]').tooltip({placement:'top'});
-						$('[rel=tooltip-border]').tooltip({placement:'top'});
-
-						// Adicionar borda pontilhada no holover do link com tooltip
-						$('[rel=tooltip-border]').hover(function(){
-							$(this).css({'border-bottom':'1px dotted #cccccc','padding-bottom':'2px'});
-						},
-						function(){
-							$(this).css({'border-bottom':'0','padding-bottom':'0'});
-						});
-				},
-				error: function(errorThrown) {
-					console.log(errorThrown);
-				}
-
-			});
-
-		}
 
 		
 
@@ -207,11 +297,30 @@ $(document).ready(function(){
 		<div class="row">
 
 
-			<?php get_sidebar('left'); ?>
+			<div id="single-col-left" class="col-md-3">
+
+				<div class="panel panel-default copy-width">
+
+					<div class="panel-body">
+
+						<p>Esta é a agenda de eventos e atividades de Porto Alegre, criada de forma colaborativa por todos os que querem contribuir.</p><br/>
+
+						<p>A moderação da publicação se dará por meio do administrador do projeto Cidade.vc.</p><br/>
+
+						<p>Poderão ser cadastradas agendas relativas a: lazer, saúde, esporte, educação, cultura e alimentação.</p> 
+
+					</div>
+
+				</div>
+
+			</div>
 
 
 			<div class="col-md-9">
 				
+				<div class="panel panel-default form-group">
+
+						<div class="panel-body">
 
 				<?php
 
@@ -259,12 +368,24 @@ $custom_meta_fields = array(
         'type' => 'lugar',  
         'post_type' => array('lugar-lazer','lugar-saude')  
     ),  
+    array(
+	'label'=> 'Nome do local (se não cadastrado)',
+	'desc'	=> '',
+	'id'	=> 'nome_do_local',
+	'type'	=> 'nome_do_local'
+	),
     array(  
 	    'label' => 'Data e hora',  
 	    'desc'  => 'A description for the field.',  
 	    'id'    => $prefix.'data',  
 	    'type'  => 'date'  
     ),
+	array(
+	'label'=> 'Informações sobre dias e horários',
+	'desc'	=> '',
+	'id'	=> 'informacao_dias',
+	'type'	=> 'informacao_dias'
+	),
     array (  
     'label' => 'Checkbox Group',  
     'desc'  => '',  
@@ -307,11 +428,12 @@ $custom_meta_fields = array(
 // The Callback
 
 global $custom_meta_fields, $post;
-// Use nonce for verification
-echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce(basename(__FILE__)).'" />';
+
 	
 	// Begin the field table and loop
 	echo '<div>';
+
+	echo '<div class="bloco"><h2 style="padding-bottom: 8px; border-bottom: 1px solid rgb(221, 221, 221);">Criar evento</h2></div>';
 
 	echo '<form action="" id="primaryPostForm" method="POST">';
 
@@ -329,8 +451,8 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					    	echo '<div class="bloco"><div class="row">'; 
 						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
-						        	echo '<input type="text" name="post_title" id="'.$field['id'].'" value="'.$titulo.'" size="30" /> 
-						            <br /><span class="description">'.$field['desc'].'</span>';  
+						        	echo '<input type="text" class="form-control" name="post_title" id="'.$field['id'].'" value="" size="30" />';
+						        	echo '<span class="help-block">Este será o nome principal do evento ou atividade. Seja breve, coloque o nome do evento, e se necessário o tipo de evento. Ex:. Feira de antiguidades "nome estranho que sozinho fica sem sentido".</span>';  
 						        echo '</div>';
 						    echo '</div></div>';
 					    break;
@@ -340,18 +462,19 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 								echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
 
-							    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
+							    echo '<select class="form-control" name="'.$field['id'].'" id="'.$field['id'].'"> 
 							            <option value="">Selecione uma categoria</option>'; // Select One  
 							    $terms = get_terms( 'category', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
 							    $selected = wp_get_object_terms($post->ID, 'category');
 							    foreach ($terms as $term) {  
 							        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
-							            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
+							            echo '<option value="" selected="selected">'.$term->name.'</option>';   
 							        else  
-							            echo '<option value="'.$term->slug.'">'.$term->name.'</option>';   
+							            echo '<option value="">'.$term->name.'</option>';   
 							    }  
 							    $taxonomy = get_taxonomy($field['id']);  
-							    echo '</select><br /><span class="description"><a href="'.get_bloginfo('home').'/wp-admin/edit-tags.php?taxonomy='.$field['id'].'">Manage '.$taxonomy->label.'</a></span>';  
+							    echo '</select>'; 
+							    echo '<span class="help-block">Escolha a categoria que mais se encaixa com o evento.</span>'; 
 								echo '</div>';
 							echo '</div></div>';
 						break;  
@@ -360,8 +483,8 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					    	echo '<div class="bloco"><div class="row">';
 						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">'; 
-						        echo '<textarea name="'.$field['id'].'" id="'.$field['id'].'" style="width:100%" rows="5">'.$meta.'</textarea> 
-						            <br /><span class="description">'.$field['desc'].'</span>';  
+						        echo '<textarea class="form-control" name="'.$field['id'].'" id="'.$field['id'].'" style="width:100%" rows="5">'.$meta.'</textarea>';  
+						   		echo '<span class="help-block">Descreva sobre o que acontece no evento, as atividades realizadas e informações importantes.</span>'; 
 						   		echo '</div>';
 						   	echo '</div></div>';
 					    break; 
@@ -370,7 +493,7 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 		
 	} // end foreach
 
-	echo '<div class="bloco"><h2>Localização</h2></div>';
+	echo '<div class="bloco"><h2 style="padding-bottom: 8px; border-bottom: 1px solid rgb(221, 221, 221);">Localização</h2></div>';
 
 	foreach ($custom_meta_fields as $field) {
 		// get value of this field if it exists for this post
@@ -383,18 +506,19 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 							echo '<div class="bloco"><div class="row">';
 								echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
-							    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
+							    echo '<select class="form-control" name="'.$field['id'].'" id="'.$field['id'].'"> 
 							            <option value="">Selecione um bairro</option>'; // Select One  
 							    $terms = get_terms( 'bairros', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
 							    $selected = wp_get_object_terms($post->ID, $field['id']);  
 							    foreach ($terms as $term) {  
 								        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
-								            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
+								            echo '<option value="" selected="selected">'.$term->name.'</option>';   
 								        else  
-								            echo '<option value="'.$term->slug.'">'.$term->name.'</option>';   
+								            echo '<option value="">'.$term->name.'</option>';   
 							    }  
 							    $taxonomy = get_taxonomy($field['id']);  
-							    echo '</select><br /><span class="description"><a href="'.get_bloginfo('home').'/wp-admin/edit-tags.php?taxonomy='.$field['id'].'">Manage '.$taxonomy->label.'</a></span>';  
+							    echo '</select>';
+							    echo '<span class="help-block">Selecione o bairro onde o evento irá acontecer.</span>';  
 								echo '</div>';
 							echo '</div></div>';
 						break;
@@ -403,8 +527,13 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 					    	echo '<div class="bloco"><div class="row">'; 
 						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
-						        	echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" placeholder="Ex:. Rua Rivadávia Correia, 08 - Partenon" style="width:100%" /> 
-						            <br /><span class="description">'.$field['desc'].'</span>';  
+						        	echo '<div class="input-group">';
+						        		echo '<input class="form-control" type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="" placeholder="Ex:. Rua Rivadávia Correia, 08 - Partenon" style="width:100%; text-transform:capitalize;" />';  
+						        		echo '<span class="input-group-btn"><button id="botao" class="btn btn-default" type="button">Buscar endereço</button></span>';
+						        	echo '</div>';
+
+						        	echo '<div id="map-canvas"></div>';
+
 						        echo '</div>';
 						    echo '</div></div>';
 					    break;
@@ -421,23 +550,54 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 									    'post_type' => $field['post_type'],  
 									    'posts_per_page' => -1  
 									));  
-								    echo '<select name="'.$field['id'].'" id="'.$field['id'].'"> 
+								    echo '<select class="form-control" name="'.$field['id'].'" id="'.$field['id'].'"> 
 								            <option value="">Selecione um lugar</option>'; // Select One  
 								        foreach($items as $item) {  
-								            echo '<option value="'.$item->ID.'"',$meta == $item->ID ? ' selected="selected"' : '','>'.$item->post_title.'</option>';  
+								            echo '<option value=""',$meta == $item->ID ? ' selected="selected"' : '','>'.$item->post_title.'</option>';  
 								        } // end foreach  
-								    echo '</select><br /><span class="description">'.$field['desc'].'</span>'; 
+								    echo '</select>';
+								    echo '<span class="help-block">Selecione o local onde o evento irá acontecer (se houver a opção).</span>';  
 							echo '</div>';
 						echo '</div></div>';
 						break; 
+						case 'nome_do_local':
+					    	$titulo = get_the_title($post->ID);
+					    	echo '<div class="bloco"><div class="row">'; 
+						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">';
+						        	echo '<input type="text" class="form-control" name="nome_do_local" id="'.$field['id'].'" value="" size="30" />';
+						        	echo '<span class="help-block">Se não achar o nome do local na opção anterior, escreva-o aqui.</span>';  
+						        echo '</div>';
+						    echo '</div></div>';
+					    break;
 					} //end switch
 
 
 	} // end foreach
 
 
-	echo '<div class="bloco"><h2>Dias e horários</h2></div>';
+	echo '<div class="bloco"><h2 style="padding-bottom: 8px; border-bottom: 1px solid rgb(221, 221, 221);">Dias e horários</h2></div>';
 
+	?>
+
+
+	<div class="bloco">
+		<div class="row">
+			<div class="col-sm-3">
+				<label class="pull-right">O evento acontece:</label>
+			</div>
+
+			<div class="col-sm-9">
+				<div class="especificas_ou_semana">
+					<input type="radio" name="grupo1" value="datas_especificas" checked> Em datas específicas (de X até X dia)<br>
+			        <input type="radio" name="grupo1" value="datas_semana"> Toda semana (sempre na segunda, terça etc) <br>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<?php
 
 	foreach ($custom_meta_fields as $field) {
 		// get value of this field if it exists for this post
@@ -452,29 +612,93 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 							$evento_termino_data = get_post_meta($post->ID, 'evento_termino_dia', true);
 							$evento_termino_hora = get_post_meta($post->ID, 'evento_termino_hora', true);
 						
-							echo '<div class="bloco"><div class="row">';
+							echo '<div class="bloco especificas"><div class="row">';
 								echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
 						        echo '<div class="col-sm-9">';
 							 	echo '<div class="row">';
-									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_inicio_dia" id="evento_inicio_dia" value="'.$evento_inicio_data.'" size="15" placeholder="Ex:.12/05/2013"/> <input type="time" name="evento_inicio_hora" id="evento_inicio_hora" placeholder="___:___" value="'.$evento_inicio_hora.'" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
-											<br /><span class="description">Início</span></div>';
-									echo '<div class="col-sm-6"><input type="text" class="datepicker" name="evento_termino_dia" id="evento_termino_dia" value="'.$evento_termino_data.'" size="15" placeholder="Ex:.15/05/2013"/> <input type="time" name="evento_termino_hora" id="evento_termino_hora" placeholder="___:___" value="'.$evento_termino_hora.'" size="5" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="inputs duration t1 time hrs" required>
-											<br /><span class="description">Termino</span></div>';
+									echo 	'<div class="col-sm-6">
+												<div class="row">
+													<div class="col-sm-8 form-group">
+														<input type="text" class="datepicker form-control data" name="evento_inicio_dia" id="evento_inicio_dia" value=""  placeholder="Ex:.12/05/2013"/>
+														<span class="help-block">Data de início.</span>
+													</div>
+
+													<div class="col-sm-4 form-group">
+														<input type="time" name="evento_inicio_hora" id="evento_inicio_hora" placeholder="__:__" value="" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="form-control hora">
+														<span class="help-block">Hora de início.</span>
+													</div>
+												</div>
+											</div>'; 
+									
+									echo '<div class="col-sm-6">
+											<div class="row">
+												<div class="col-sm-8 form-group">
+													<input type="text" class="datepicker form-control" name="evento_termino_dia" id="evento_termino_dia" value="" placeholder="Ex:.15/05/2013"/>
+													<span class="help-block">Data de termino.</span> 
+												</div>
+												<div class="col-sm-4 form-group">
+													<input type="time" name="evento_termino_hora" id="evento_termino_hora" placeholder="__:__" value="" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="form-control">
+													<span class="help-block">Hora de termino.</span>
+												</div>
+											</div>
+										</div>'; 
+
 								echo '</div>';
 								echo '</div>';
 							echo '</div></div>';
 						break;
+						// Descrição  
+					    case 'informacao_dias': 
+					    	echo '<div class="bloco especificas"><div class="row">';
+						    	echo '<div class="col-sm-3"><label class="pull-right" for="'.$field['id'].'">'.$field['label'].'</label></div>';
+						        echo '<div class="col-sm-9">'; 
+						        echo '<textarea class="form-control" name="'.$field['id'].'" id="'.$field['id'].'" style="width:100%" rows="5">'.$meta.'</textarea>';  
+						   		echo '<span class="help-block">Caso necessite informar mais detalhes relacionado aos dias e horários, use este espaço.</span>'; 
+						   		echo '</div>';
+						   	echo '</div></div>';
+					    break;
 						// dias da semana  
 						case 'dias_de_funcionamento':  
-						echo '<div class="bloco"><div class="row">';
-								echo '<div class="col-sm-3"><label class="pull-right" style="text-align:right" for="'.$field['id'].'">O evento acontece toda semana?</label></div>';
+						echo '<div class="bloco semana" style="display:none"><div class="row">';
+								echo '<div class="col-sm-3"><label class="pull-right" style="text-align:right" for="'.$field['id'].'">Selecione os dias da semana que o evento acontece</label></div>';
 						        echo '<div class="col-sm-9">';
 								    
-								    $meta = get_post_meta($post->ID, 'evento_dias_da_semana', true);
+
+					        	    function in_multiarray($needle, $haystack, $strict = false) {
+									    foreach ($haystack as $item) {
+									        if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_multiarray($needle, $item, $strict))) {
+									            return true;
+									        }
+									    }
+
+									    return false;
+									}
+
+
 								    $terms = get_terms( 'dias_de_funcionamento', array('orderby'    => 'count', 'hide_empty' => 0, 'parent'  => 0 ));  
+								    $meta = get_post_meta($post->ID, 'evento_dias_da_semana', true);
+				
+
 							        foreach ($terms as $term) {  
-							        	echo '<input type="checkbox" value="' . $term->name . '" name="checkbox[]" id="' . $term->id . '" '; if(is_array($meta)){ if(in_array($term->name, $meta)){echo 'checked="checked"> ';}else{echo '>';}}else{echo '>';}  
-							            echo '<span style="margin-right:12px">'.$term->name.'</span>';  
+
+							        	echo '<div class="checkbox" style="margin-bottom:25px">';
+								        	echo '<div class="row">';
+								        		echo '<div class="col-sm-3" style="padding-top: 6px;"><input type="checkbox" value="" name="checkbox[]" id="' . $term->id . '" '; if(is_array($meta)){ if(in_multiarray($term->name, $meta)){echo 'checked="checked"> ';}else{echo '>';}}else{echo '>';}  
+								            	echo $term->name.'</div>';  
+								            	echo '<div class="col-sm-9">
+								            				<div class="row">
+								            					<div class="col-sm-6">
+										            				<input style="width:75px" type="time" name="evento_inicio_hora_'.$term->name.'" id="evento_inicio_hora_sabado" placeholder="__:__" value="" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="form-control hora">
+										            				<span class="help-block">Hora de início</span>
+										            			</div>
+										            			<div class="col-sm-6">
+										            				<input style="width:75px" type="time" name="evento_termino_hora_'.$term->name.'" id="evento_inicio_hora_sabado" placeholder="__:__" value="" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" class="form-control hora">
+										            				<span class="help-block">Hora de termino</span>
+										            			</div>
+									            			</div>
+								            		  </div>';
+								            echo '</div>';
+								        echo '</div>';
 								    }  
 				
 							echo '</div>';
@@ -493,7 +717,7 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 
 				<input type="hidden" name="submitted" id="submitted" value="true" />
  
-        		<button type="submit">Enviar</button>
+        		<button type="submit" class="btn btn-success pull-right">Criar evento</button>
 
 	<?php
 
@@ -516,106 +740,158 @@ if ( isset( $_POST['submitted'] ) && isset( $_POST['post_nonce_field'] ) && wp_v
 
  
 
-if($post_id)
-	{
+	if($post_id){
 
-// Save the Data
+		// Save the Data
 
-    global $custom_meta_fields;
-	
-	
-	// loop through fields and save the data
-	foreach ($custom_meta_fields as $field) {
-		$old = get_post_meta($post_id, $field['id'], true);
-		$new = $_POST[$field['id']];
+	    global $custom_meta_fields;
+		
+		
+		// loop through fields and save the data
+		foreach ($custom_meta_fields as $field) {
+			$old = get_post_meta($post_id, $field['id'], true);
+			$new = $_POST[$field['id']];
+			if ($new && $new != $old) {
+				update_post_meta($post_id, $field['id'], $new);
+			} elseif ('' == $new && $old) {
+				delete_post_meta($post_id, $field['id'], $old);
+			}
+
+			// salva a categoria
+			if($field['type'] == 'categoria'){
+				// save taxonomies  
+				$post = get_post($post_id);  
+				$category = $_POST['category'];  
+				wp_set_object_terms( $post_id, $category, 'category' );
+			}  
+
+			// salva o bairro
+			if($field['type'] == 'bairros'){
+				// save taxonomies  
+				$post = get_post($post_id);  
+				$category = $_POST['bairros'];  
+				wp_set_object_terms( $post_id, $category, 'bairros' );
+			}  
+
+
+
+		} // end foreach
+
+		// salva a data de início
+		$old = get_post_meta($post_id, 'evento_inicio_dia', true);
+		$new = $_POST['evento_inicio_dia'];
 		if ($new && $new != $old) {
-			update_post_meta($post_id, $field['id'], $new);
+			update_post_meta($post_id, 'evento_inicio_dia', $new);
 		} elseif ('' == $new && $old) {
-			delete_post_meta($post_id, $field['id'], $old);
+			delete_post_meta($post_id, 'evento_inicio_dia', $old);
 		}
 
-		// salva a categoria
-		if($field['type'] == 'categoria'){
-			// save taxonomies  
-			$post = get_post($post_id);  
-			$category = $_POST['category'];  
-			wp_set_object_terms( $post_id, $category, 'category' );
-		}  
+		// salva a hora de início
+		$old = get_post_meta($post_id, 'evento_inicio_hora', true);
+		$new = $_POST['evento_inicio_hora'];
+		if ($new && $new != $old) {
+			update_post_meta($post_id, 'evento_inicio_hora', $new);
+		} elseif ('' == $new && $old) {
+			delete_post_meta($post_id, 'evento_inicio_hora', $old);
+		}
 
-		// salva o bairro
-		if($field['type'] == 'bairros'){
-			// save taxonomies  
-			$post = get_post($post_id);  
-			$category = $_POST['bairros'];  
-			wp_set_object_terms( $post_id, $category, 'bairros' );
-		}  
+		// salva a data de termino
+		$old = get_post_meta($post_id, 'evento_termino_dia', true);
+		$new = $_POST['evento_termino_dia'];
+		if ($new && $new != $old) {
+			update_post_meta($post_id, 'evento_termino_dia', $new);
+		} elseif ('' == $new && $old) {
+			delete_post_meta($post_id, 'evento_termino_dia', $old);
+		}
 
-
-
-	} // end foreach
-
-	// salva a data de início
-	$old = get_post_meta($post_id, 'evento_inicio_dia', true);
-	$new = $_POST['evento_inicio_dia'];
-	if ($new && $new != $old) {
-		update_post_meta($post_id, 'evento_inicio_dia', $new);
-	} elseif ('' == $new && $old) {
-		delete_post_meta($post_id, 'evento_inicio_dia', $old);
-	}
-
-	// salva a hora de início
-	$old = get_post_meta($post_id, 'evento_inicio_hora', true);
-	$new = $_POST['evento_inicio_hora'];
-	if ($new && $new != $old) {
-		update_post_meta($post_id, 'evento_inicio_hora', $new);
-	} elseif ('' == $new && $old) {
-		delete_post_meta($post_id, 'evento_inicio_hora', $old);
-	}
-
-	// salva a data de termino
-	$old = get_post_meta($post_id, 'evento_termino_dia', true);
-	$new = $_POST['evento_termino_dia'];
-	if ($new && $new != $old) {
-		update_post_meta($post_id, 'evento_termino_dia', $new);
-	} elseif ('' == $new && $old) {
-		delete_post_meta($post_id, 'evento_termino_dia', $old);
-	}
-
-	// salva a hora de termino
-	$old = get_post_meta($post_id, 'evento_termino_hora', true);
-	$new = $_POST['evento_termino_hora'];
-	if ($new && $new != $old) {
-		update_post_meta($post_id, 'evento_termino_hora', $new);
-	} elseif ('' == $new && $old) {
-		delete_post_meta($post_id, 'evento_termino_hora', $old);
-	}
+		// salva a hora de termino
+		$old = get_post_meta($post_id, 'evento_termino_hora', true);
+		$new = $_POST['evento_termino_hora'];
+		if ($new && $new != $old) {
+			update_post_meta($post_id, 'evento_termino_hora', $new);
+		} elseif ('' == $new && $old) {
+			delete_post_meta($post_id, 'evento_termino_hora', $old);
+		}
 
 
-	// salva os dias da semana
-	$old = get_post_meta($post_id, 'evento_dias_da_semana', true);
-	$new = $_POST['checkbox'];
-	if ($new && $new != $old) {
-		update_post_meta($post_id, 'evento_dias_da_semana', $new);
-	} elseif ('' == $new && $old) {
-		delete_post_meta($post_id, 'evento_dias_da_semana', $old);
-	}
+		// salva os dias da semana
+		
+		$diasSelecionados = $_POST['checkbox']; // Pega os dias marcados da semana que o evento acontece
+
+		// Cria e roganiza a array se tiver conteúdo marcado
+
+		if(isset($diasSelecionados)){
+
+			// Pega cada dia marcado e forma os elementos da array adicionando os horários
+
+			foreach ($diasSelecionados as $diaSelecionado) {
+				switch ($diaSelecionado) {
+					case 'Domingo':
+						$arrayDias[0] = array('dia' => $diaSelecionado, 'horarios' => array ('inicio' => $_POST['evento_inicio_hora_'.$diaSelecionado], 'termino' => $_POST['evento_termino_hora_'.$diaSelecionado]) );
+						break;
+					case 'Segunda':
+						$arrayDias[1] = array('dia' => $diaSelecionado, 'horarios' => array ('inicio' => $_POST['evento_inicio_hora_'.$diaSelecionado], 'termino' => $_POST['evento_termino_hora_'.$diaSelecionado]) );
+						break;
+					
+					case 'Terça':
+						$arrayDias[2] = array('dia' => $diaSelecionado, 'horarios' => array ('inicio' => $_POST['evento_inicio_hora_'.$diaSelecionado], 'termino' => $_POST['evento_termino_hora_'.$diaSelecionado]) );
+						break;
+
+					case 'Quarta':
+						$arrayDias[3] = array('dia' => $diaSelecionado, 'horarios' => array ('inicio' => $_POST['evento_inicio_hora_'.$diaSelecionado], 'termino' => $_POST['evento_termino_hora_'.$diaSelecionado]) );
+						break;
+
+					case 'Quinta':
+						$arrayDias[4] = array('dia' => $diaSelecionado, 'horarios' => array ('inicio' => $_POST['evento_inicio_hora_'.$diaSelecionado], 'termino' => $_POST['evento_termino_hora_'.$diaSelecionado]) );
+						break;
+
+					case 'Sexta':
+						$arrayDias[5] = array('dia' => $diaSelecionado, 'horarios' => array ('inicio' => $_POST['evento_inicio_hora_'.$diaSelecionado], 'termino' => $_POST['evento_termino_hora_'.$diaSelecionado]) );
+						break;
+
+					case 'Sábado':
+						$arrayDias[6] = array('dia' => $diaSelecionado, 'horarios' => array ('inicio' => $_POST['evento_inicio_hora_'.$diaSelecionado], 'termino' => $_POST['evento_termino_hora_'.$diaSelecionado]) );
+						break;
+
+					default:
+						# code...
+						break;
+				}
+				
+			}
+
+			asort($arrayDias); // Coloca os dias em ordem pela 'key'
+		}
 	
+		$old = get_post_meta($post_id, 'evento_dias_da_semana', true); // pega a array salva (se existir) no banco de dados
 
+		// Faz a comparação e atualiza ou deleta
 
+		if ($arrayDias && $arrayDias != $old) {
+			update_post_meta($post_id, 'evento_dias_da_semana', $arrayDias);
+		} elseif ('' == $new && $old) {
+			delete_post_meta($post_id, 'evento_dias_da_semana', $old);
+		}
+
+	
 	}
 
-
+	
 }
+
+
 
 
 ?>
 
 
+					</div>
+
+				</div>
+
 			</div>
 		
-
 		</div>
-	
 
 
 
