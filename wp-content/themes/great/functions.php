@@ -767,6 +767,43 @@ function keyBairro($bairro){
 }
 
 
+
+
+
+// verifica se há algo em arrays multi nível
+
+function in_multiarray($needle, $haystack, $strict = false) {
+    foreach ($haystack as $item) {
+        if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_multiarray($needle, $item, $strict))) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+
+	# UPLOAD DE IMAGEM NO FRONTEND
+
+	function insert_attachment($file_handler,$post_id,$setthumb='true') {
+	 
+		// check to make sure its a successful upload
+		if ($_FILES[$file_handler]['error'] !== UPLOAD_ERR_OK) __return_false();
+		 
+		require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+		require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+		require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+		 
+		$attach_id = media_handle_upload( $file_handler, $post_id );
+		 
+		if ($setthumb) update_post_meta($post_id,'imagem_capa',$attach_id);
+		return $attach_id;
+	}
+
+
+
+
 /*-----------------------------------------------------------------------------------*/
 /*	Custom Comments template
 /*-----------------------------------------------------------------------------------*/

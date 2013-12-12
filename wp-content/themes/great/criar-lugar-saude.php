@@ -1,14 +1,12 @@
 <?php
 /**
- * Template Name: Criar evento
+ * Template Name: Criar lugar saúde
  */
 ?>
 
 	<?php get_header(); ?>
 
 	<?php require 'criar-editar-lugar-functions.php'; ?>
-
-
 
 	<!-- Define vars para o mapa -->
 	
@@ -33,12 +31,43 @@
 		jQuery(function($){
 			$(".data").mask("99/99/9999");
 			$(".hora").mask("99:99");
+			$(".telefone").mask("(99)9999.9999");
 		});
 
 
 		jQuery(function($){
 			$('.datepicker').datepicker({dateFormat: 'dd/mm/yy', dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], dayNamesMin: ['D','S','T','Q','Q','S','S','D'], dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'], monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'], monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'], nextText: 'Próximo', prevText: 'Anterior'});
 		});
+
+
+
+		jQuery(function(jQuery) {  
+          
+	        jQuery('.custom_upload_image_button').click(function() {  
+	            formfield = jQuery(this).siblings('.custom_upload_image');  
+	            preview = jQuery(this).siblings('.custom_preview_image');  
+	            tb_show('', 'media-upload.php?type=image&TB_iframe=true');  
+	            window.send_to_editor = function(html) {  
+	                imgurl = jQuery('img',html).attr('src');  
+	                classes = jQuery('img', html).attr('class');  
+	                id = classes.replace(/(.*?)wp-image-/, '');  
+	                formfield.val(id);  
+	                preview.attr('src', imgurl);  
+	                tb_remove();  
+	            }  
+	            return false;  
+	        });  
+	          
+	        jQuery('.custom_clear_image_button').click(function() {  
+	            var defaultImage = jQuery(this).parent().siblings('.custom_default_image').text();  
+	            jQuery(this).parent().siblings('.custom_upload_image').val('');  
+	            jQuery(this).parent().siblings('.custom_preview_image').attr('src', defaultImage);  
+	            return false;  
+	        });  
+	      
+	    });  
+
+
 
 		// Deslizar de forma suave (http://css-tricks.com/snippets/jquery/smooth-scrolling/)	
 		$(function() {
@@ -104,7 +133,7 @@
 									}
 
 									// Exibe o endereco recortado na barra de busca
-									$('#evento_endereco').val(contentEcho);
+									$('#endereco').val(contentEcho);
 
 
 									// Cria o balão de informação com o endereço do marcador - dragend	
@@ -126,7 +155,7 @@
 						});
 						
 						var latlng = marker.getPosition();
-						$('#evento_latlong').val(latlng);
+						$('#latlong').val(latlng);
 
 					}
 				}
@@ -172,7 +201,7 @@
 													}
 
 
-													$('#evento_endereco').val(contentEcho); 
+													$('#endereco').val(contentEcho); 
 
 
 														
@@ -192,7 +221,7 @@
 													
 													// Coloca o latlong no input
 													var latlng = marker.getPosition();
-													$('#evento_latlong').val(latlng); 
+													$('#latlong').val(latlng); 
 
 												}
 											},
@@ -207,7 +236,7 @@
       					map.panTo(latLng); //Make map global
 
       					
-						$('#evento_latlong').val(latLng);
+						$('#latlong').val(latLng);
 
 					}
 				},
@@ -216,7 +245,7 @@
 	
 		// Botao para chamar o endereço no mapa
 		$("#botao").click(function(){
-			var endereco = $("#evento_endereco").val();
+			var endereco = $("#endereco").val();
 			buscaLatlong(endereco);
 		});
 
@@ -332,30 +361,28 @@
 
 
 
-
-		<?php require'models/criar-editar/criar-evento-inputs.php' ?> 
-
+		<?php require'models/criar-editar/criar-lugar-saude-inputs.php'; ?> 
 
 
 
-				
+
 <?php
+
 
 if ( isset( $_POST['submitted'] ) && isset( $_POST['post_nonce_field'] ) && wp_verify_nonce( $_POST['post_nonce_field'], 'post_nonce' ) ) {
  
  
     $post_information = array(
         'post_title' => wp_strip_all_tags( $_POST['post_title'] ),
-        'post_type' => 'eventos',
+        'post_type' => 'lugar-saude',
         'post_status' => 'pending'
     );
  
    	$post_id = wp_insert_post($post_information);
 
 
- 
 
-	require'models/criar-editar/criar-evento-saves.php'; 
+ 	require'models/criar-editar/criar-lugar-saude-saves.php';
 
 	
 }

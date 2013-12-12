@@ -1,17 +1,23 @@
-<?php require 'single-functions.php' ?>
+<?php
+/**
+ * Template Name: Ver lugar lazer
+ */
+?>
+
 <?php get_header(); ?>
 <?php $options = get_option('great'); ?>
 
 <!-- Define vars para o mapa -->
 	
 	<?php
-	$latlong = get_post_meta($post->ID, 'latlong', true);
+	$latlong = get_field('latlong');
 	$latlong = str_replace('(', '', $latlong);
 	$latlong = str_replace(')', '', $latlong);
 	?>
 
 
-		<script type="text/javascript">
+
+	<script type="text/javascript">
 
 	// Deslizar de forma suave (http://css-tricks.com/snippets/jquery/smooth-scrolling/)	
 	$(function() {
@@ -21,7 +27,7 @@
 				target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
 				if (target.length) {
 					$('html,body').animate({
-						scrollTop: target.offset().top-80
+						scrollTop: target.offset().top
 					}, 1000);
 					return false;
 				}
@@ -206,115 +212,73 @@ $(document).ready(function(){
 
 
 			<div class="col-md-9">
-				<div class="panel-default panel">
-					<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
-						
-							<?php if ('lugar-saude' == get_post_type()){ ?>
 
-								<?php 
-								global $post; 
-								$postID = get_the_ID();
-								$preco = wp_get_object_terms($post->ID, 'preço');
-								?>
+				<div class="panel panel-default">
 
+					<div class="panel-body">
+				
 
+			<!-- #primary BEGIN -->
+	<div id="primary">
 
-								<div class="panel-heading">
-									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if($preco != ''){ ?><span class="label-small label-success"><?php if(is_array($preco)){ echo $preco[0]->name;} ?></span><?php } ?></h1>
-								</div>	
-									
-								<div class="panel-body">
+		<?php if(isset($_GET['result'])) : ?>
 
+			<?php if($_GET['result'] == 'success') : ?>
 
+				<!-- .client_success BEGIN -->
+				<div class="client_success">
 
-					
+					<span class="success">Successfully Added<span class="cross"><a href="#">X</a></span></span>
 
-									<?php get_descricao($postID); ?>
+				</div><!-- .client_success END -->
 
+			<?php endif; ?>
 
-									<?php get_servicos_oferecidos($postID); ?>
-									
+		<?php endif; ?>
 
-									<?php get_servicos_oferecidos_info($postID); ?>
+		<table>
 
+			<tr>
+				<th>Nome do lugar</th>
+				<th>Status</th>
+				<th>Ações</th>
+			</tr>
 
-									<?php get_acesso($postID); ?>
+			<?php $query = new WP_Query(array('post_type' => 'lugar-lazer', 'posts_per_page' =>'-1', 'post_status' => array('publish', 'pending', 'draft', 'private', 'trash') ) ); ?>
 
-									
-									<?php get_dias_da_semana($postID); ?>
-									
+			<?php if ($query->have_posts()) : while ($query->have_posts()) : $query->the_post(); ?>
 
-									<?php get_localizacao($postID); ?>
+			<tr>
+				<td><?php echo get_the_title(); ?></td>
+				<td><?php if(get_post_status(get_the_ID()) == 'publish'){echo 'publicado';}elseif(get_post_status(get_the_ID()) == 'pending'){echo 'em moderação';} ?></td>
 
+				<?php $edit_post = add_query_arg('post', get_the_ID(), get_permalink(154 + $_POST['_wp_http_referer'])); ?>
 
-									<?php get_onibus($postID); ?>
+				<td>
+					<a href="<?php echo $edit_post; ?>">Editar</a>
 
+					<?php if( !(get_post_status() == 'trash') ) : ?>
 
+						<a onclick="return confirm('Você tem certeza que deseja excluir o evento: <?php echo get_the_title() ?>?')"href="<?php echo get_delete_post_link( get_the_ID() ); ?>">Excluir</a>
 
-								</div><!--.post-content box mark-links-->
-					
-							<?php }elseif ('lugar-lazer' == get_post_type()){ ?>
+					<?php endif; ?>
+				</td>
+			</tr>
 
-								<?php 
-								global $post; 
-								$postID = get_the_ID();
-								$preco = wp_get_object_terms($post->ID, 'preço');
-								?>
+		<?php endwhile; endif; ?>
 
+		</table>
 
-								<div class="panel-heading">
-									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php if(is_array($valorID)){ preco($valorID[0]);}else{preco($valorID);} ?></span><?php } ?></h1>
-								</div>	
-									
-								<div class="panel-body">
+	</div><!-- #primary END -->
 
-									
+					</div>
 
-									<?php get_descricao($postID); ?>
-
-									
-									
-									<?php get_atividades_possiveis($postID); ?>
-								
-
-								
-									<?php get_eventos($postID); ?>
-
-
-
-									<?php if(get_field("tambem_são_realizados")){ ?>
-									<div class="bloco" id="tambem_sao_realizados">
-										
-											<h2>Também são realizados</h2>
-											<p><?php the_field("tambem_são_realizados"); ?></p>
-										
-									</div>
-									<?php } ?>
-
-									
-
-									<?php get_acesso($postID); ?>
-
-
-									<?php get_dias_da_semana($postID); ?>
-									
-
-									<?php get_localizacao($postID); ?>
-
-
-									<?php get_onibus($postID); ?>
-
-
-
-								</div><!--.post-content box mark-links-->
-					
-							<?php } ?>
-					
-					
-					<?php comments_template( '', true ); ?>
-				<?php endwhile; /* end loop */ ?>
 				</div>
+
 			</div>
+		
+
+		</div>
 	
 
 

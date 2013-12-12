@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Criar evento
+ * Template Name: Editar lugar lazer
  */
 ?>
 
@@ -9,10 +9,21 @@
 	<?php require 'criar-editar-lugar-functions.php'; ?>
 
 
-
 	<!-- Define vars para o mapa -->
-	
+
 	<?php
+	$query = new WP_Query(array('post_type' => 'lugar-lazer', 'posts_per_page' =>'-1', 'post_status' => array('publish', 'pending', 'draft', 'private', 'trash') ) );
+
+	if ($query->have_posts()) : while ($query->have_posts()) : $query->the_post();
+	
+		if(isset($_GET['post'])) {
+			
+			if($_GET['post'] == $post->ID){
+				
+				$current_post = $post->ID;
+
+
+
 	$latlong = get_post_meta($post->ID, 'latlong', true);
 
 	if($latlong != ''){
@@ -33,6 +44,7 @@
 		jQuery(function($){
 			$(".data").mask("99/99/9999");
 			$(".hora").mask("99:99");
+			$(".telefone").mask("(99)9999.9999");
 		});
 
 
@@ -66,8 +78,8 @@
 		$('#map-canvas').gmap3({
 			map: {
 				options: {
-					center: [-30.036363, -51.214786],
-					zoom: 13,
+					center: [<?php echo $latlong ?>],
+					zoom: 15,
 					mapTypeId: google.maps.MapTypeId.ROADMAP,
 					mapTypeControl: true,
 					mapTypeControlOptions: {
@@ -79,7 +91,7 @@
 				}
 			},
 			marker: {
-				latLng: [-30.036363, -51.214786],
+				latLng: [<?php echo $latlong ?>],
 				options: {
 					draggable: true
 				},
@@ -104,7 +116,7 @@
 									}
 
 									// Exibe o endereco recortado na barra de busca
-									$('#evento_endereco').val(contentEcho);
+									$('#endereco').val(contentEcho);
 
 
 									// Cria o balão de informação com o endereço do marcador - dragend	
@@ -126,7 +138,7 @@
 						});
 						
 						var latlng = marker.getPosition();
-						$('#evento_latlong').val(latlng);
+						$('#latlong').val(latlng);
 
 					}
 				}
@@ -172,7 +184,7 @@
 													}
 
 
-													$('#evento_endereco').val(contentEcho); 
+													$('#endereco').val(contentEcho); 
 
 
 														
@@ -192,7 +204,7 @@
 													
 													// Coloca o latlong no input
 													var latlng = marker.getPosition();
-													$('#evento_latlong').val(latlng); 
+													$('#latlong').val(latlng); 
 
 												}
 											},
@@ -207,7 +219,7 @@
       					map.panTo(latLng); //Make map global
 
       					
-						$('#evento_latlong').val(latLng);
+						$('#latlong').val(latLng);
 
 					}
 				},
@@ -216,7 +228,7 @@
 	
 		// Botao para chamar o endereço no mapa
 		$("#botao").click(function(){
-			var endereco = $("#evento_endereco").val();
+			var endereco = $("#endereco").val();
 			buscaLatlong(endereco);
 		});
 
@@ -332,30 +344,44 @@
 
 
 
-
-		<?php require'models/criar-editar/criar-evento-inputs.php' ?> 
-
+	<?php require 'models/criar-editar/criar-lugar-lazer-inputs.php'; ?>
 
 
 
-				
+
 <?php
 
 if ( isset( $_POST['submitted'] ) && isset( $_POST['post_nonce_field'] ) && wp_verify_nonce( $_POST['post_nonce_field'], 'post_nonce' ) ) {
  
  
-    $post_information = array(
-        'post_title' => wp_strip_all_tags( $_POST['post_title'] ),
-        'post_type' => 'eventos',
-        'post_status' => 'pending'
-    );
- 
-   	$post_id = wp_insert_post($post_information);
 
 
- 
+	// Publica automaticamente o evento se o usuário for admin
 
-	require'models/criar-editar/criar-evento-saves.php'; 
+	if(current_user_can('manage_options')){
+		$status = 'publish';
+	}else{
+		$status = 'pending';
+	}
+
+
+
+
+   	$post_information = array(
+		'ID' => $current_post,
+		'post_title' => esc_attr(strip_tags($_POST['post_title'])),
+		'post-type' => 'lugar-lazer',
+		'post_status' => $status
+	);
+
+	$post_id = wp_update_post($post_information);
+
+
+
+
+ 		require 'models/criar-editar/criar-lugar-lazer-saves.php';
+
+
 
 	
 }
@@ -375,6 +401,16 @@ if ( isset( $_POST['submitted'] ) && isset( $_POST['post_nonce_field'] ) && wp_v
 		</div>
 
 
+<?php
 
+
+		}
+	}
+
+
+	endwhile; endif;
+	wp_reset_query();
+
+?>
 
 		<?php get_footer(); ?>

@@ -33,7 +33,7 @@
 
 </head>
 <?php flush(); ?>
-<body id ="blog" <?php body_class('main'); ?> data-offset='80' data-spy="scroll" data-target="#nav">
+<body id ="blog" <?php body_class('main'); ?> data-offset='100' data-spy="scroll" data-target="#nav">
 
 
 	
