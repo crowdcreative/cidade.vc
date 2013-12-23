@@ -16,10 +16,10 @@
 
 		
 
-		# salva a SUBCATEGORIA 
+		# salva a SUBCATEGORIA e a categoria a qual o lugar pertence
 
 		$subcategoria = $_POST['subcategoria'];  
-		wp_set_object_terms( $post_id, $subcategoria, 'category' );
+		wp_set_object_terms( $post_id, array('saude', $subcategoria), 'category' );
 		
 
 

@@ -16,13 +16,11 @@
 
 		
 
-		# salva a SUBCATEGORIA 
+		# salva a SUBCATEGORIA e a categoria a qual o lugar pertence
 
 		$subcategoria = $_POST['subcategoria'];  
-		wp_set_object_terms( $post_id, $subcategoria, 'category' );
+		wp_set_object_terms( $post_id, array('lazer', $subcategoria), 'category' );
 		
-
-
 
 
 
@@ -108,20 +106,39 @@
 
 
 
-		# salva os SERVIÇOS OFERECIDOS
+		# salva as ATIVIDADES POSSÍVEIS
 		
-		$atividadesSelecionadas = $_POST['atividades_possiveis']; // Pega os dias marcados da semana que o evento acontece
 
-		if(isset($atividadesSelecionadas)){
-			sort($atividadesSelecionadas); // Coloca os dias em ordem
+		// Pega os dias marcados da semana que o evento acontece
+		
+		$atividades_selecionadas = $_POST['atividades_possiveis']; 
+
+
+		// Coloca as atividades em ordem alfabética
+		
+		if(isset($atividades_selecionadas)){
+			sort($atividades_selecionadas); 
+		}
+
+
+		// Cria uma array que será usada para armazenar as informações das atividades
+		
+		$atividades_possiveis_array = array();
+
+
+		// Pega cada atividade da array criada pela seleção
+
+		foreach ($atividades_selecionadas as $atividade_id) {
+			$atividades_possiveis_array[] = array('id' => $atividade_id, 'contador' => '', 'usuarios_id' => array());
 		}
 		
+
 		$old = get_post_meta($post_id, 'atividades_possiveis', true); 
 
 
-		if ($atividadesSelecionadas && $atividadesSelecionadas != $old) {
-			update_post_meta($post_id, 'atividades_possiveis', $atividadesSelecionadas);
-		} elseif ('' == $atividadesSelecionadas && $old) {
+		if ($atividades_possiveis_array && $atividades_possiveis_array != $old) {
+			update_post_meta($post_id, 'atividades_possiveis', $atividades_possiveis_array);
+		} elseif ('' == $atividades_possiveis_array && $old) {
 			delete_post_meta($post_id, 'atividades_possiveis', $old);
 		}
 
@@ -130,7 +147,7 @@
 
 
 
-		# salva o SERVIÇOS OFERECIDOS INFO
+		# salva as ATIVIDADES POSÍVEIS INFO
 
 		$old = get_post_meta($post_id, 'servicos_oferecidos_info', true);
 		$new = $_POST['servicos_oferecidos_info'];
@@ -194,7 +211,7 @@
 		
 		# salva os DIAS DA SEMANA
 		
-		require 'criar-editar-requires/salva-dias-da-semana.php';
+		require 'salva-dias-da-semana.php';
 
 
 

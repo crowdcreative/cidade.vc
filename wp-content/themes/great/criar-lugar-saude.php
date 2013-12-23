@@ -6,7 +6,7 @@
 
 	<?php get_header(); ?>
 
-	<?php require 'criar-editar-lugar-functions.php'; ?>
+	<?php require 'controllers/criar-editar-lugar-functions.php'; ?>
 
 	<!-- Define vars para o mapa -->
 	
@@ -355,13 +355,11 @@
 
 			<div class="col-md-9">
 				
-				<div class="panel panel-default form-group">
-
-						<div class="panel-body">
-
+				
+				<?php require'models/criar-editar/criar-lugar-saude-inputs.php'; ?> 
 
 
-		<?php require'models/criar-editar/criar-lugar-saude-inputs.php'; ?> 
+			</div>
 
 
 
@@ -393,11 +391,9 @@ if ( isset( $_POST['submitted'] ) && isset( $_POST['post_nonce_field'] ) && wp_v
 ?>
 
 
-					</div>
+					
 
-				</div>
-
-			</div>
+			
 		
 		</div>
 

@@ -53,7 +53,7 @@ global $post;
 		    echo '<select class="form-control" name="subcategoria" id="subcategoria"> 
 		            <option value="">Selecione uma subcategoria</option>'; // Select One  
 		    foreach ($terms as $term) {  
-		        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug))   
+		        if (!empty($selected) && !strcmp($term->slug, $selected[0]->slug OR $term->slug, $selected[1]->slug))   
 		            echo '<option value="'.$term->slug.'" selected="selected">'.$term->name.'</option>';   
 		        else  
 		            echo '<option value="'.$term->slug.'">'.$term->name.'</option>';   
@@ -222,7 +222,7 @@ global $post;
 	        				<input type="checkbox" value="'.$term->term_id.'" name="atividades_possiveis[]" id="' . $term->term_id . '" '; if(is_array($atividades_possiveis)){ if(in_multiarray($term->term_id, $atividades_possiveis)){echo 'checked="checked"> ';}else{echo '>';}}else{echo '>';}  
 	            			echo $term->name.
 	            		 '</div>';   
-	   				 } 
+	   				} 
 		   	echo '</div>';
 		        echo '</div>'; 
 

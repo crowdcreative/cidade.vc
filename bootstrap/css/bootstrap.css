@@ -808,12 +808,11 @@ pre code {
 }
 
 .bloco{
-  margin-bottom: 35px;
+  margin-bottom: 0;
 }
 
 .row {
-  margin-right: -15px;
-  margin-left: -15px;
+
 }
 
 .row:before,
@@ -5226,6 +5225,20 @@ textarea.input-group-sm > .input-group-btn > .btn {
   vertical-align: baseline;
   background-color: #999999;
   border-radius: 10px;
+}
+
+.badge-rounded{
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    color: #333333;
+    display: inline-block;
+    font-size: 60%;
+    font-weight: bold;
+    line-height: 1;
+    min-width: 10px;
+    padding: 2px 4px !important;
+    vertical-align: baseline;
+    white-space: nowrap;
 }
 
 .badge:empty {

@@ -25,7 +25,10 @@
 				<?php
 					foreach ($categories as $categoria) {
 						if($categoria->name != "Sem categoria"){
-							echo "<li class='list-group-item'><a href='#'>".$categoria->name."</a><span class='badge'>".$categoria->count."</span></li>";
+							$categoriaCount = $categoria->count;
+							if($categoriaCount > 0){
+								echo "<li class='list-group-item'><a href='#'>".$categoria->name."</a><span class='badge'>".$categoriaCount."</span></li>";
+							}
 						}
 					}
 				?>

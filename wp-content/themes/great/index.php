@@ -1,4 +1,4 @@
-<?php $options = get_option('great'); ?>
+
 <?php get_header(); ?>
 
 		<script type="text/javascript">
@@ -47,6 +47,16 @@ $(document).ready(function(){
 
 </script>
 
+
+
+
+
+  	<?php require 'models/perfil/perfil-modal.php' ?>
+      
+
+
+
+
 <div id="page" class="container">
 
 
@@ -77,8 +87,6 @@ $(document).ready(function(){
 						global $query_string;
 						$posts = query_posts( array( 'posts_per_page' => -1, 'post_type' => array('lugar-saude','lugar-lazer')));
 						$contadorPin = 1;
-						$contadorArray = array();
-						$contadorArray[$contadorPin] = 1;
 						?>
 					
 
@@ -89,7 +97,10 @@ $(document).ready(function(){
 							<?php if ('lugar-saude' == get_post_type() || 'lugar-lazer' == get_post_type()){ ?>
 
 							<?php  
-								$latlong = get_field('latlong');
+								global $wp; 
+								$postID =  get_the_ID(); 
+
+								$latlong = get_post_meta($postID, 'latlong', true);
 								$latlong = str_replace('(', '', $latlong);
 								$latlong = str_replace(')', '', $latlong);
 							?>
@@ -100,7 +111,7 @@ $(document).ready(function(){
 									marker: {
 										latLng: [<?php echo $latlong ?>],
 										options: {
-											icon: '<?php echo "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=".$contadorArray[$contadorPin]."|428BCA|ffffff"; ?>'
+											icon: '<?php echo "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=".$contadorPin."|428BCA|ffffff"; ?>'
 										},
 										events: {
 											mouseover: function(marker, event, context) {
@@ -145,41 +156,47 @@ $(document).ready(function(){
 							</script>
 
 							<?php 
-								global $wp; 
-								$taxonomyID = get_field('bairro');
+								
+								
 									$taxonomyID = (int)$taxonomyID;
 									$taxonomy = get_term($taxonomyID, 'bairros'); 
 								$bairro = $taxonomy->name;
-								$descricao = get_field("descrição_do_lugar");
+								$descricao = get_post_meta($postID, 'descricao', true);
 									$descricao = strip_tags($descricao);
 									$descricao = substr($descricao, 0, 300);
-								$postID =  get_the_ID(); 
-								$valorID = get_field("preço");
+								
+							
 							?>
 
 						
 							
 							<div class="row">
 							
+
+
 								
-								<div class="col-sm-3">
+								<div class="col-sm-3" style="padding:0">
 									<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="nofollow" id="featured-thumbnail">
-									<?php if (get_field('imagem_de_capa')) { ?> 
+									<?php if ('a' == 'a') { ?> 
 										<?php
-										$attachment_id = get_field("imagem_de_capa");
-										$atachment_url = wp_get_attachment_image_src( $attachment_id, 'image-lugar');
+										$imagemID = get_post_meta($postID, 'imagem_capa', true);
+										$atachment_url = wp_get_attachment_image_src( $imagemID, 'image-lugar');
 										?>
 										<img id="avatar" src="<?php echo $atachment_url[0]; ?>" class="img-thumbnail"/>
 									<?php } ?>
 									</a>
 								</div>
 						
+
+
+
+
 								<div class="col-sm-9">
 
 									<div class="post-info"> <span class="uppercase"><?php $category = get_the_category(); echo '<a href="'.get_category_link($category[0]->cat_ID).'">' . $category[0]->cat_name .'</a>';?> </span><span><?php echo $bairro; ?></span><span style='display:none'>Compartilhado por <?php the_author_meta("display_name"); ?></span></div>
 
 									<h2 class="title">
-										<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark" class="titulo" latlong="<?php echo $latlong ?>"><span class='contadorPin'><?php echo $contadorArray[$contadorPin].". "; ?></span><?php the_title(); ?></a><span class="leitura help" title="Tempo médio de leitura"><?php the_field("tempo_de_leitura"); ?></span><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php if(is_array($valorID)){ preco($valorID[0]);}else{preco($valorID);} ?></span><?php } ?>
+										<a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark" class="titulo" latlong="<?php echo $latlong ?>"><span class='contadorPin'><?php echo $contadorPin.". "; ?></span><?php the_title(); ?></a>
 									</h2>
 										
 									<div class="post-content image-caption-format-1">
@@ -189,17 +206,17 @@ $(document).ready(function(){
 										</p>
 
 										<span class="time"><?php echo time_ago(); ?></span>
+										<?php get_link_editar($postID) ?>
 									</div>
 								</div>
+
+
 								
 							</div>
 
 						<?php } ?>  
 						
-						<?php 
-						$contadorPin++; 
-						$contadorArray[$contadorPin] = $contadorPin;
-						?>
+						<?php $contadorPin++ ?>
 							
 						<?php endwhile;  wp_reset_query(); else: ?>
 							<div class="post excerpt">

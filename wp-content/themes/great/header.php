@@ -1,14 +1,19 @@
-<?php 	header("Content-type: text/html; charset=utf-8");; 
+<?php 	header("Content-type: text/html; charset=utf-8");
+
+
+if(!class_exists('Facebook')){
+  require '/wp-content/plugins/nextend-facebook-connect/sdk/init.php';
+}
+
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="<?php bloginfo('charset'); ?>">
+
 	<title><?php wp_title(''); ?></title>
-	<?php mts_meta(); ?>
 	<link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
-	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
 	<?php wp_enqueue_script("jquery"); ?>
 	<?php if ( is_singular() ) wp_enqueue_script('comment-reply'); ?>
 	<!--[if lt IE 9]>
@@ -20,20 +25,20 @@
 	<link rel="shortcut icon" href="./wp-content/themes/great/images/favicon.png">
 	<link href="http://127.0.0.1/projects/cidade.vc/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
 
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/wp-content/themes/great/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true"></script>
 	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/gmap3.js"></script>
-	<!-- <script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/map.js"></script> -->
 	<script src="http://127.0.0.1/projects/cidade.vc/bootstrap/js/bootstrap.js"></script>
+	<script src="http://127.0.0.1/projects/cidade.vc/wp-content/themes/great/js/customscript.js"></script>
 	
-	<?php mts_head(); ?>
+
 	<?php wp_head(); ?>
 	
 
 
 </head>
 <?php flush(); ?>
-<body id ="blog" <?php body_class('main'); ?> data-offset='100' data-spy="scroll" data-target="#nav">
+<body id ="blog" <?php body_class('main'); ?> data-offset='110' data-spy="scroll" data-target="#nav">
 
 
 	
@@ -60,14 +65,15 @@
 							<?php 
 							$userID = get_current_user_id(); // pega id do usuário
 							$userInfo = get_userdata($userID); // vê se está logado
-							if ( 0 == $userInfo->ID ) {
-							    echo "<span class='navbar-text'>Entrar</span>";
+							if (!$facebook->getUser()) {
+							    echo '<span class="navbar-text"><a href="http://127.0.0.1/projects/cidade.vc/wp-login.php?loginFacebook=1&redirect=http://127.0.0.1/projects/cidade.vc" onclick="window.location = "http://127.0.0.1/projects/cidade.vc/wp-login.php?loginFacebook=1&redirect="+window.location.href; return false;">Entrar</a></span>';
 							} else {
-								echo "<span class='navbar-text' style='margin-right:0'>".get_avatar( $userID, 24)."</span>";
-							    echo "<span class='navbar-text'>".$userInfo->first_name."</span>";
+								echo '<span class="navbar-text" style="margin-right:0">'.get_avatar( $userID, 24).'</span>';
+							    echo '<span class="navbar-text">'.$userInfo->first_name.'</span>';
+							    echo '<span class="navbar-text"><a href="'.wp_logout_url(home_url()).'">Sair</a></span>';
+							    echo '<span class="navbar-text" data-toggle="modal" data-target="#myModal">Qual o seu bairro?</span>';
 							}
 							?>
-
 						</div>
 						<a href="criar-evento"><button type="button" class="btn btn-primary navbar-btn pull-right">Cocriar</button></a>
 					</div>
@@ -77,12 +83,4 @@
 		 
 	</div>
 
-	<?php if (is_single() || is_page()) { ?>
-		
-		<div class="container" style="display:none">	
-			<div class="panel panel-default">
-				<div id="breadcrumb"><?php the_breadcrumb(); ?></div>
-			</div>
-		</div>
 
-	<?php } ?>

@@ -6,7 +6,7 @@
 
 	<?php get_header(); ?>
 
-	<?php require 'criar-editar-lugar-functions.php'; ?>
+	<?php require 'controllers/criar-editar-lugar-functions.php'; ?>
 
 
 

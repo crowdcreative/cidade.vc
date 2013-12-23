@@ -1,6 +1,7 @@
-<?php require 'single-functions.php' ?>
+<?php require 'controllers/single-functions.php' ?>
+
 <?php get_header(); ?>
-<?php $options = get_option('great'); ?>
+
 
 <!-- Define vars para o mapa -->
 	
@@ -8,6 +9,7 @@
 	$latlong = get_post_meta($post->ID, 'latlong', true);
 	$latlong = str_replace('(', '', $latlong);
 	$latlong = str_replace(')', '', $latlong);
+	$userID = get_current_user_id(); // pega id do usuário
 	?>
 
 
@@ -32,6 +34,49 @@
 
 
 $(document).ready(function(){
+
+		var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
+
+
+		// Vota nas atividades possíveis
+
+		$('#atividades_possiveis ul li').click(function(){
+
+			var termID = $(this).attr('term-id');
+			var clicado = $(this);
+
+			$.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+
+				data: {
+					'action': 'atividades_possiveis_votacao',
+					'user-id': <?php echo $userID; ?>,
+					'post-id': <?php echo $post->ID ?>,
+					'term-id': termID
+				},
+				success: function(dados){
+					if(clicado.find('span').hasClass('badge-rounded') && dados != ''){
+
+						// atualiza o contador
+						clicado.find('.badge-rounded').html(dados);
+
+					}
+
+					if(clicado.find('span').hasClass('badge-rounded') == false){
+						clicado.append('<span class="badge-rounded">1</span>');
+					}
+					
+				},
+				error: function(errorThrown) {
+				
+				}
+
+			});
+		});
+
+
+
 
 
 		var top = $('#anchorlinks').offset().top - parseFloat($('#anchorlinks').css('marginTop').replace(/auto/, 0));
@@ -119,7 +164,7 @@ $(document).ready(function(){
 	        return false;
 	    });
 
-	    var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
+	    
 
 		var map = $("#map-canvas").gmap3("get");
 
@@ -185,6 +230,11 @@ $(document).ready(function(){
 
 		}
 
+
+
+
+
+
 		
 
 
@@ -192,6 +242,9 @@ $(document).ready(function(){
 
 </script>
 
+
+		<!-- Pega o modal da cocriação das atividades possíveis -->
+		<?php require 'models/perfil/cocriacao-atividades-possiveis-modal.php' ?>
 
 
 <a href="#top"><div id="buttonScroll-top" class="glyphicon glyphicon-circle-arrow-up" style="display:none"></div></a>
@@ -204,111 +257,118 @@ $(document).ready(function(){
 
 			<?php get_sidebar('left'); ?>
 
-
 			<div class="col-md-9">
-				<div class="panel-default panel">
-					<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
+
+				<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 						
-							<?php if ('lugar-saude' == get_post_type()){ ?>
+					<?php if ('lugar-saude' == get_post_type()){ ?>
 
-								<?php 
-								global $post; 
-								$postID = get_the_ID();
-								$preco = wp_get_object_terms($post->ID, 'preço');
-								?>
+						<?php 
+						global $post; 
+						$postID = get_the_ID();
+						$preco = wp_get_object_terms($post->ID, 'preço');
+						?>
 
+						
 
+						<div class="panel-default panel">
 
-								<div class="panel-heading">
-									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if($preco != ''){ ?><span class="label-small label-success"><?php if(is_array($preco)){ echo $preco[0]->name;} ?></span><?php } ?></h1>
-								</div>	
-									
-								<div class="panel-body">
-
-
-
-					
-
-									<?php get_descricao($postID); ?>
+							<div class="panel-heading">
+								<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if($preco != ''){ ?><span class="label-small label-success"><?php if(is_array($preco)){ echo $preco[0]->name;} ?></span><?php } ?></h1>
+							</div>	
+								
+							<div class="panel-body">
 
 
-									<?php get_servicos_oferecidos($postID); ?>
-									
+								<?php get_descricao($postID); ?>
 
-									<?php get_servicos_oferecidos_info($postID); ?>
+							</div><!-- panel-body -->
 
-
-									<?php get_acesso($postID); ?>
-
-									
-									<?php get_dias_da_semana($postID); ?>
-									
-
-									<?php get_localizacao($postID); ?>
+						</div> <!-- panel -->
 
 
-									<?php get_onibus($postID); ?>
+						
+
+						<?php get_servicos_oferecidos($postID); ?>
+
+							
+
+						<?php get_servicos_oferecidos_info($postID); ?>
 
 
 
-								</div><!--.post-content box mark-links-->
-					
-							<?php }elseif ('lugar-lazer' == get_post_type()){ ?>
+						<?php get_acesso($postID); ?>
 
-								<?php 
-								global $post; 
-								$postID = get_the_ID();
-								$preco = wp_get_object_terms($post->ID, 'preço');
-								?>
+						
+						<?php get_dias_da_semana($postID); ?>
+						
+
+						<?php get_localizacao($postID); ?>
 
 
-								<div class="panel-heading">
-									<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if(get_field("preço")){ ?><span class="label-small label-success"><?php if(is_array($valorID)){ preco($valorID[0]);}else{preco($valorID);} ?></span><?php } ?></h1>
-								</div>	
-									
-								<div class="panel-body">
+						<?php get_onibus($postID); ?>
 
-									
 
-									<?php get_descricao($postID); ?>
 
-									
-									
-									<?php get_atividades_possiveis($postID); ?>
+							
+			
+					<?php }elseif ('lugar-lazer' == get_post_type()){ ?>
+
+						<?php 
+						global $post; 
+						$postID = get_the_ID();
+						$preco = wp_get_object_terms($post->ID, 'preço');
+						?>
+
+
+						
+
+
+						<div class="panel-default panel">
+
+							<div class="panel-heading">
+								<h1 id="titulo" class="single-title panel-title"><?php the_title(); ?><?php if($preco != ''){ ?><span class="label-small label-success"><?php if(is_array($preco)){ echo $preco[0]->name;} ?></span><?php } ?></h1>
+							</div>	
+								
+							<div class="panel-body">
+
+
+								<?php get_descricao($postID); ?>
+
+
+							</div><!-- panel-body -->
+
+						</div><!-- panel -->
+
+								
+								
+								<?php get_atividades_possiveis($postID); ?>
+							
+
+							
+								<?php get_eventos($postID); ?>
+
+
+							
+								<?php get_servicos_oferecidos_info($postID); ?>
+								
 								
 
+								<?php get_acesso($postID); ?>
+
+
+								<?php get_dias_da_semana($postID); ?>
 								
-									<?php get_eventos($postID); ?>
+
+								<?php get_localizacao($postID); ?>
 
 
-
-									<?php if(get_field("tambem_são_realizados")){ ?>
-									<div class="bloco" id="tambem_sao_realizados">
-										
-											<h2>Também são realizados</h2>
-											<p><?php the_field("tambem_são_realizados"); ?></p>
-										
-									</div>
-									<?php } ?>
-
-									
-
-									<?php get_acesso($postID); ?>
+								<?php get_onibus($postID); ?>
 
 
-									<?php get_dias_da_semana($postID); ?>
-									
-
-									<?php get_localizacao($postID); ?>
-
-
-									<?php get_onibus($postID); ?>
-
-
-
-								</div><!--.post-content box mark-links-->
-					
-							<?php } ?>
+							
+			
+					<?php } ?>
 					
 					
 					<?php comments_template( '', true ); ?>

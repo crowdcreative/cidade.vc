@@ -5,7 +5,7 @@
 ?>
 
 <?php get_header(); ?>
-<?php $options = get_option('great'); ?>
+
 
 <!-- Define vars para o mapa -->
 	

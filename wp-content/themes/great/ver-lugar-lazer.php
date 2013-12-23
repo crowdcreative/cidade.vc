@@ -8,12 +8,7 @@
 <?php $options = get_option('great'); ?>
 
 <!-- Define vars para o mapa -->
-	
-	<?php
-	$latlong = get_field('latlong');
-	$latlong = str_replace('(', '', $latlong);
-	$latlong = str_replace(')', '', $latlong);
-	?>
+
 
 
 
