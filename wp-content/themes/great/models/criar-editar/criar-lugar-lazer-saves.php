@@ -129,7 +129,7 @@
 		// Pega cada atividade da array criada pela seleção
 
 		foreach ($atividades_selecionadas as $atividade_id) {
-			$atividades_possiveis_array[] = array('id' => $atividade_id, 'contador' => '', 'usuarios_id' => array());
+			$atividades_possiveis_array[] = array('id' => $atividade_id, 'descricao' => array(), 'viram' => array('contador' => '', 'usuarios_id' => array()), 'praticam' => array('contador' => '', 'usuarios_id' => array()));
 		}
 		
 

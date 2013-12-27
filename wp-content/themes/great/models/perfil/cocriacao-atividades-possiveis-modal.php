@@ -43,8 +43,30 @@
 		      		global $post; 
 					$post_id = get_the_ID();
 
-					// Pega a array com as atividades do banco de dados
+					// pega a array com as atividades do banco de dados
 					$atividades_possiveis = get_post_meta($post_id, 'atividades_possiveis', true);
+
+					// cria a query que irá pegar as informações do banco de dados
+					$query = "SELECT ID, lugar_id, conteudo_moderacao FROM wp_cocriacao WHERE usuario_id = 1 ";
+					
+					// executa a query
+					$result = mysql_query($query);
+					
+					// cria uma array que armazenará o resultado do select acima
+					$result_array = array();
+
+					$i = 0;
+
+					// monta a array com as informações baixadas do banco de dados
+					while ($atividade = mysql_fetch_array($result)) {
+						$result_array[$i]['ID'] = $atividade[0];
+						$result_array[$i]['lugar_id'] = $atividade[1];
+						$result_array[$i]['conteudo_moderacao'] = unserialize($atividade[2]);
+
+						$i++;
+					}
+					
+					print_r($result_array);
 
 		      		?>
 
@@ -94,7 +116,7 @@
 						    ?>
 
 
-						    <span><b>Criar atividade</b></span>
+						    <span style="float: left; height: 30px; margin-top: 25px;"><b>Criar atividade</b></span>
 
 						    <input type="text" class="form-control" name="nova_atividade" id="nova_atividade" value="" size="30" placeholder="Ex:. Nome da atividade ou ação"/>
 
@@ -145,14 +167,20 @@
 			sort($atividades_selecionadas); 
 		}
 
-		foreach ($atividades_selecionadas as $atividade_id) {
-			array_push($atividades_cadastradas, array('id' => $atividade_id, 'contador' => '', 'usuarios_id' => array()));
+
+		// só continua se alguma tividade for selecionada
+		if($atividades_selecionadas != ''){
+
+			foreach ($atividades_selecionadas as $atividade_id) {
+				array_push($atividades_cadastradas, array('id' => $atividade_id, 'contador' => '', 'usuarios_id' => array()));
+			}
+
+
+			if (is_array($atividades_cadastradas)) {
+				update_post_meta($post_id, 'atividades_possiveis', $atividades_cadastradas);
+			} 
+
 		}
-
-
-		if (is_array($atividades_cadastradas)) {
-			update_post_meta($post_id, 'atividades_possiveis', $atividades_cadastradas);
-		} 
 
 
 
@@ -162,9 +190,70 @@
 
 		# salva a NOVA ATIVIDADE CRIADA
 
+
+		// pega a atividade enviada pelo form
 		$nova_atividade = $_POST['nova_atividade'];
 
+		if (count_chars($nova_atividade) < 30) {
 
+			// remove a possibilidade de enviar tags html
+			$nova_atividade = htmlspecialchars($nova_atividade);
+
+			// cria uma array que será usada para organizar as informações em moderação
+			$conteudo_moderacao = array('descricao' => '', 'atividades_possiveis' => $nova_atividade);
+
+			// transforma a array em string para ser possível salvar no banco de dados
+			$conteudo_moderacao_array = serialize($conteudo_moderacao);
+
+			// cria a query que irá pegar as informações do banco de dados
+			$query = "SELECT ID, conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = '$post_id' ";
+			
+			// executa a query
+			$result = mysql_query($query);
+			
+			// cria uma array que armazenará o resultado do select acima
+			$result_array = array();
+
+			$i = 0;
+
+			// monta a array com as informações baixadas do banco de dados
+			while ($atividade = mysql_fetch_array($result)) {
+				$result_array[$i]['ID'] = $atividade[0];
+				$result_array[$i]['conteudo_moderacao'] = unserialize($atividade[1]);
+
+				$i++;
+			}
+			
+
+			if (!in_multiarray($nova_atividade, $result_array)) {
+				
+				// envia para o banco de dados na tabela 'wp_cocriacao'
+				$envia = "INSERT INTO wp_cocriacao(lugar_id, usuario_id, conteudo, conteudo_moderacao) VALUES('$post_id', '$user_id', '$conteudo_array', '$conteudo_moderacao_array')";
+
+			}
+
+			else{
+
+				echo 'Já existe!';
+
+			}
+
+			// envia a query para o banco de dados
+			mysql_query($envia) or die();
+
+		}
+
+		else{
+
+			echo '<div class="single container" style="padding:0 30px">
+					<div class="panel panel-danger">
+						<div class="panel-body">
+							<b>O nome das atividades devem ser menor que 30 caracteres. Você pode tentar criar novamente clicando <a data-toggle="modal" data-target="#atividades-possiveis-modal" style="cursor:pointer">aqui</a>. =)</b>
+						</div>	
+					</div>
+				  </div>';
+
+		}
 
 	}
 

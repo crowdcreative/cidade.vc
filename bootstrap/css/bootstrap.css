@@ -282,6 +282,7 @@ table {
   .label {
     border: 1px solid #000;
   }
+
   .table {
     border-collapse: collapse !important;
   }
@@ -5134,6 +5135,20 @@ textarea.input-group-sm > .input-group-btn > .btn {
   border-radius: .25em;
 }
 
+  .label-button{
+    border-radius: 0.25em;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline;
+    font-size: 60%;
+    font-weight: bold;
+    line-height: 1;
+    padding: 6px;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+
 .label-small {
   display: inline;
   padding: .2em .6em .3em;
@@ -5230,6 +5245,19 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .badge-rounded{
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    color: #333333;
+    display: inline-block;
+    font-size: 60%;
+    font-weight: bold;
+    line-height: 1;
+    min-width: 10px;
+    padding: 2px 4px !important;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+.badge-square{
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
     color: #333333;
     display: inline-block;
     font-size: 60%;
@@ -5921,6 +5949,7 @@ a.list-group-item.active:focus .list-group-item-text {
 
 .panel-danger {
   border-color: #ebccd1;
+  background-color: #f2dede;
 }
 
 .panel-danger > .panel-heading {

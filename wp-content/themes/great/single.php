@@ -38,11 +38,11 @@ $(document).ready(function(){
 		var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
 
 
-		// Vota nas atividades possíveis
+		// Vota nas atividades possíveis - VIRAM
 
-		$('#atividades_possiveis ul li').click(function(){
+		$('#atividades_possiveis ul li .badge-rounded').click(function(){
 
-			var termID = $(this).attr('term-id');
+			var termID = $(this).parents('li').attr('term-id');
 			var clicado = $(this);
 
 			$.ajax({
@@ -53,19 +53,26 @@ $(document).ready(function(){
 					'action': 'atividades_possiveis_votacao',
 					'user-id': <?php echo $userID; ?>,
 					'post-id': <?php echo $post->ID ?>,
-					'term-id': termID
+					'term-id': termID,
+					'viram-ou-praticam':'viram'
 				},
 				success: function(dados){
-					if(clicado.find('span').hasClass('badge-rounded') && dados != ''){
-
+					if(clicado && dados != ''){
 						// atualiza o contador
-						clicado.find('.badge-rounded').html(dados);
+						clicado.html(dados);
 
+						// remove a clase 'badge-hide' responsável por esconder itens no efeito 'hover'
+						clicado.removeClass('badge-hide');
 					}
 
-					if(clicado.find('span').hasClass('badge-rounded') == false){
-						clicado.append('<span class="badge-rounded">1</span>');
+					if(clicado && dados == '0'){
+						// atualiza o contador
+						clicado.html('-');
+
+						// adiciona a classe 'badge-hide'
+						clicado.addClass('badge-hide');
 					}
+
 					
 				},
 				error: function(errorThrown) {
@@ -76,6 +83,76 @@ $(document).ready(function(){
 		});
 
 
+
+
+
+
+		// Vota nas atividades possíveis - PRATICAM
+
+		$('#atividades_possiveis ul li .badge-square').click(function(){
+
+			var termID = $(this).parents('li').attr('term-id');
+			var clicado = $(this);
+
+			$.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+
+				data: {
+					'action': 'atividades_possiveis_votacao',
+					'user-id': <?php echo $userID; ?>,
+					'post-id': <?php echo $post->ID ?>,
+					'term-id': termID,
+					'viram-ou-praticam':'praticam'
+				},
+				success: function(dados){
+					if(clicado && dados != ''){
+
+						// atualiza o contador
+						clicado.html(dados);
+
+					}
+
+					if(clicado && dados == '0'){
+
+						// atualiza o contador
+						clicado.html('-');
+
+					}
+
+					
+				},
+				error: function(errorThrown) {
+				
+				}
+
+			});
+		});
+
+
+
+
+		$('#atividades_possiveis').hover(
+			function(){
+				$('#adicionar-atividade').show();
+			},
+			function(){
+				$('#adicionar-atividade').hide();
+			}
+		);
+
+
+
+		$('#atividades_possiveis ul li').hover(
+			function(){
+				$(this).find('.badge-square').show();
+				$(this).find('.badge-hide').show();
+			},
+			function(){
+				$(this).find('.badge-square').hide();
+				$(this).find('.badge-hide').hide();
+			}
+		);
 
 
 

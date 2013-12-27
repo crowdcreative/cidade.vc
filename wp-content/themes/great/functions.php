@@ -193,6 +193,7 @@ function atividades_possiveis_votacao(){
 	$user_id = $_REQUEST['user-id'];
 	$post_id = $_REQUEST['post-id'];
 	$term_id = $_REQUEST['term-id'];
+	$viram_ou_praticam = $_REQUEST['viram-ou-praticam'];
 
 
 	// Pega a array com as atividades do post
@@ -208,13 +209,15 @@ function atividades_possiveis_votacao(){
 
 
 			// pega a array com o id dos usuários que praticam as atividades
-			$usuarios_id = $atividade['usuarios_id'];
+			$usuarios_id = $atividade[$viram_ou_praticam]['usuarios_id'];
 
 
+			// se o usuário ainda não tiver registrado na array continua com a função
 			if(!in_array($user_id, $usuarios_id)){
 
+
 				// acrescenta ao contador
-				$contador = $atividade['contador'] + 1;
+				$contador = $atividade[$viram_ou_praticam]['contador'] + 1;
 
 	
 
@@ -226,12 +229,12 @@ function atividades_possiveis_votacao(){
 
 
 				// Salva as ids atualizadas na array das atividades
-				$atividades_possiveis_array[$i]['usuarios_id'] = $usuarios_id;
+				$atividades_possiveis_array[$i][$viram_ou_praticam]['usuarios_id'] = $usuarios_id;
 
 
 
 				// Salva o contador acrescido do click atual
-				$atividades_possiveis_array[$i]['contador'] = $contador;
+				$atividades_possiveis_array[$i][$viram_ou_praticam]['contador'] = $contador;
 
 
 
@@ -247,7 +250,41 @@ function atividades_possiveis_votacao(){
 
 			else{
 
-				die();
+				
+				// acrescenta ao contador
+				$contador = $atividade[$viram_ou_praticam]['contador'] - 1;
+
+	
+
+
+				// Remove o id do usuário que clicou na lista de usuários que praticam a atividade
+				if(($key = array_search($user_id, $usuarios_id)) !== false){
+					unset($usuarios_id[$key]);
+				}
+
+	
+
+
+				// Salva as ids atualizadas na array das atividades
+				$atividades_possiveis_array[$i][$viram_ou_praticam]['usuarios_id'] = $usuarios_id;
+
+
+
+				// Salva o contador acrescido do click atual
+				$atividades_possiveis_array[$i][$viram_ou_praticam]['contador'] = $contador;
+
+
+
+
+				// Salva a nova array com as informações de contador e id do usuário
+				update_post_meta($post_id, 'atividades_possiveis', $atividades_possiveis_array);
+
+
+
+				echo $contador;
+
+
+
 			}
 
 		

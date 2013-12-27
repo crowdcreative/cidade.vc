@@ -167,11 +167,13 @@
 
 	    if(is_array($dataArray) != ''){
 	    	$data = $dataArray[0];
-	    	ksort($data);
+	    	if(is_array($data)){
+	    		ksort($data);
+	    	}
 	    }
 
 
-		if($dataArray != ''){ 
+		if($data != ''){ 
 
 		$observacoes = get_post_meta($postID, 'data_info', true);
 		if($observacoes != ''){$col = '6';}else{$col = '3';}
@@ -318,7 +320,9 @@
 	    $ano = date('Y');
 	 
 	    $semana = array('Sun' => 'Domingo', 'Mon' => 'Segunda', 'Tue' => 'Terça', 'Wed' => 'Quarta', 'Thu' => 'Quinta', 'Fri' => 'Sexta', 'Sat' => 'Sábado');
-	    $hoje =  $semana["$data"];
+	    $hoje =  $semana[$data];
+	
+
 
 		$type = 'eventos';
 		$args = array('post_type' => $type, 'post_status' => 'publish', 'posts_per_page' => -1, 'caller_get_posts'=> 1);
@@ -361,11 +365,17 @@
 
 										    	echo '<div class="evento-caixa-titulo">'.$titulo.'</div>';
 										    	
+
 										    	foreach ($data as $dia) {
 										    		
 										    		if($dia['dia'] == $hoje){
+
 														echo '<div class="evento-caixa-dia"><span>'.$dia['dia']. '</span> <span class="label label-success" style="font-size:50%">HOJE</span></div>';
-													}else{
+													
+													}
+
+													else{
+
 														echo '<div class="evento-caixa-dia">'.$dia['dia'].'</div>';
 													}
 
@@ -424,12 +434,11 @@
 
 		$atividades_possiveis = get_post_meta($postID, 'atividades_possiveis', true);
 
-		
 		if($atividades_possiveis != ''){ 
 			echo '<div class="panel-default panel">	
 					<div class="panel-body">
 						<div class="bloco li-default" id="atividades_possiveis">
-							<h2>Atividades possíveis</h2>';
+							<h2>Atividades possíveis <span id="adicionar-atividade" style="display:none" class="label-button label-default pull-right" data-toggle="modal" data-target="#atividades-possiveis-modal">+ Adicionar atividade</span></h2>';
 
 							echo '<ul class="row">';
 
@@ -439,11 +448,27 @@
 								
 								$termEcho = $term->name;
 
-								echo '<li class="col-sm-4" term-id="'.$term->term_id.'"><span style="cursor:pointer">' . $termEcho . '</span> '; if($atividades['contador'] > 0){ echo '<span style="cursor:default" class="badge-rounded" rel="tooltip" title="'.pega_nome_usuarios_atividades($atividades['usuarios_id'], $termEcho).'">'.$atividades['contador'].'</span>'; } echo '</li>';
+								echo '<li class="col-sm-4" term-id="'.$term->term_id.'">
+
+									<span class="atividade-name">' . $termEcho . '</span> '; 
+									
+									if($atividades['viram']['contador'] > 0){ 
+										echo ' <span style="cursor:pointer" class="badge-rounded" rel="tooltip" title="'.pega_nome_usuarios_atividades($atividades['viram']['usuarios_id'], $termEcho, 'viram').'">'.$atividades['viram']['contador'].'</span>';
+									} 
+									else{
+										echo ' <span style="cursor:pointer; display:none" class="badge-rounded badge-hide" rel="tooltip" title="'.pega_nome_usuarios_atividades($atividades['viram']['usuarios_id'], $termEcho, 'viram').'">-</span>';
+									}
+									
+									if($atividades['praticam']['contador'] > 0){ 
+										echo ' <span style="cursor:pointer; display:none" class="badge-square" rel="tooltip" title="'.pega_nome_usuarios_atividades($atividades['praticam']['usuarios_id'], $termEcho, 'praticam').'">'.$atividades['praticam']['contador'].'</span>'; 
+									}
+									else{
+										echo ' <span style="cursor:pointer; display:none" class="badge-square" rel="tooltip" title="Nenhuma pessoa até agora indicou praticar esta atividade.">-</span>'; 
+									}
+
+								echo '</li>';
 								
 							}
-
-							echo '<button class="btn btn-default pull-right" data-toggle="modal" data-target="#atividades-possiveis-modal">+ Adicionar atividade</button>';
 
 							echo '</ul>
 						</div>
@@ -454,16 +479,6 @@
 	}
 
 
-
-
-
-	/**
-	 * 		COCRIAÇÃO - ATIVIDADES POSSÍVEIS
-	 */
-
-	function cocriacao_atividades_possiveis($post_id){
-
-	}
 
 
 
@@ -479,7 +494,7 @@
 	/**
 	 * 		PEGA O NOME DOS USUÁRIOS QUE PRATICAM AS ATIVIDADES
 	 */
-	function pega_nome_usuarios_atividades($usuarios_id_array, $atividade){
+	function pega_nome_usuarios_atividades($usuarios_id_array, $atividade, $viram_ou_praticam){
 
 
 		// pega o numero de usuários na array
@@ -496,14 +511,29 @@
 		strtolower($atividade);
 
 
-		// monta a exibição em tooltip das pessoas que praticam a atividade
-		if($i < 2){
-			return $usuario_info->first_name.' pratica '.$atividade.' neste lugar.';
+		if($viram_ou_praticam == 'viram'){
+			// monta a exibição em tooltip das pessoas que praticam a atividade
+			if($i < 2){
+				return $usuario_info->first_name.' já viu pessoas que praticam '.$atividade.' neste lugar.';
+			}
+
+			else{
+				return $usuario_info->first_name.' já viram pessoas que praticam '.$atividade.' neste lugar.';
+			}
 		}
 
-		else{
-			return $usuario_info->first_name.' praticam '.$atividade.' neste lugar.';
+		elseif ($viram_ou_praticam == 'praticam') {
+			// monta a exibição em tooltip das pessoas que praticam a atividade
+			if($i < 2){
+				return $usuario_info->first_name.' pratica '.$atividade.' neste lugar.';
+			}
+
+			else{
+				return $usuario_info->first_name.' praticam '.$atividade.' neste lugar.';
+			}
 		}
+
+
 	}
 
 
