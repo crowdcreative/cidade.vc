@@ -159,6 +159,10 @@ textarea {
   font-size: 100%;
 }
 
+textarea { resize:both; } /* none|horizontal|vertical|both */
+textarea.vert { resize:vertical; }
+textarea.noResize { resize:none; }
+
 button,
 input {
   line-height: normal;
@@ -5251,7 +5255,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
     font-weight: bold;
     line-height: 1;
     min-width: 10px;
-    padding: 2px 4px !important;
+    padding: 1px 3px !important;
     vertical-align: baseline;
     white-space: nowrap;
 }
@@ -5264,7 +5268,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
     font-weight: bold;
     line-height: 1;
     min-width: 10px;
-    padding: 2px 4px !important;
+    padding: 1px 3px !important;
     vertical-align: baseline;
     white-space: nowrap;
 }
@@ -5580,6 +5584,11 @@ a.thumbnail.active {
 .media-body {
   overflow: hidden;
   zoom: 1;
+}
+
+.media-body-info {
+    color: #999999;
+    font-size: 11px;
 }
 
 .media,
@@ -5972,6 +5981,7 @@ a.list-group-item.active:focus .list-group-item-text {
 
 .panel-info {
   border-color: #bce8f1;
+  background-color: #d9edf7;
 }
 
 .panel-info > .panel-heading {
@@ -6123,6 +6133,9 @@ button.close {
   min-height: 16.428571429px;
   padding: 15px;
   border-bottom: 1px solid #e5e5e5;
+  background: none repeat scroll 0 0 #F5F5F5;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
 .modal-header .close {
@@ -6136,7 +6149,17 @@ button.close {
 
 .modal-body {
   position: relative;
-  padding: 20px;
+  padding: 15px;
+}
+
+.divider{
+  border-bottom: 1px solid #E1E1E1;
+  margin: 15px 0;
+  width: 100%;
+}
+
+.comentarios ul li{
+  padding: 0 15px;
 }
 
 .modal-footer {

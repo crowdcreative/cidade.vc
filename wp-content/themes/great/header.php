@@ -26,6 +26,7 @@ if(!class_exists('Facebook')){
 	<link href="http://127.0.0.1/projects/cidade.vc/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
 
 	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/wp-content/themes/great/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/wp-content/themes/great/js/expanding.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true"></script>
 	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/gmap3.js"></script>
 	<script src="http://127.0.0.1/projects/cidade.vc/bootstrap/js/bootstrap.js"></script>
@@ -75,7 +76,25 @@ if(!class_exists('Facebook')){
 							}
 							?>
 						</div>
-						<a href="criar-evento"><button type="button" class="btn btn-primary navbar-btn pull-right">Cocriar</button></a>
+						
+							
+					
+
+						<div class="btn-group pull-right navbar-btn">
+					        <button class="btn btn-primary" type="button">Criar um lugar</button>
+					        
+					        <button data-toggle="dropdown" style="height:34px" class="btn btn-primary dropdown-toggle" type="button">
+					          	<span class="caret"></span>
+					          	<span class="sr-only">Toggle Dropdown</span>
+					        </button>
+
+					        <ul role="menu" class="dropdown-menu">
+					          	<li><a href="#">Criar um evento</a></li>
+					          	<li class="divider"></li>
+					          	<li><a href="#">Meu perfil</a></li>
+					        </ul>
+				      	</div>
+
 					</div>
 				</div>	
 			</div>

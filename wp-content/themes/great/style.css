@@ -11,8 +11,8 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 100%;
-    font: inherit;
+    font-size: 13px;
+    font-family: "lucida grande", tahoma, sans-serif;
     vertical-align: baseline;
 	    
 }
@@ -102,7 +102,8 @@ address { margin: 10px 0 }
 /*-[ Framework ]--------------------*/
 body {
     line-height: 1;
-    font: 14px/19px arial, sans-serif;
+    font-family: "lucida grande", tahoma, sans-serif;
+    font-size: 13px;
     color: #555555;
     background-color: #f1f1f1 !important;
     padding-top: 75px;
@@ -1073,9 +1074,7 @@ nav #searchform fieldset {
 
 /*-[ Custom Bootstrap ]-------------------*/
 
-#onibus_que_passao_perto li i{
 
-}
 
 #avatar{
     float: left;
@@ -1205,7 +1204,14 @@ ul.nav-tabs li:last-child a {
 }
 
 
+.atividades-possiveis-comentarios-excluir{
+    cursor: pointer;   
+    font-size: 11px;
+}
 
+.atividades-possiveis-comentarios-excluir:hover{
+    text-decoration: underline;  
+}
 
 
 

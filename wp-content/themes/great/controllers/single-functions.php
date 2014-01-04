@@ -450,7 +450,7 @@
 
 								echo '<li class="col-sm-4" term-id="'.$term->term_id.'">
 
-									<span class="atividade-name">' . $termEcho . '</span> '; 
+									<span style="cursor:pointer" class="atividade-name" data-toggle="modal" data-target="#atividades-possiveis-descricao-modal">' . $termEcho . '</span> '; 
 									
 									if($atividades['viram']['contador'] > 0){ 
 										echo ' <span style="cursor:pointer" class="badge-rounded" rel="tooltip" title="'.pega_nome_usuarios_atividades($atividades['viram']['usuarios_id'], $termEcho, 'viram').'">'.$atividades['viram']['contador'].'</span>';

@@ -66,7 +66,7 @@
 						$i++;
 					}
 					
-					print_r($result_array);
+					
 
 		      		?>
 
@@ -126,7 +126,7 @@
 
 
 
-		      		<?php  wp_nonce_field( 'post_nonce', 'post_nonce_field' ); ?>
+		      		<?php  wp_nonce_field( 'post_nonce', 'post_nonce_field_atividades_possiveis' ); ?>
 
 		      	
 	      	</div>
@@ -150,7 +150,7 @@
 
 <?php
 
-	if (isset( $_POST['post_nonce_field'] ) && wp_verify_nonce( $_POST['post_nonce_field'], 'post_nonce') ) {
+	if (isset( $_POST['post_nonce_field_atividades_possiveis'] ) && wp_verify_nonce( $_POST['post_nonce_field_atividades_possiveis'], 'post_nonce')) {
 
 		
 
@@ -194,19 +194,19 @@
 		// pega a atividade enviada pelo form
 		$nova_atividade = $_POST['nova_atividade'];
 
-		if (count_chars($nova_atividade) < 30) {
+		if (strlen($nova_atividade) < 30) {
 
 			// remove a possibilidade de enviar tags html
 			$nova_atividade = htmlspecialchars($nova_atividade);
 
 			// cria uma array que será usada para organizar as informações em moderação
-			$conteudo_moderacao = array('descricao' => '', 'atividades_possiveis' => $nova_atividade);
+			$conteudo_moderacao = array('atividade' => $nova_atividade);
 
 			// transforma a array em string para ser possível salvar no banco de dados
 			$conteudo_moderacao_array = serialize($conteudo_moderacao);
 
 			// cria a query que irá pegar as informações do banco de dados
-			$query = "SELECT ID, conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = '$post_id' ";
+			$query = "SELECT ID, conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = '$post_id' AND bloco = 'atividades_possiveis' ";
 			
 			// executa a query
 			$result = mysql_query($query);
@@ -227,19 +227,29 @@
 
 			if (!in_multiarray($nova_atividade, $result_array)) {
 				
+				$user_id_array = array(0 => $user_id);
+
 				// envia para o banco de dados na tabela 'wp_cocriacao'
-				$envia = "INSERT INTO wp_cocriacao(lugar_id, usuario_id, conteudo, conteudo_moderacao) VALUES('$post_id', '$user_id', '$conteudo_array', '$conteudo_moderacao_array')";
+				$envia = "INSERT INTO wp_cocriacao(lugar_id, usuario_id, bloco, conteudo, conteudo_moderacao) VALUES('$post_id', '$user_id_array', 'atividades_possiveis', '$conteudo_array', '$conteudo_moderacao_array')";
+
+				// envia a query para o banco de dados
+				mysql_query($envia) or die();
 
 			}
 
 			else{
 
-				echo 'Já existe!';
+				echo '<div class="single container" style="padding:0 30px">
+					<div class="panel panel-info">
+						<div class="panel-body">
+							<b>Esta atividade já esta cadastrada. Você pode criar outra atividade clicando <a data-toggle="modal" data-target="#atividades-possiveis-modal" style="cursor:pointer">aqui</a>. =)</b>
+						</div>	
+					</div>
+				  </div>';
 
 			}
 
-			// envia a query para o banco de dados
-			mysql_query($envia) or die();
+			
 
 		}
 
