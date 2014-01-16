@@ -181,6 +181,8 @@ $(document).ready(function(){
 								$('#li-show-divider, #li-show-comentario').css('opacity', 0) .slideDown('slow') .animate({ opacity: 1 }, { queue: false, duration: 'slow' } );
 							}, 300
 						)
+
+						$('#li-nenhum').remove();
 				},
 				error: function(errorThrown) {
 				
@@ -292,12 +294,12 @@ $(document).ready(function(){
 				$('#btn-enviar-comentario').attr('atividade-id', atividade_id);
 
 				// limpa as divs onde será colocado as informações
-				$('#atividades-possiveis-descricao-modal .modal-header h4').html('');
+				$('#atividades-possiveis-descricao-modal .modal-header h2').html('');
 				$('#atividades-possiveis-descricao-modal .numero-viram').html('');
 				$('#atividades-possiveis-descricao-modal .numero-praticam').html('');
 
 				// pega o nome da atividade e cola no titulo da modal
-				$(this).clone().appendTo($('#atividades-possiveis-descricao-modal .modal-header h4'));
+				$('#atividades-possiveis-descricao-modal .modal-header h2').append($(this).text());
 
 				// pega o numero de pessoas que viram pessoas praticando esta atividade
 				$(this).parents('li').find('.badge-rounded').clone().appendTo($('#atividades-possiveis-descricao-modal .numero-viram'));
@@ -306,6 +308,8 @@ $(document).ready(function(){
 				$(this).parents('li').find('.badge-square').clone().appendTo($('#atividades-possiveis-descricao-modal .numero-praticam'));
 
 				$('#atividades-possiveis-descricao-modal .comentarios').html('<ul><li>Carregando...</li></ul>');
+
+				$('textarea#nova_atividade_descricao').val('');
 
 				$.ajax({
 					url: ajaxUrl,
@@ -625,23 +629,14 @@ $(document).ready(function(){
 
 						<?php
 
-						// cria a query que irá pegar as informações do banco de dados
-						$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = '$post_id' AND bloco = 'atividades_possiveis_comentarios' ";
+						$personaArray = get_user_meta($userID, 'persona', true);
+
+						$persona = $personaArray;
+
+						print_r($persona);
+
 						
-						// executa a query
-						$result = mysql_query($query);
-						
-						// cria uma array que armazenará o resultado do select acima
-						$result_array = array();
 
-						$i = 0;
-
-						// monta a array com as informações baixadas do banco de dados
-						while ($atividade = mysql_fetch_array($result)) {
-							$result_array = $atividade[0];
-						}
-
-						print_r(unserialize($result_array));
 						
 						?>
 								

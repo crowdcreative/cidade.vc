@@ -116,8 +116,19 @@
 
 		# salva a PERSONA
 
-		$persona_new = array('bairro' => $_POST['persona_bairro']);
-		update_user_meta($user_id, 'persona', $persona_new, $persona);
+		// pega a array persona do banco de dados 
+		$personaArray = get_user_meta($user_id, 'persona', true);
+		if(is_array($personaArray)){
+			$persona = $personaArray;
+		}
+
+
+		// adiciona a atividade praticada na array
+		$persona['bairro'] = $_POST['persona_bairro'];
+
+
+		// atualiza no banco de dados
+		update_user_meta($user_id, 'persona', $persona);
 
 	}
 
