@@ -183,184 +183,7 @@ function getbounds(){
 
 
 
-	add_action('wp_ajax_atividades_possiveis_votacao', 'atividades_possiveis_votacao');
-	add_action('wp_ajax_nopriv_atividades_possiveis_votacao', 'atividades_possiveis_votacao');
-
-	/**
-	 * atividades_possiveis_votacao - Sistema de votação nas atividades possíveis listadas nos lugares
-	 *
-	 * Ao ser executada insere o voto na atividade e ao mesmo tempo insere a atividade (id) praticada na
-	 * 'persona' do usuário. Com isto torna-se fácil o resgate das atividades praticadas por um usuário.
-	 * 
-	 * @return integer - retorna o número de votos
-	 */
-	function atividades_possiveis_votacao(){
-
-		// Pega os valores enviados por ajax no front-end
-
-		$user_id = $_REQUEST['user-id'];
-		$lugar_id = $_REQUEST['post-id'];
-		$atividade_id = $_REQUEST['term-id'];
-		$viram_ou_praticam = $_REQUEST['viram-ou-praticam'];
-
-
-		// Pega a array com as atividades do post
-
-		$atividades_possiveis_array = get_post_meta($lugar_id, 'atividades_possiveis', true);
-
-		$i = 0;
-
-		foreach ($atividades_possiveis_array as $atividade) {
-			
-			if($atividade['id'] == $atividade_id){
-
-
-
-				// pega a array com o id dos usuários que praticam as atividades
-				$usuarios_id = $atividade[$viram_ou_praticam]['usuarios_id'];
-
-
-				// se o usuário ainda não tiver registrado na array continua com a função
-				if(!in_array($user_id, $usuarios_id)){
-
-
-					// acrescenta ao contador
-					$contador = $atividade[$viram_ou_praticam]['contador'] + 1;
-
-		
-
-
-					// Adiciona o id do usuário que clicou na lista de usuários que praticam a atividade
-					array_push($usuarios_id, $user_id);
-
-		
-
-
-					// Salva as ids atualizadas na array das atividades
-					$atividades_possiveis_array[$i][$viram_ou_praticam]['usuarios_id'] = $usuarios_id;
-
-
-
-					// Salva o contador acrescido do click atual
-					$atividades_possiveis_array[$i][$viram_ou_praticam]['contador'] = $contador;
-
-
-
-
-					// Salva a nova array com as informações de contador e id do usuário
-					update_post_meta($lugar_id, 'atividades_possiveis', $atividades_possiveis_array);
-
-
-
-					### adiciona a atividade praticada na persona do usuário
-
-					if($viram_ou_praticam == 'praticam'){
-
-						// pega a array persona do banco de dados 
-						$personaArray = get_user_meta($user_id, 'persona', true);
-						if(is_array($personaArray)){
-							$persona = $personaArray;
-						}
-
-
-						// adiciona a atividade praticada na array
-						$persona['atividades_praticadas'][] = array('atividade_id' => $atividade_id, 'lugar_id' => $lugar_id);
-						
-
-						// atualiza a nova persona com a atividade pratica no banco de dados
-						update_user_meta($user_id, 'persona', $persona);
-
-					}
-
-
-					// retorna o numero do contador atualizado
-					echo $contador;
-
-					exit();
-
-				}
-
-				else{
-
-					
-					// acrescenta ao contador
-					$contador = $atividade[$viram_ou_praticam]['contador'] - 1;
-
-		
-
-
-					// Remove o id do usuário que clicou na lista de usuários que praticam a atividade
-					if(($key = array_search($user_id, $usuarios_id)) !== false){
-						unset($usuarios_id[$key]);
-					}
-
-		
-
-
-					// Salva as ids atualizadas na array das atividades
-					$atividades_possiveis_array[$i][$viram_ou_praticam]['usuarios_id'] = $usuarios_id;
-
-
-
-					// Salva o contador acrescido do click atual
-					$atividades_possiveis_array[$i][$viram_ou_praticam]['contador'] = $contador;
-
-
-
-
-					// Salva a nova array com as informações de contador e id do usuário
-					update_post_meta($lugar_id, 'atividades_possiveis', $atividades_possiveis_array);
-
-					
-					### Remove a ativida da persona do usuário
-
-					if($viram_ou_praticam == 'praticam'){
-						
-						// pega a array persona do banco de dados 
-						$personaArray = get_user_meta($user_id, 'persona', true);
-						if(is_array($personaArray)){
-
-							$persona = $personaArray;
-							
-						}
-
-
-						// remove a atividade praticada na array
-						foreach($persona['atividades_praticadas'] as $index => $atividade) {
-
-					        if($atividade['atividade_id'] == $atividade_id){
-					        
-					        	unset($persona['atividades_praticadas'][$index]);
-					        
-					        }
-
-					    }
-
-
-						// atualiza a nova persona com a atividade pratica no banco de dados
-						update_user_meta($user_id, 'persona', $persona);
-
-					}
-
-					// retorna o número do contador atualizado
-					echo $contador;
-
-					exit();
-
-				}
-
-			
-
-			}
-
-
-			$i++;
-
-		}
-
-
-		die();
-	}
+	
 
 
 
@@ -384,96 +207,37 @@ function getbounds(){
 	function atividades_possiveis_comentarios(){
 
 
-		# salva o novo comentário
+		### SALVA O NOVO COMENTÁRIO
 
 
 		// pega a atividade enviada pelo 'jquery ajax'
 		$nova_descricao = $_POST['nova-descricao'];
-		$post_id = $_POST['post-id'];
+		$lugar_id = $_POST['post-id'];
 		$user_id = $_POST['user-id'];
 		$atividade_id = $_POST['atividade-id'];
 		$data = date('Y-m-d H:i:s');
 
-		if(strlen($nova_descricao) < 1500) {
+
+		// remove a possibilidade de se interpretar tags html
+		$nova_descricao = mysql_real_escape_string(strip_tags($nova_descricao));
+		$atividade_id = mysql_real_escape_string(strip_tags($atividade_id));
+		$data = mysql_real_escape_string(strip_tags($data));
 
 
-			// cria a query que irá pegar as informações do banco de dados
-			$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $post_id AND bloco = 'atividades_possiveis_comentarios' ";
-			
-			// executa a query
-			$result = mysql_query($query);
-			
-			if($result){
+		### SEGURANÇA NIVEL 1
+		// verifica o tamanho de todas as variáveis recebidas via ajax
 
-				// cria uma array que armazenará o resultado do select acima
-				$result_array = array();
-
-				// monta a array com as informações baixadas do banco de dados
-				while ($atividade = mysql_fetch_array($result)) {
-					$result_array = unserialize($atividade[0]);
-				}
-
-			}
-
-			else{
-
-				die();
-			
-			}
-
-			
-			// Cria o bloco com a array pai quando ainda não houver nenhum registro 
-
-			if(isset($result_array) === true AND empty($result_array) === true){
-
-				// remove a possibilidade de enviar tags html
-				$nova_descricao = htmlspecialchars($nova_descricao);
-				$atividade_id = htmlspecialchars($atividade_id);
-
-				// cria uma array que será usada para organizar as informações em moderação
-				$conteudo_moderacao = array();
-
-				// array com os conteúdos da atividade a se armazenar
-				$conteudo_moderacao[$atividade_id][0] = array('usuario_id' => $user_id, 'atividade_id' => $atividade_id, 'data' => $data, 'votacao' => array('usuarios_id' => null, 'votos' => 0), 'descricao' => $nova_descricao) ;
-
-				// transforma a array em string para ser possível salvar no banco de dados
-				$conteudo_moderacao_array = serialize($conteudo_moderacao);
-
-				// envia para o banco de dados na tabela 'wp_cocriacao'
-				$envia = "INSERT INTO wp_cocriacao(lugar_id, usuario_id, bloco, conteudo, conteudo_moderacao) VALUES('$post_id', '$user_id', 'atividades_possiveis_comentarios', '$conteudo_array', '$conteudo_moderacao_array')";
-
-				// envia a query para o banco de dados
-				mysql_query($envia) or die();
-
-			}
-
-			// Se já existir algum comentario da atividade, adiciona os novos comentários na array já existente
-
-			elseif($result_array[$atividade_id]) {
-
-				// remove a possibilidade de enviar tags html
-				$nova_descricao = htmlspecialchars($nova_descricao);
-				$atividade_id = htmlspecialchars($atividade_id);
-
-				// array com os conteúdos da atividade a se armazenar
-				$conteudo_moderacao = array('usuario_id' => $user_id, 'atividade_id' => $atividade_id, 'data' => $data, 'votacao' => array('usuarios_id' => null, 'votos' => 0), 'descricao' => $nova_descricao) ;
-
-				array_push($result_array[$atividade_id], $conteudo_moderacao);
-
-				// serializa a array para poder ser arquivada no banco de dados
-				$result_array = serialize($result_array);
-
-				// envia para o banco de dados na tabela 'wp_cocriacao'
-				$envia = "UPDATE wp_cocriacao SET conteudo_moderacao = '$result_array' WHERE lugar_id = $post_id AND bloco = 'atividades_possiveis_comentarios'";
-
-				// envia a query para o banco de dados
-				mysql_query($envia) or die();
+		if(strlen($nova_descricao) < 1500 AND strlen($lugar_id) < 9 AND strlen($user_id) < 5 AND strlen($atividade_id) < 9 AND strlen($data) < 24) {
 
 
-			# pega os comentários do banco de dados para exibir o comentário recém adicionado
+			### SEGURANÇA NIVEL 2
+			// verifica o 'type' das variáveis enviadas via ajax
+
+			if(is_numeric($lugar_id) AND is_numeric($user_id) AND is_numeric($atividade_id)){
+
 
 				// cria a query que irá pegar as informações do banco de dados
-				$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $post_id AND bloco = 'atividades_possiveis_comentarios' ";
+				$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $lugar_id AND bloco = 'atividades_possiveis_comentarios' ";
 				
 				// executa a query
 				$result = mysql_query($query);
@@ -488,165 +252,307 @@ function getbounds(){
 						$result_array = unserialize($atividade[0]);
 					}
 
-					// posiciona o ponteiro na última key da array
-					end($result_array[$atividade_id]);
+				}
 
-					// pega o valor da áulmia key
-					$ultima_key = key($result_array[$atividade_id]);
+				else{
 
-					// seleciona somente o comentário atual na array (que é o último)
-					$atividade = $result_array[$atividade_id][$ultima_key];
+					die();
+				
+				}
 
-					// pega as informações do usuário
-					$user_info = get_userdata($atividade['usuario_id']); 
+				
+				// Cria o bloco com a array pai quando ainda não houver nenhum registro 
+
+				if(isset($result_array) === true AND empty($result_array) === true){
+
+					// cria uma array que será usada para organizar as informações em moderação
+					$conteudo_moderacao = array();
+
+					// array com os conteúdos da atividade a se armazenar
+					$conteudo_moderacao[$atividade_id][0] = array('usuario_id' => $user_id, 'atividade_id' => $atividade_id, 'data' => $data, 'votacao' => array('usuarios_id' => null, 'votos' => 0), 'descricao' => $nova_descricao) ;
+
+					// transforma a array em string para ser possível salvar no banco de dados
+					$conteudo_moderacao_array = serialize($conteudo_moderacao);
+
+					// envia para o banco de dados na tabela 'wp_cocriacao'
+					$envia = "INSERT INTO wp_cocriacao(lugar_id, usuario_id, bloco, conteudo, conteudo_moderacao) VALUES('$lugar_id', '$user_id', 'atividades_possiveis_comentarios', '$conteudo_array', '$conteudo_moderacao_array')";
+
+					// envia a query para o banco de dados
+					mysql_query($envia) or die();
 
 
-					// envia para o front-end um item da <ul> com o comentário criado
-					echo '<li id="li-show-divider" class="divider" style="display:none"></li>';
 
-					echo '<li id="li-show-comentario" class="media" style="display:none">';
+					# PEGA OS COMENTÁRIOS DO BANCO DE DADOS PARA EXIBIR O COMENTÁRIO RECÉM ADICIONADO
 
-						echo '<div class="media-object pull-left">';
-							echo get_avatar($atividade['usuario_id'], 48, null, '' );
-						echo '</div>';
+					// cria a query que irá pegar as informações do banco de dados
+					$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $lugar_id AND bloco = 'atividades_possiveis_comentarios' ";
+					
+					// executa a query
+					$result = mysql_query($query);
+					
+					if($result){
 
-						echo '<div class="media-body">';
+						// cria uma array que armazenará o resultado do select acima
+						$result_array = array();
 
-							echo '<span class="badge pull-right">'.$atividade['votacao']['votos'].'</span>';
+						// monta a array com as informações baixadas do banco de dados
+						while ($atividade = mysql_fetch_array($result)) {
+							$result_array = unserialize($atividade[0]);
+						}
 
-							echo '<b>'.$user_info->first_name.'</b><br/>';
+						// posiciona o ponteiro na última key da array
+						end($result_array[$atividade_id]);
 
-							echo $atividade['descricao'].'<br/>';
+						// pega o valor da áulmia key
+						$ultima_key = key($result_array[$atividade_id]);
 
-							echo '<div class="media-body-info">';
-									
-								echo 'há 2 segundos';
-							
-								if ($user_id == $atividade['usuario_id']){
-									echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
-								}
+						// seleciona somente o comentário atual na array (que é o último)
+						$atividade = $result_array[$atividade_id][$ultima_key];
 
+						// pega as informações do usuário
+						$user_info = get_userdata($atividade['usuario_id']); 
+
+
+						// envia para o front-end um item da <ul> com o comentário criado
+						echo '<li id="li-show-divider" class="divider" style="display:none"></li>';
+
+						echo '<li id="li-show-comentario" class="media" style="display:none">';
+
+							echo '<div class="media-object pull-left">';
+								echo get_avatar($atividade['usuario_id'], 48, null, '' );
 							echo '</div>';
 
-							
+							echo '<div class="media-body">';
 
-						echo '</div>';
-					
+								echo '<span class="badge pull-right">'.$atividade['votacao']['votos'].'</span>';
 
-					echo '</li>';
+								echo '<b>'.$user_info->first_name.'</b><br/>';
+
+								echo $atividade['descricao'].'<br/>';
+
+								echo '<div class="media-body-info">';
+										
+									echo 'há 2 segundos';
+								
+									if ($user_id == $atividade['usuario_id']){
+										echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
+									}
+
+								echo '</div>';
+
+								
+
+							echo '</div>';
+						
+
+						echo '</li>';
 
 
-					// dá exit para evitar extravio de informações
-					exit();
+						// dá exit para evitar extravio de informações
+						exit();
 
 
-				}
-				
-
-			}
-
-			// se já não existir nenhum comentário para a atividade, cria a array da atividade e adiciona o comentário atual
-
-			else{
-
-				// remove a possibilidade de enviar tags html
-				$nova_descricao = htmlspecialchars($nova_descricao);
-				$atividade_id = htmlspecialchars($atividade_id);
-
-				// array com os conteúdos da atividade a se armazenar
-				$conteudo_moderacao = array('usuario_id' => $user_id, 'atividade_id' => $atividade_id, 'data' => $data, 'votacao' => array('usuarios_id' => null, 'votos' => 0), 'descricao' => $nova_descricao) ;
-
-				// cria a array que abrigará as atividades
-				$result_array[$atividade_id] = array();
-
-				// adiciona o novo comentario ao final da array da atividade juntos aos outro comentários
-				array_push($result_array[$atividade_id], $conteudo_moderacao);
-
-				// serializa a array para poder ser arquivada no banco de dados
-				$result_array = serialize($result_array);
-
-				// envia para o banco de dados na tabela 'wp_cocriacao'
-				$envia = "UPDATE wp_cocriacao SET conteudo_moderacao = '$result_array' WHERE lugar_id = $post_id AND bloco = 'atividades_possiveis_comentarios'";
-
-				// envia a query para o banco de dados
-				mysql_query($envia) or die();
-
-				
-
-			# pega os comentários do banco de dados para exibir o comentário recém adicionado
-
-				// cria a query que irá pegar as informações do banco de dados
-				$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $post_id AND bloco = 'atividades_possiveis_comentarios' ";
-				
-				// executa a query
-				$result = mysql_query($query);
-				
-				if($result){
-
-					// cria uma array que armazenará o resultado do select acima
-					$result_array = array();
-
-					// monta a array com as informações baixadas do banco de dados
-					while ($atividade = mysql_fetch_array($result)) {
-						$result_array = unserialize($atividade[0]);
 					}
 
-					// posiciona o ponteiro na última key da array
-					end($result_array[$atividade_id]);
+				}
 
-					// pega o valor da áulmia key
-					$ultima_key = key($result_array[$atividade_id]);
+				// SE JÁ EXISTIR ALGUM COMENTARIO DA ATIVIDADE, ADICIONA OS NOVOS COMENTÁRIOS NA ARRAY JÁ EXISTENTE
 
-					// seleciona somente o comentário atual na array (que é o último)
-					$atividade = $result_array[$atividade_id][$ultima_key];
-
-					// pega as informações do usuário
-					$user_info = get_userdata($atividade['usuario_id']); 
+				elseif($result_array[$atividade_id]) {
 
 
-					// envia para o front-end um item da <ul> com o comentário criado
-					echo '<li id="li-show-divider" class="divider" style="display:none"></li>';
+					// array com os conteúdos da atividade a se armazenar
+					$conteudo_moderacao = array('usuario_id' => $user_id, 'atividade_id' => $atividade_id, 'data' => $data, 'votacao' => array('usuarios_id' => null, 'votos' => 0), 'descricao' => $nova_descricao) ;
 
-					echo '<li id="li-show-comentario" class="media" style="display:none">';
+					array_push($result_array[$atividade_id], $conteudo_moderacao);
 
-						echo '<div class="media-object pull-left">';
-							echo get_avatar($atividade['usuario_id'], 48, null, '' );
-						echo '</div>';
+					// serializa a array para poder ser arquivada no banco de dados
+					$result_array = serialize($result_array);
 
-						echo '<div class="media-body">';
+					// envia para o banco de dados na tabela 'wp_cocriacao'
+					$envia = "UPDATE wp_cocriacao SET conteudo_moderacao = '$result_array' WHERE lugar_id = $lugar_id AND bloco = 'atividades_possiveis_comentarios'";
 
-							echo '<span class="badge pull-right">'.$atividade['votacao']['votos'].'</span>';
+					// envia a query para o banco de dados
+					mysql_query($envia) or die();
 
-							echo '<b>'.$user_info->first_name.'</b><br/>';
 
-							echo $atividade['descricao'].'<br/>';
+					
+					# PEGA OS COMENTÁRIOS DO BANCO DE DADOS PARA EXIBIR O COMENTÁRIO RECÉM ADICIONADO
 
-							echo '<div class="media-body-info">';
-									
-								echo 'há 2 segundos';
-							
-								if ($user_id == $atividade['usuario_id']){
-									echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
-								}
+					// cria a query que irá pegar as informações do banco de dados
+					$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $lugar_id AND bloco = 'atividades_possiveis_comentarios' ";
+					
+					// executa a query
+					$result = mysql_query($query);
+					
+					if($result){
 
+						// cria uma array que armazenará o resultado do select acima
+						$result_array = array();
+
+						// monta a array com as informações baixadas do banco de dados
+						while ($atividade = mysql_fetch_array($result)) {
+							$result_array = unserialize($atividade[0]);
+						}
+
+						// posiciona o ponteiro na última key da array
+						end($result_array[$atividade_id]);
+
+						// pega o valor da áulmia key
+						$ultima_key = key($result_array[$atividade_id]);
+
+						// seleciona somente o comentário atual na array (que é o último)
+						$atividade = $result_array[$atividade_id][$ultima_key];
+
+						// pega as informações do usuário
+						$user_info = get_userdata($atividade['usuario_id']); 
+
+
+						// envia para o front-end um item da <ul> com o comentário criado
+						echo '<li id="li-show-divider" class="divider" style="display:none"></li>';
+
+						echo '<li id="li-show-comentario" class="media" style="display:none">';
+
+							echo '<div class="media-object pull-left">';
+								echo get_avatar($atividade['usuario_id'], 48, null, '' );
 							echo '</div>';
 
-							
+							echo '<div class="media-body">';
 
-						echo '</div>';
+								echo '<span class="badge pull-right">'.$atividade['votacao']['votos'].'</span>';
+
+								echo '<b>'.$user_info->first_name.'</b><br/>';
+
+								echo $atividade['descricao'].'<br/>';
+
+								echo '<div class="media-body-info">';
+										
+									echo 'há 2 segundos';
+								
+									if ($user_id == $atividade['usuario_id']){
+										echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
+									}
+
+								echo '</div>';
+
+								
+
+							echo '</div>';
+						
+
+						echo '</li>';
+
+
+						// dá exit para evitar extravio de informações
+						exit();
+
+
+					}
 					
 
-					echo '</li>';
+				}
+
+				// se já não existir nenhum comentário para a atividade, cria a array da atividade e adiciona o comentário atual
+
+				else{
 
 
-					// dá exit para evitar extravio de informações
-					exit();
+					// array com os conteúdos da atividade a se armazenar
+					$conteudo_moderacao = array('usuario_id' => $user_id, 'atividade_id' => $atividade_id, 'data' => $data, 'votacao' => array('usuarios_id' => null, 'votos' => 0), 'descricao' => $nova_descricao) ;
+
+					// cria a array que abrigará as atividades
+					$result_array[$atividade_id] = array();
+
+					// adiciona o novo comentario ao final da array da atividade juntos aos outro comentários
+					array_push($result_array[$atividade_id], $conteudo_moderacao);
+
+					// serializa a array para poder ser arquivada no banco de dados
+					$result_array = serialize($result_array);
+
+					// envia para o banco de dados na tabela 'wp_cocriacao'
+					$envia = "UPDATE wp_cocriacao SET conteudo_moderacao = '$result_array' WHERE lugar_id = $lugar_id AND bloco = 'atividades_possiveis_comentarios'";
+
+					// envia a query para o banco de dados
+					mysql_query($envia) or die();
+
+					
+
+					# pega os comentários do banco de dados para exibir o comentário recém adicionado
+
+					// cria a query que irá pegar as informações do banco de dados
+					$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $lugar_id AND bloco = 'atividades_possiveis_comentarios' ";
+					
+					// executa a query
+					$result = mysql_query($query);
+					
+					if($result){
+
+						// cria uma array que armazenará o resultado do select acima
+						$result_array = array();
+
+						// monta a array com as informações baixadas do banco de dados
+						while ($atividade = mysql_fetch_array($result)) {
+							$result_array = unserialize($atividade[0]);
+						}
+
+						// posiciona o ponteiro na última key da array
+						end($result_array[$atividade_id]);
+
+						// pega o valor da áulmia key
+						$ultima_key = key($result_array[$atividade_id]);
+
+						// seleciona somente o comentário atual na array (que é o último)
+						$atividade = $result_array[$atividade_id][$ultima_key];
+
+						// pega as informações do usuário
+						$user_info = get_userdata($atividade['usuario_id']); 
+
+
+						// envia para o front-end um item da <ul> com o comentário criado
+						echo '<li id="li-show-divider" class="divider" style="display:none"></li>';
+
+						echo '<li id="li-show-comentario" class="media" style="display:none">';
+
+							echo '<div class="media-object pull-left">';
+								echo get_avatar($atividade['usuario_id'], 48, null, '' );
+							echo '</div>';
+
+							echo '<div class="media-body">';
+
+								echo '<span class="badge pull-right">'.$atividade['votacao']['votos'].'</span>';
+
+								echo '<b>'.$user_info->first_name.'</b><br/>';
+
+								echo $atividade['descricao'].'<br/>';
+
+								echo '<div class="media-body-info">';
+										
+									echo 'há 2 segundos';
+								
+									if ($user_id == $atividade['usuario_id']){
+										echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
+									}
+
+								echo '</div>';
+
+								
+
+							echo '</div>';
+						
+
+						echo '</li>';
+
+
+						// dá exit para evitar extravio de informações
+						exit();
+
+
+					}
+					
+
 
 
 				}
-				
-
-
 
 			}
 
@@ -659,121 +565,20 @@ function getbounds(){
 
 
 
-	add_action('wp_ajax_atividades_possiveis_comentarios_db', 'atividades_possiveis_comentarios_db');
-	add_action('wp_ajax_nopriv_atividades_possiveis_comentarios_db', 'atividades_possiveis_comentarios_db');
-
-	/**
-	 * Pega os comentários para colocar no modal das atividades
-	 * @return string - retorna uma lista de comentários dentro de uma <ul>
-	 */
-	function atividades_possiveis_comentarios_db(){
-
-		// pega a atividade enviada pelo 'jquery ajax'
-		$post_id = $_POST['post-id'];
-		$atividade_id = $_POST['atividade-id'];
-		$user_id = $_POST['user-id'];
-
-
-		
-		// cria a query que irá pegar as informações do banco de dados
-		$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $post_id AND bloco = 'atividades_possiveis_comentarios' ";
-		
-		// executa a query
-		$result = mysql_query($query);
-		
-		if($result){
-
-			// cria uma array que armazenará o resultado do select acima
-			$result_array = array();
-
-			// monta a array com as informações baixadas do banco de dados
-			while ($atividade = mysql_fetch_array($result)) {
-				$result_array = unserialize($atividade[0]);
-			}
-
-
-			// verifica se há algum comentário para a atividade
-			if(is_array($result_array[$atividade_id])){
-
-				echo '<ul class="media-list">';
-
-				foreach ($result_array[$atividade_id] as $key => $atividade) {
-
-					// pega as informações do usuario do comentario
-					$user_info = get_userdata($atividade['usuario_id']); 
-					
-					echo '<li class="divider"></li>';
-
-					echo '<li class="media">';
-
-						echo '<div class="media-object pull-left">';
-							echo get_avatar($atividade['usuario_id'], 48, null, '' );
-						echo '</div>';
-
-						echo '<div class="media-body">';
-
-							echo '<span class="badge pull-right">'.$atividade['votacao']['votos'].'</span>';
-
-							echo '<b>'.$user_info->first_name.'</b><br/>';
-
-							echo $atividade['descricao'].'<br/>';
-
-							echo '<div class="media-body-info">';
-									
-								echo timeAgo(strtotime($atividade['data']));
-							
-								if ($user_id == $atividade['usuario_id']){
-									echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
-								}
-
-							echo '</div>';
-
-							
-
-						echo '</div>';
-					
-
-					echo '</li>';
 
 
 
-				}
 
-				echo '</ul>';
-
-				exit();
-
-			}
-
-			else{
-
-				echo '<ul>
-						<li id="li-nenhum">
-							Nenhum comentário até o momento. Seja o primeo a comentar sobre esta atividade. =)
-						</li>
-					  </ul>';
-
-				exit();
-
-			}
-
-			
-
-		}
-
-		else{
-
-			die('Invalid query: ' . mysql_error());
-		
-		}
-
-	}
 
 
 
 	add_action('wp_ajax_atividades_possiveis_comentarios_excluir', 'atividades_possiveis_comentarios_excluir');
 	add_action('wp_ajax_nopriv_atividades_possiveis_comentarios_excluir', 'atividades_possiveis_comentarios_excluir');
 
+	/**
+	 * atividades_possiveis_comentarios_excluir - exclui os comentários das descrições das atividades possíveis
+	 * @return null 
+	 */
 	function atividades_possiveis_comentarios_excluir(){
 
 

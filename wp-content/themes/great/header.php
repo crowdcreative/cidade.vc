@@ -1,10 +1,49 @@
 <?php 	header("Content-type: text/html; charset=utf-8");
 
 
-if(!class_exists('Facebook')){
-  require '/wp-content/plugins/nextend-facebook-connect/sdk/init.php';
-}
+	// pega as classes da API do Facebook para ser possível manipulá-lo
+	if(!class_exists('Facebook')){
+	  	require '/wp-content/plugins/nextend-facebook-connect/sdk/init.php';
+	}
+	
+	// pega a url do template
+	$localiza_url = get_template_directory_uri();
 
+	### cria um token para ser verificado no envio de ajax e conteúdos
+	### evita duplicação e inserção de dados não autorizados
+	
+	// verifica se o usuário está logado
+	if(is_user_logged_in()){
+
+		// inicia uma sessão
+		session_start();
+
+		//informa a sessão que o usuário está logado
+		$_SESSION['logged'] = true;
+
+		// cria um token de segurança caso ainda não exista
+		if(!isset($_SESSION['token_security'])){
+
+			// gera um 'token' aleatoriamente e armazena na sessão do usuário
+		  	$_SESSION['token_security'] = md5(uniqid(rand(), true)); 
+
+		}
+	}
+
+	else{
+
+		// inicia uma sessão
+		session_start();
+
+		//informa a sessão que o usuário NÃO está logado
+		$_SESSION['logged'] = false;
+
+	}
+
+
+	
+
+  	
 
 ?>
 
@@ -23,14 +62,14 @@ if(!class_exists('Facebook')){
 	
 	<link href='http://fonts.googleapis.com/css?family=Gudea:400,400italic,700' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="./wp-content/themes/great/images/favicon.png">
-	<link href="http://127.0.0.1/projects/cidade.vc/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="<?php echo $localiza_url ?>/css/bootstrap.css" rel="stylesheet" media="screen">
 
-	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/wp-content/themes/great/js/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/wp-content/themes/great/js/expanding.js"></script>
+	<script type="text/javascript" src="<?php echo $localiza_url ?>/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="<?php echo $localiza_url ?>/js/expanding.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiBbZGjRGFtFf4TpVs3CAip3iPBbvgrpU&sensor=true"></script>
-	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/gmap3.js"></script>
-	<script src="http://127.0.0.1/projects/cidade.vc/bootstrap/js/bootstrap.js"></script>
-	<script src="http://127.0.0.1/projects/cidade.vc/wp-content/themes/great/js/customscript.js"></script>
+	<script type="text/javascript" src="<?php echo $localiza_url ?>/js/gmap3.js"></script>
+	<script src="<?php echo $localiza_url ?>/js/bootstrap.js"></script>
+	<script src="<?php echo $localiza_url ?>/js/customscript.js"></script>
 	
 
 	<?php wp_head(); ?>
@@ -66,7 +105,7 @@ if(!class_exists('Facebook')){
 							<?php 
 							$userID = get_current_user_id(); // pega id do usuário
 							$userInfo = get_userdata($userID); // vê se está logado
-							if (!$facebook->getUser()) {
+							if (!is_user_logged_in()) {
 							    echo '<span class="navbar-text"><a href="http://127.0.0.1/projects/cidade.vc/wp-login.php?loginFacebook=1&redirect=http://127.0.0.1/projects/cidade.vc" onclick="window.location = "http://127.0.0.1/projects/cidade.vc/wp-login.php?loginFacebook=1&redirect="+window.location.href; return false;">Entrar</a></span>';
 							} else {
 								echo '<span class="navbar-text" style="margin-right:0">'.get_avatar( $userID, 24).'</span>';

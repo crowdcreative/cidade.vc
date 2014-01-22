@@ -1,12 +1,4 @@
-<?php
-	
-	$user_id = get_current_user_id();
-	
-	$first_name = get_user_meta($user_id, 'first_name', true);
-	
 
-
-?>
 
 <!-- MODAL DO PERFIL DO USUÁRIO -->
 <div class="modal fade" id="atividades-possiveis-descricao-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -15,12 +7,39 @@
 
 		    <div class="modal-header">
 		    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h2 class="modal-title" id="myModalLabel">Atividades possíveis de praticar neste lugar</h2>
+		        <h2 class="modal-title" id="myModalLabel"  style="float: left; width: auto; margin: 0px 15px 0px 0px;"></h2>
 
-		        <button type="button" class="btn-xs btn-default pull-right">Eu pratico</button>
 
-		        <span class="numero-viram"></span><span class="numero-viram-texto" style="font-size: 85%"> pessoas viram alguem praticando esta atividade.</span><br/>
-		        <span class="numero-praticam"></span><span class="numero-viram-texto" style="font-size: 85%"> pessoas praticam esta atividade.</span>
+			    <div style="margin: -3px 0px 0px;">
+
+			        <div class="btn-group">
+
+			        	<button type="button" class="btn btn-default  btn-sm vi-botao" style="height: 30px">
+			        		<span class="glyphicon glyphicon-eye-open"></span> 
+			        		<span class="btn-text">Já viu?</span>
+			        	</button>
+			        
+			        	<button type="button" class="btn btn-default btn-sm vi-contador" style="height: 30px">
+			        		<span class="numero-viram"></span>
+			        	</button>
+
+			        </div>
+
+			        <div class="btn-group">
+
+			        	<button type="button" class="btn btn-default btn-sm pratico-botao" style="height: 30px">
+			        		<span class="glyphicon glyphicon-play"></span> 
+			        		<span class="btn-text">Você pratica?</span>
+			        	</button>
+		    
+			        	<button type="button" class="btn btn-default btn-sm pratico-contador" style="height: 30px">
+			        		<span class="numero-praticam"></span>
+			        	</button>
+
+		        	</div>
+
+		        </div>
+
 		    </div>
 
 
@@ -30,7 +49,7 @@
 
 			    <span id="charNum" style="padding: 0 12px 0 0;"></span>
 
-			    <button id="btn-enviar-comentario" style="margin: 6px 0 0 0" class="btn btn-primary">Enviar</button>
+			    <button id="btn-enviar-comentario" token-security="<?php echo $_SESSION['token_security'] ?>" style="margin: 6px 0 0 0" class="btn btn-primary">Enviar</button>
 
 			    
 

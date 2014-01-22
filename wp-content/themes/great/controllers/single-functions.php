@@ -433,6 +433,8 @@
 	function get_atividades_possiveis($postID){
 
 		$atividades_possiveis = get_post_meta($postID, 'atividades_possiveis', true);
+		
+
 
 		if($atividades_possiveis != ''){ 
 			echo '<div class="panel-default panel">	
@@ -448,9 +450,9 @@
 								
 								$termEcho = $term->name;
 
-								echo '<li class="col-sm-4" term-id="'.$term->term_id.'">
+								echo '<li class="col-sm-4" atividade-id="'.$term->term_id.'">
 
-									<span style="cursor:pointer" class="atividade-name" data-toggle="modal" data-target="#atividades-possiveis-descricao-modal">' . $termEcho . '</span> '; 
+									<span style="cursor:pointer" class="atividade-name" pratica="" viu="" data-toggle="modal" data-target="#atividades-possiveis-descricao-modal">' . $termEcho . '</span> '; 
 									
 									if($atividades['viram']['contador'] > 0){ 
 										echo ' <span style="cursor:pointer" class="badge-rounded" rel="tooltip" title="'.pega_nome_usuarios_atividades($atividades['viram']['usuarios_id'], $termEcho, 'viram').'">'.$atividades['viram']['contador'].'</span>';
@@ -497,40 +499,44 @@
 	function pega_nome_usuarios_atividades($usuarios_id_array, $atividade, $viram_ou_praticam){
 
 
-		// pega o numero de usuários na array
-		$i = sizeof($usuarios_id_array);
+		if(is_array($usuarios_id_array)){
+
+			// pega o numero de usuários na array
+			$i = sizeof($usuarios_id_array);
 
 
-		// pega as informações dos usuários
-		foreach ($usuarios_id_array as $usuario_id) {
-			$usuario_info = get_userdata($usuario_id);
-		}
-
-
-		// transforma o texto da atividade em lowercase
-		strtolower($atividade);
-
-
-		if($viram_ou_praticam == 'viram'){
-			// monta a exibição em tooltip das pessoas que praticam a atividade
-			if($i < 2){
-				return $usuario_info->first_name.' já viu pessoas que praticam '.$atividade.' neste lugar.';
+			// pega as informações dos usuários
+			foreach ($usuarios_id_array as $usuario_id) {
+				$usuario_info = get_userdata($usuario_id);
 			}
 
-			else{
-				return $usuario_info->first_name.' já viram pessoas que praticam '.$atividade.' neste lugar.';
-			}
-		}
 
-		elseif ($viram_ou_praticam == 'praticam') {
-			// monta a exibição em tooltip das pessoas que praticam a atividade
-			if($i < 2){
-				return $usuario_info->first_name.' pratica '.$atividade.' neste lugar.';
+			// transforma o texto da atividade em lowercase
+			strtolower($atividade);
+
+
+			if($viram_ou_praticam == 'viram'){
+				// monta a exibição em tooltip das pessoas que praticam a atividade
+				if($i < 2){
+					return $usuario_info->first_name.' já viu pessoas que praticam '.$atividade.' neste lugar.';
+				}
+
+				else{
+					return $usuario_info->first_name.' já viram pessoas que praticam '.$atividade.' neste lugar.';
+				}
 			}
 
-			else{
-				return $usuario_info->first_name.' praticam '.$atividade.' neste lugar.';
+			elseif ($viram_ou_praticam == 'praticam') {
+				// monta a exibição em tooltip das pessoas que praticam a atividade
+				if($i < 2){
+					return $usuario_info->first_name.' pratica '.$atividade.' neste lugar.';
+				}
+
+				else{
+					return $usuario_info->first_name.' praticam '.$atividade.' neste lugar.';
+				}
 			}
+
 		}
 
 

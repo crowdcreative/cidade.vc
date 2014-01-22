@@ -83,7 +83,7 @@
 								
 								$termEcho = $term->name;
 
-								echo '<li style="list-style:none; margin-bottom:3px" term-id="'.$term->term_id.'"><span class="label label-default">' . $termEcho . '</span></li>';
+								echo '<li style="list-style:none; margin-bottom:3px" atividade-id="'.$term->term_id.'"><span class="label label-default">' . $termEcho . '</span></li>';
 								
 							}
 						    ?>

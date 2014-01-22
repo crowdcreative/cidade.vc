@@ -9,10 +9,14 @@
 	<?php require 'controllers/criar-editar-lugar-functions.php'; ?>
 
 
-
-	<!-- Define vars para o mapa -->
 	
 	<?php
+
+	// pega a url do template
+	$localiza_url = get_template_directory_uri();
+
+
+	// define variáveis que serão usadas no mapa
 	$latlong = get_post_meta($post->ID, 'latlong', true);
 
 	if($latlong != ''){
@@ -24,8 +28,8 @@
 	?>
 
 
-	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/jquery.ui.datepicker.min.js"></script>
-	<script type="text/javascript" src="http://127.0.0.1/projects/cidade.vc/js/jquery.maskedinput.min.js"></script>
+	<script type="text/javascript" src="<?php echo $localiza_url; ?>/js/jquery.ui.datepicker.min.js"></script>
+	<script type="text/javascript" src="<?php echo $localiza_url; ?>/js/jquery.maskedinput.min.js"></script>
 
 	<script type="text/javascript">
 

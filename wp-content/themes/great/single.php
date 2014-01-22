@@ -1,16 +1,22 @@
-<?php require 'controllers/single-functions.php' ?>
+<?php 
 
-<?php get_header(); ?>
+	require 'controllers/single-functions.php';
+
+	// pega o cabeçalho do template
+	get_header(); 
 
 
-<!-- Define vars para o mapa -->
-	
-	<?php
+	// variáveis que serão usadas no mapa
 	$latlong = get_post_meta($post->ID, 'latlong', true);
 	$latlong = str_replace('(', '', $latlong);
 	$latlong = str_replace(')', '', $latlong);
 	$userID = get_current_user_id(); // pega id do usuário
+
+
 	?>
+
+
+	
 
 
 		<script type="text/javascript">
@@ -42,7 +48,7 @@ $(document).ready(function(){
 
 		$('#atividades_possiveis ul li .badge-rounded').click(function(){
 
-			var termID = $(this).parents('li').attr('term-id');
+			var atividadeId = $(this).parents('li').attr('atividade-id');
 			var clicado = $(this);
 
 			$.ajax({
@@ -53,7 +59,7 @@ $(document).ready(function(){
 					'action': 'atividades_possiveis_votacao',
 					'user-id': <?php echo $userID; ?>,
 					'post-id': <?php echo $post->ID ?>,
-					'term-id': termID,
+					'atividade-id': atividadeId,
 					'viram-ou-praticam':'viram'
 				},
 				success: function(dados){
@@ -87,47 +93,7 @@ $(document).ready(function(){
 
 
 
-		// Vota nas atividades possíveis - PRATICAM
-
-		$('#atividades_possiveis ul li .badge-square').click(function(){
-
-			var termID = $(this).parents('li').attr('term-id');
-			var clicado = $(this);
-
-			$.ajax({
-				url: ajaxUrl,
-				type: 'POST',
-
-				data: {
-					'action': 'atividades_possiveis_votacao',
-					'user-id': <?php echo $userID; ?>,
-					'post-id': <?php echo $post->ID ?>,
-					'term-id': termID,
-					'viram-ou-praticam':'praticam'
-				},
-				success: function(dados){
-					if(clicado && dados != ''){
-
-						// atualiza o contador
-						clicado.html(dados);
-
-					}
-
-					if(clicado && dados == '0'){
-
-						// atualiza o contador
-						clicado.html('-');
-
-					}
-
-					
-				},
-				error: function(errorThrown) {
-				
-				}
-
-			});
-		});
+		
 
 
 
@@ -135,61 +101,7 @@ $(document).ready(function(){
 
 
 
-		// adiciona o novo comentário ao banco de dados e no fron-end
-		$('#btn-enviar-comentario').click(function(){
-
-			var clicado = $(this);
-			var atividade_id = clicado.attr('atividade-id');
-
-			clicado.html('Enviando...').addClass('disabled');
-
-			$.ajax({
-				url: ajaxUrl,
-				type: 'POST',
-
-				data: {
-					'action': 'atividades_possiveis_comentarios',
-					'user-id': <?php echo $userID; ?>,
-					'post-id': <?php echo $post->ID ?>,
-					'atividade-id': atividade_id,
-					'nova-descricao': $('textarea#nova_atividade_descricao').val()
-				},
-				success: function(dados){
-					
-						// atualiza o contador
-						clicado.removeClass('btn-default, disabled').addClass('btn-success').html('Enviado');
-						
-						// executa a função após alguns segundos
-						setTimeout(
-							function(){
-
-								clicado.removeClass('btn-success').addClass('btn-default').html('Enviar');
-
-								$('textarea#nova_atividade_descricao').val('');
-
-								$('#charNum').html('');
-
-							}, 1500
-						)
-					
-
-						$('#atividades-possiveis-descricao-modal .comentarios ul li:eq(0)').before(dados);
-						
-						setTimeout(
-							function(){
-						
-								$('#li-show-divider, #li-show-comentario').css('opacity', 0) .slideDown('slow') .animate({ opacity: 1 }, { queue: false, duration: 'slow' } );
-							}, 300
-						)
-
-						$('#li-nenhum').remove();
-				},
-				error: function(errorThrown) {
-				
-				}
-
-			});
-		});
+		
 
 
 
@@ -224,8 +136,9 @@ $(document).ready(function(){
 				},
 				success: function(dados){
 
-					clicado.parents('li').fadeOut();
-					clicado.parents('li').prev('li').fadeOut();
+					clicado.parents('li').fadeOut(300, function() { $(this).remove(); });
+					clicado.parents('li').prev('li').fadeOut(300, function() { $(this).remove(); });
+
 					
 				},
 				error: function(errorThrown) {
@@ -280,63 +193,7 @@ $(document).ready(function(){
 
 
 
-		// abri o 'modal' e clona alguns conteúdos para os comentários das atividades
-
-		$('#atividades_possiveis .atividade-name').click(
-			function(){
-
-				var clicado = $(this);
-
-				// pega a 'atividade_id' 
-				var atividade_id = $(this).parents('li').attr('term-id');
-
-				// coloca a 'atividade_id' no botao de enviar do modal
-				$('#btn-enviar-comentario').attr('atividade-id', atividade_id);
-
-				// limpa as divs onde será colocado as informações
-				$('#atividades-possiveis-descricao-modal .modal-header h2').html('');
-				$('#atividades-possiveis-descricao-modal .numero-viram').html('');
-				$('#atividades-possiveis-descricao-modal .numero-praticam').html('');
-
-				// pega o nome da atividade e cola no titulo da modal
-				$('#atividades-possiveis-descricao-modal .modal-header h2').append($(this).text());
-
-				// pega o numero de pessoas que viram pessoas praticando esta atividade
-				$(this).parents('li').find('.badge-rounded').clone().appendTo($('#atividades-possiveis-descricao-modal .numero-viram'));
-			
-				// pega o numero de pessoas que praticam esta atividade
-				$(this).parents('li').find('.badge-square').clone().appendTo($('#atividades-possiveis-descricao-modal .numero-praticam'));
-
-				$('#atividades-possiveis-descricao-modal .comentarios').html('<ul><li>Carregando...</li></ul>');
-
-				$('textarea#nova_atividade_descricao').val('');
-
-				$.ajax({
-					url: ajaxUrl,
-					type: 'POST',
-
-					data: {
-						'action': 'atividades_possiveis_comentarios_db',
-						'user-id': <?php echo $userID; ?>,
-						'post-id': <?php echo $post->ID ?>,
-						'atividade-id': atividade_id
-					},
-					success: function(comentarios){
-
-						// atualiza o contador
-						$('#atividades-possiveis-descricao-modal .comentarios').html(comentarios);
-
-					},
-					error: function(errorThrown) {
-						
-					}
-
-				});
-
-
-
-			}
-		);
+		
 
 
 
@@ -529,15 +386,38 @@ $(document).ready(function(){
 </script>
 
 
-		<!-- Pega o modal da cocriação das atividades possíveis -->
-		<?php require 'models/lugar/cocriacao-atividades-possiveis-modal.php' ?>
-		<?php require 'models/lugar/cocriacao-atividades-possiveis-descricao-modal.php' ?>
+	
+	
+
+
+
+	<?php 
+
+	// Faz a requisição dos ativadores ajax em jQuery - ClientSide
+	require '/models/ajax/ajax-requests.php';
+
+	// Faz a requisição dos 'modals' usados na cocriação	
+	require 'models/lugar/cocriacao-atividades-possiveis-modal.php';
+	require 'models/lugar/cocriacao-atividades-possiveis-descricao-modal.php';
+
+	?>
 
 
 <a href="#top"><div id="buttonScroll-top" class="glyphicon glyphicon-circle-arrow-up" style="display:none"></div></a>
 
 
+
+
 <div id="page" class="single container">
+
+
+
+	<div id="danger" class="panel panel-danger" style="margin: 0px 15px 20px; display: none">
+		<div class="panel-body">
+			<b></b>
+		</div>	
+	</div>
+
 	
 		<div class="row">
 
@@ -629,12 +509,26 @@ $(document).ready(function(){
 
 						<?php
 
-						$personaArray = get_user_meta($userID, 'persona', true);
+						$query = "SELECT meta_value FROM wp_usermeta WHERE meta_key = 'persona' AND user_id = $user_id";
 
-						$persona = $personaArray;
+						$result = mysql_query($query);
 
-						print_r($persona);
+						if($result){
 
+							$personaArray = mysql_fetch_row($result);
+
+							$personaArray = unserialize($personaArray[0]);
+							
+
+							print_r($personaArray);
+
+					
+						}
+
+						else{
+
+							exit();
+						}
 						
 
 						

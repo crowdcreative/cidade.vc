@@ -1,0 +1,7 @@
+19/01/2014 20:21:53 - 21/01/2014 22:13:58
+
+- Criado o arquivo 'ajax-requests.js' que irá guardar todas as requisições de ajax juntas. 
+- Migração das requisições ajax do arquivo 'single.php' para o arquivo 'ajax-requests.php'
+- Atualização no arquivo 'atividades-possiveis-votacao-ajax.php' que mudam o acesso ao banco de dados do padrão wordpress para o padrão mysql_query. Estava dando alguns problemas e além disso assim é mais rápido.
+- inetragação das atividades 'praticadas' e 'vista' no modal via ajax.
+- ajustes nas urls que direcionavam automaticamente para o servidor local.
