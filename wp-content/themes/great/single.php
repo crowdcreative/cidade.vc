@@ -44,109 +44,9 @@ $(document).ready(function(){
 		var ajaxUrl = "http://127.0.0.1/projects/cidade.vc/wp-admin/admin-ajax.php";
 
 
-		// Vota nas atividades possíveis - VIRAM
-
-		$('#atividades_possiveis ul li .badge-rounded').click(function(){
-
-			var atividadeId = $(this).parents('li').attr('atividade-id');
-			var clicado = $(this);
-
-			$.ajax({
-				url: ajaxUrl,
-				type: 'POST',
-
-				data: {
-					'action': 'atividades_possiveis_votacao',
-					'user-id': <?php echo $userID; ?>,
-					'post-id': <?php echo $post->ID ?>,
-					'atividade-id': atividadeId,
-					'viram-ou-praticam':'viram'
-				},
-				success: function(dados){
-					if(clicado && dados != ''){
-						// atualiza o contador
-						clicado.html(dados);
-
-						// remove a clase 'badge-hide' responsável por esconder itens no efeito 'hover'
-						clicado.removeClass('badge-hide');
-					}
-
-					if(clicado && dados == '0'){
-						// atualiza o contador
-						clicado.html('-');
-
-						// adiciona a classe 'badge-hide'
-						clicado.addClass('badge-hide');
-					}
-
-					
-				},
-				error: function(errorThrown) {
-				
-				}
-
-			});
-		});
-
-
-
-
 
 
 		
-
-
-
-
-
-
-
-		
-
-
-
-
-
-		/**
-		 * Excluir comentário da atividade - exclui o comentário da atividade se o comentário for do usuário.
-		 * 
-		 * @return {string} Retorna uma string com a confirmação da exclusão 
-		 * e remove o comentário da <div> comentários.
-		 */
-		
-
-		$(document).on('click', ".atividades-possiveis-comentarios-excluir", function () {
-
-			var clicado = $(this);
-			var atividade_id = clicado.attr('atividade-id');
-			var key = clicado.attr('key');
-
-			clicado.html('Excluindo...').addClass('disabled');
-
-			$.ajax({
-				url: ajaxUrl,
-				type: 'POST',
-
-				data: {
-					'action': 'atividades_possiveis_comentarios_excluir',
-					'user-id': <?php echo $userID; ?>,
-					'post-id': <?php echo $post->ID ?>,
-					'atividade-id': atividade_id,
-					'key': key
-				},
-				success: function(dados){
-
-					clicado.parents('li').fadeOut(300, function() { $(this).remove(); });
-					clicado.parents('li').prev('li').fadeOut(300, function() { $(this).remove(); });
-
-					
-				},
-				error: function(errorThrown) {
-				
-				}
-
-			});
-		});
 
 
 
@@ -507,32 +407,7 @@ $(document).ready(function(){
 
 						</div><!-- panel -->
 
-						<?php
-
-						$query = "SELECT meta_value FROM wp_usermeta WHERE meta_key = 'persona' AND user_id = $user_id";
-
-						$result = mysql_query($query);
-
-						if($result){
-
-							$personaArray = mysql_fetch_row($result);
-
-							$personaArray = unserialize($personaArray[0]);
-							
-
-							print_r($personaArray);
-
-					
-						}
-
-						else{
-
-							exit();
-						}
 						
-
-						
-						?>
 								
 								<?php get_atividades_possiveis($postID); ?>
 							

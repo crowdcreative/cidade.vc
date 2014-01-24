@@ -144,12 +144,6 @@
 				// pega o nome da atividade e cola no titulo da modal
 				$('#atividades-possiveis-descricao-modal .modal-header h2').append($(this).text());
 
-				// pega o numero de pessoas que viram pessoas praticando esta atividade
-				$('#atividades-possiveis-descricao-modal .numero-viram').append($(this).parents('li').find('.badge-rounded').text());
-			
-				// pega o numero de pessoas que praticam esta atividade
-				$('#atividades-possiveis-descricao-modal .numero-praticam').append($(this).parents('li').find('.badge-square').text());
-
 				// adiciona o id da atividade no botao do 'modal'
 				$('#atividades-possiveis-descricao-modal .vi-botao, #atividades-possiveis-descricao-modal .pratico-botao').attr('atividade-id', atividadeId);
 
@@ -161,6 +155,7 @@
 				$.ajax({
 					url: '<?php echo $localiza_url; ?>/models/ajax/atividades-possiveis-botoes-viu-praticam-ajax.php',
 					type: 'POST',
+					dataType: 'json',
 
 					data: {
 						'user-id': <?php echo $userID; ?>,
@@ -170,19 +165,64 @@
 					},
 					success: function(dados){
 
-						if(dados == '1'){ 
+						// pega o numero de pessoas que viram pessoas praticando esta atividade
+						$('#atividades-possiveis-descricao-modal .numero-viram').append(dados.contadorViram);
+			
+
+						// pega o numero de pessoas que praticam esta atividade
+						$('#atividades-possiveis-descricao-modal .numero-praticam').append(dados.contadorPraticam);
+
+
+						if(dados.praticam == '1'){ 
+							// ajusta o botão praticar
 							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao .btn-text').text('Eu pratico');
 							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').addClass('btn-success').removeClass('btn-default');
 							$('#atividades-possiveis-descricao-modal .modal-header .pratico-contador').addClass('btn-success').removeClass('btn-default');
+							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').attr('data-original-title','Você pratica está atividade');
 
-							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').find('.glyphicon').addClass('glyphicon-ok-sign').removeClass('glyphicon-play');
+							// ajusta o icone do botão praticar
+							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').find('.glyphicon').addClass('glyphicon-play').removeClass('glyphicon-pause');
+
+
 						}
-						else{
+
+
+						if(dados.viram == '1'){
+
+							// ajusta o botão viram
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao .btn-text').text('Eu já vi');
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao').addClass('btn-success').removeClass('btn-default');
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-contador').addClass('btn-success').removeClass('btn-default');
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao').attr('data-original-title','Você já viu pessoas praticando está atividade');
+
+							// ajusta o contador do botão viram
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao').find('.glyphicon').addClass('glyphicon-eye-open').removeClass('glyphicon-eye-close');
+						}
+						
+
+						if(dados.praticam == '0' || dados.praticam == ''){
+							// ajusta o botão praticar
 							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao .btn-text').text('Você pratica?');
 							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').addClass('btn-default').removeClass('btn-success');
 							$('#atividades-possiveis-descricao-modal .modal-header .pratico-contador').addClass('btn-default').removeClass('btn-success');
+							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').attr('data-original-title','Você não pratica está atividade');
 
-							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').find('.glyphicon').addClass('glyphicon-play').removeClass('glyphicon-ok-sign');
+
+							// ajusta o icone do botão praticar
+							$('#atividades-possiveis-descricao-modal .modal-header .pratico-botao').find('.glyphicon').addClass('glyphicon-pause').removeClass('glyphicon-play');
+
+						}
+
+
+						if(dados.viram == '0' || dados.viram == ''){
+							// ajusta o botão viram
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao .btn-text').text('Você já viu?');
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao').addClass('btn-default').removeClass('btn-success');
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-contador').addClass('btn-default').removeClass('btn-success');
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao').attr('data-original-title','Você não viu ninguém praticando esta atividade ainda');
+
+							// ajusta o contador do botão viram
+							$('#atividades-possiveis-descricao-modal .modal-header .vi-botao').find('.glyphicon').addClass('glyphicon-eye-close').removeClass('glyphicon-eye-open');
 						}
 
 					},
@@ -233,7 +273,7 @@
 		 * 	A requisição possibilita o usuário votar nas atividades possíveis de se pratica no lugar, ao votar adiciona +1.
 		 * 	O voto serve para legitimar a atividade, mostrando que ela realmente acontece naquele lugar.
 		 *
-		 * 	Request: 
+		 * 	Request: 'ajax/atividades-possiveis-votacao-ajax.php'.
 		 */
 		$('#atividades_possiveis ul li .badge-square').click(function(){
 
@@ -292,6 +332,7 @@
 			$.ajax({
 				url: '<?php echo $localiza_url; ?>/models/ajax/atividades-possiveis-votacao-ajax.php',
 				type: 'POST',
+				dataType: 'json',
 
 				data: {
 					'user-id': <?php echo $userID; ?>,
@@ -300,28 +341,31 @@
 					'viram-ou-praticam':'praticam'
 				},
 				success: function(dados){
-					if(clicado && dados != ''){
+
+					// requisição realizada com sucesso - return: contador >= 1
+					if(dados.gravado == 1){
 
 						// atualiza o botão
 						clicado.find('.btn-text').html('Eu pratico');
 						clicado.addClass('btn-success').removeClass('btn-default');
-						clicado.find('.glyphicon').addClass('glyphicon-ok-sign').removeClass('glyphicon-play');
+						clicado.find('.glyphicon').addClass('glyphicon-play').removeClass('glyphicon-pause');
 
 						// atualiza o contador
-						clicado.parents('div').find('.numero-praticam').html(dados);
+						clicado.parents('div').find('.numero-praticam').html(dados.contador);
 						clicado.parents('div').find('.pratico-contador').addClass('btn-success').removeClass('btn-default');
 
 					}
 
-					if(clicado && dados == '0'){
+					// requisição realizada com sucesso - return: contador = 0
+					if(dados.gravado == '0'){
 
 						// atualiza o botao
 						clicado.find('.btn-text').html('Você pratica?');
 						clicado.addClass('btn-default').removeClass('btn-success');
-						clicado.find('.glyphicon').addClass('glyphicon-play').removeClass('glyphicon-ok-sign');
+						clicado.find('.glyphicon').addClass('glyphicon-pause').removeClass('glyphicon-play');
 
 						// atualiza o contador
-						clicado.parents('div').find('.numero-praticam').html(dados);
+						clicado.parents('div').find('.numero-praticam').html(dados.contador);
 						clicado.parents('div').find('.pratico-contador').addClass('btn-default').removeClass('btn-success');
 						
 
@@ -335,6 +379,58 @@
 
 			});
 		});
+
+
+
+
+
+
+		/**
+		 *	VOTA NAS ATIVIDADES POSSÍVEIS - VIRAM
+		 * 	A requisição possibilita o usuário votar nas atividades possíveis de se praticar no lugar, ao votar adiciona +1.
+		 * 	O voto serve para legitimar a atividade, mostrando que ela realmente acontece naquele lugar.
+		 *
+		 * 	Request: 'ajax/atividades-possiveis-votacao-ajax.php'.
+		 */
+		$('#atividades_possiveis ul li .badge-rounded').click(function(){
+
+			var atividadeId = $(this).parents('li').attr('atividade-id');
+			var clicado = $(this);
+
+			$.ajax({
+				url: '<?php echo $localiza_url; ?>/models/ajax/atividades-possiveis-votacao-ajax.php',
+				type: 'POST',
+
+				data: {
+					'user-id': <?php echo $userID; ?>,
+					'post-id': <?php echo $post->ID ?>,
+					'atividade-id': atividadeId,
+					'viram-ou-praticam':'viram'
+				},
+				success: function(dados){
+					if(clicado && dados != ''){
+
+						// atualiza o contador
+						clicado.html(dados);
+
+					}
+
+					if(clicado && dados == '0'){
+
+						// atualiza o contador
+						clicado.html('-');
+
+					}
+
+					
+				},
+				error: function(errorThrown) {
+				
+				}
+
+			});
+		});
+
 
 
 
@@ -354,6 +450,7 @@
 			$.ajax({
 				url: '<?php echo $localiza_url; ?>/models/ajax/atividades-possiveis-votacao-ajax.php',
 				type: 'POST',
+				dataType:'json',
 
 				data: {
 					'user-id': <?php echo $userID; ?>,
@@ -362,28 +459,31 @@
 					'viram-ou-praticam':'viram'
 				},
 				success: function(dados){
-					if(clicado && dados != ''){
+
+					// requisição realizada com sucesso - return: contador >= 1
+					if(dados.gravado == 1){
 
 						// atualiza o botão
 						clicado.find('.btn-text').html('Eu já vi');
 						clicado.addClass('btn-success').removeClass('btn-default');
-						clicado.find('.glyphicon').addClass('glyphicon-ok-sign').removeClass('glyphicon-eye-open');
+						clicado.find('.glyphicon').addClass('glyphicon-eye-open').removeClass('glyphicon-eye-close');
 
 						// atualiza o contador
-						clicado.parents('div').find('.numero-viram').html(dados);
+						clicado.parents('div').find('.numero-viram').html(dados.contador);
 						clicado.parents('div').find('.vi-contador').addClass('btn-success').removeClass('btn-default');
 
 					}
 
-					if(clicado && dados == '0'){
+					// requisição realizada com sucesso - return: contador = 0
+					if(dados.gravado == 0){
 
 						// atualiza o botao
-						clicado.find('.btn-text').html('Você viu?');
+						clicado.find('.btn-text').html('Você já viu?');
 						clicado.addClass('btn-default').removeClass('btn-success');
-						clicado.find('.glyphicon').addClass('glyphicon-eye-open').removeClass('glyphicon-ok-sign');
+						clicado.find('.glyphicon').addClass('glyphicon-eye-close').removeClass('glyphicon-eye-open');
 
 						// atualiza o contador
-						clicado.parents('div').find('.numero-praticam').html(dados);
+						clicado.parents('div').find('.numero-viram').html(dados.contador);
 						clicado.parents('div').find('.vi-contador').addClass('btn-default').removeClass('btn-success');
 						
 
@@ -400,6 +500,51 @@
 
 
 
+
+
+
+
+
+		/**
+		 * 	EXCLUI COMENTÁRIO DA ATIVIDADE
+		 *  exclui o comentário da atividade se o comentário for do usuário.
+		 * 
+		 * 	@return {string} Retorna uma string com a confirmação da exclusão 
+		 *  e remove o comentário da <div> comentários.
+		 */
+		
+
+		$(document).on('click', ".atividades-possiveis-comentarios-excluir", function () {
+
+			var clicado = $(this);
+			var atividadeId = clicado.attr('atividade-id');
+			var key = clicado.attr('key');
+
+			clicado.html('Excluindo...').addClass('disabled');
+
+			$.ajax({
+				url: '<?php echo $localiza_url; ?>/models/ajax/atividades-possiveis-comentarios-excluir-ajax.php',
+				type: 'POST',
+
+				data: {
+					'user-id': <?php echo $userID; ?>,
+					'post-id': <?php echo $post->ID ?>,
+					'atividade-id': atividadeId,
+					'key': key
+				},
+				success: function(dados){
+
+					clicado.parents('li').fadeOut(300, function() { $(this).remove(); });
+					clicado.parents('li').prev('li').fadeOut(300, function() { $(this).remove(); });
+
+					
+				},
+				error: function(errorThrown) {
+				
+				}
+
+			});
+		});
 
 
 

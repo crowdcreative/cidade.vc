@@ -6215,7 +6215,7 @@ button.close {
 @media screen and (min-width: 768px) {
   .modal-dialog {
     width: 600px;
-    padding-top: 30px;
+    padding-top: 65px;
     padding-bottom: 30px;
   }
   .modal-content {

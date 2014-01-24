@@ -9,7 +9,7 @@
 
 	<footer>
 		<div class="container">
-			<span><a href="http://cidadevc.tumblr.com/">http://cidadevc.tumblr.com</a> / <a href="https://github.com/crowdcreative/cidade.vc">GitHub</a> / Copyright© 2013, Cidade.vc</span>
+			<span><a href="http://cidadevc.tumblr.com/">http://cidadevc.tumblr.com</a> / <a href="https://github.com/crowdcreative/cidade.vc">GitHub</a> / Copyright© 2014, Cidade.vc</span>
 		</div>
 	</footer><!--footer-->
 

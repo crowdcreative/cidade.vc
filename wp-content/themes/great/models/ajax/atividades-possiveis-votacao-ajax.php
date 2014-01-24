@@ -76,6 +76,9 @@
 					if($atividade['id'] == $atividade_id){
 
 
+						// criação da array de resposta
+						$resposta = array();
+
 
 						// pega a array com o id dos usuários que praticam as atividades
 						$usuarios_id = $atividade[$viram_ou_praticam]['usuarios_id'];
@@ -115,7 +118,7 @@
 							// envia a query para o banco de dados
 							mysql_query($envia) or die('erro');
 
-							### adiciona a atividade praticada na persona do usuário
+							### adiciona a atividade praticada na perra do usuário
 
 							if($viram_ou_praticam == 'praticam'){
 
@@ -135,7 +138,6 @@
 
 									exit();
 								}
-
 
 								if(is_array($personaArray)){
 									$persona = $personaArray;
@@ -157,7 +159,13 @@
 
 
 							// retorna o numero do contador atualizado
-							echo $contador;
+							$resposta['contador'] = $contador;
+
+							// retorna 1 se o usuário agora pratica ou já viu alguém praticando a atividade
+							$resposta['gravado'] = 1;
+
+							echo json_encode($resposta);
+
 
 							exit();
 
@@ -251,8 +259,13 @@
 
 							}
 
-							// retorna o número do contador atualizado
-							echo $contador;
+							// retorna o numero do contador atualizado
+							$resposta['contador'] = $contador;
+
+							// retorna 1 se o usuário agora pratica ou já viu alguém praticando a atividade
+							$resposta['gravado'] = 0;
+
+							echo json_encode($resposta);
 
 							exit();
 

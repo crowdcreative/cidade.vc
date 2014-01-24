@@ -20,6 +20,52 @@
 	if($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'){
 
 
+		// cria a array que será usada como resposta
+		$resposta = array();
+
+
+		/**
+		 * 	Pega o número de pessoas que praticam e viram no momento do clique
+		 */
+
+		// Pega a array com as atividades do post
+		$query = "SELECT meta_value FROM wp_postmeta WHERE meta_key = 'atividades_possiveis' AND post_id = $lugar_id";
+
+		$result = mysql_query($query);
+
+		if($result){
+
+			$atividades_possiveis_array = mysql_fetch_array($result);
+
+			$atividades_possiveis_array = unserialize($atividades_possiveis_array[0]);
+
+
+		}
+
+		else{
+
+			echo 'erro';
+
+			exit();
+		}
+
+
+		foreach ($atividades_possiveis_array as $atividade) {
+					
+			if($atividade['id'] == $atividade_id){
+
+				// pega o contador de quantas pessoas viram
+				$resposta['contadorViram'] = $atividade['viram']['contador'];
+
+				// pega o contador de quantas pessoas viram
+				$resposta['contadorPraticam'] = $atividade['praticam']['contador'];
+
+			}
+
+		}	
+
+
+
 		// Pega a array com as atividades do post
 		$atividades_possiveis_array = get_post_meta($lugar_id, 'atividades_possiveis', true);
 
@@ -28,28 +74,53 @@
 			
 			if($atividade['id'] == $atividade_id){
 
+				
 
 
 				// pega a array com o id dos usuários que praticam as atividades
 				$usuarios_id = $atividade['praticam']['usuarios_id'];
 
-
 				// se o usuário ainda não tiver registrado na array continua com a função
 				if(in_array($user_id, $usuarios_id)){
 
-					echo '1';
-
-					exit();
+					$resposta['praticam'] = 1;
 
 				}
 
 				else{
 
-					echo '0';
-
-					exit();
+					$resposta['praticam'] = 0;
 
 				}
+
+
+
+				// destoi variável para não haver conflito
+				unset($usuarios_id);
+
+
+
+				// pega a array com o id dos usuários que viram as pessoas praticando as atividades
+				$usuarios_id = $atividade['viram']['usuarios_id'];
+
+
+				// se o usuário ainda não tiver registrado na array continua com a função
+				if(in_array($user_id, $usuarios_id)){
+
+					$resposta['viram'] = 1;
+
+				}
+
+				else{
+
+					$resposta['viram'] = 0;
+
+				}
+
+
+				echo json_encode($resposta);
+
+				exit();
 
 			}
 

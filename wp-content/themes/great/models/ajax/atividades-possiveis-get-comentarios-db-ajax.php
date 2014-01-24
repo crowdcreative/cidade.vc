@@ -52,7 +52,6 @@
 	$atividade_id = $_POST['atividade-id'];
 	$user_id = $_POST['user-id'];
 
-
 	
 	// cria a query que irá pegar as informações do banco de dados
 	$query = "SELECT conteudo_moderacao FROM wp_cocriacao WHERE lugar_id = $post_id AND bloco = 'atividades_possiveis_comentarios' ";
@@ -69,6 +68,8 @@
 		while ($atividade = mysql_fetch_array($result)) {
 			$result_array = unserialize($atividade[0]);
 		}
+
+		krsort($result_array[$atividade_id], SORT_NUMERIC);
 
 
 		// verifica se há algum comentário para a atividade
@@ -99,15 +100,21 @@
 
 						echo '<div class="media-body-info">';
 								
-							echo timeAgo(strtotime($atividade['data']));
-						
-							if($_SESSION['logged'] === true){
+							echo timeAgo(strtotime($atividade['data']));	
 
-								if ($user_id == $atividade['usuario_id']){
-									echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
+
+							
+							
+
+								if($_SESSION['logged'] === true){
+
+									if ($user_id == $atividade['usuario_id']){
+										echo ' · <span class="atividades-possiveis-comentarios-excluir" key="'.$key.'" atividade-id="'.$atividade_id.'">Excluir</span>';
+									}
+
 								}
 
-							}
+							
 
 						echo '</div>';
 
@@ -132,7 +139,7 @@
 
 			echo '<ul>
 					<li id="li-nenhum">
-						Nenhum comentário até o momento. Seja o primeo a comentar sobre esta atividade. =)
+						Nenhum comentário até o momento. Seja o primeiro a comentar sobre esta atividade. =)
 					</li>
 				  </ul>';
 

@@ -5,3 +5,6 @@
 - Atualização no arquivo 'atividades-possiveis-votacao-ajax.php' que mudam o acesso ao banco de dados do padrão wordpress para o padrão mysql_query. Estava dando alguns problemas e além disso assim é mais rápido.
 - inetragação das atividades 'praticadas' e 'vista' no modal via ajax.
 - ajustes nas urls que direcionavam automaticamente para o servidor local.
+
+
+22/01/2014 13:13:47 - 

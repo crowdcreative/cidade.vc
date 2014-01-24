@@ -14,26 +14,26 @@
 
 			        <div class="btn-group">
 
-			        	<button type="button" class="btn btn-default  btn-sm vi-botao" style="height: 30px">
+			        	<button type="button" class="btn btn-default  btn-sm vi-botao" rel="tooltip" data-original-title="" style="height: 30px">
 			        		<span class="glyphicon glyphicon-eye-open"></span> 
 			        		<span class="btn-text">Já viu?</span>
 			        	</button>
 			        
 			        	<button type="button" class="btn btn-default btn-sm vi-contador" style="height: 30px">
-			        		<span class="numero-viram"></span>
+			        		<span class="numero-viram" rel="tooltip" data-original-title=""></span>
 			        	</button>
 
 			        </div>
 
 			        <div class="btn-group">
 
-			        	<button type="button" class="btn btn-default btn-sm pratico-botao" style="height: 30px">
+			        	<button type="button" class="btn btn-default btn-sm pratico-botao" rel="tooltip" data-original-title="" style="height: 30px">
 			        		<span class="glyphicon glyphicon-play"></span> 
 			        		<span class="btn-text">Você pratica?</span>
 			        	</button>
 		    
 			        	<button type="button" class="btn btn-default btn-sm pratico-contador" style="height: 30px">
-			        		<span class="numero-praticam"></span>
+			        		<span class="numero-praticam" rel="tooltip" data-original-title=""></span>
 			        	</button>
 
 		        	</div>
@@ -45,7 +45,7 @@
 
 		    <div class="modal-body" style="text-align: right">
 
-			    <textarea class="form-control expanding" name="nova_atividade_descricao" id="nova_atividade_descricao" rows="1" placeholder="Descreva o local onde se pratica esta atividade, os melhores horários..."></textarea>
+			    <textarea class="form-control expanding" name="nova_atividade_descricao" id="nova_atividade_descricao" rows="1" placeholder="Descreva o local onde se pratica esta atividade, os melhores horários para a prática, a estrutura oferecida..."></textarea>
 
 			    <span id="charNum" style="padding: 0 12px 0 0;"></span>
 
