@@ -812,8 +812,13 @@ pre code {
   clear: both;
 }
 
+
 .bloco{
   margin-bottom: 0;
+}
+
+.criar-editar .bloco{
+  margin-bottom: 35px;
 }
 
 .row {

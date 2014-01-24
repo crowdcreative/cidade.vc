@@ -65,7 +65,7 @@
 			</div>
 
 
-			<div class="col-md-9">
+			<div class="col-md-9 criar-editar">
 				
 				
 				<?php require'models/criar-editar/criar-lugar-saude-inputs.php'; ?> 
