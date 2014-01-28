@@ -52,7 +52,7 @@
 <head>
 
 	<title><?php wp_title(''); ?></title>
-	<link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
+	<link rel="stylesheet" type="text/css" media="all" href="<?php echo $localiza_url ?>/css/style.css" />
 	<?php wp_enqueue_script("jquery"); ?>
 	<?php if ( is_singular() ) wp_enqueue_script('comment-reply'); ?>
 	<!--[if lt IE 9]>

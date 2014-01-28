@@ -239,7 +239,7 @@ $(document).ready(function(){
 				<th>Ações</th>
 			</tr>
 
-			<?php $query = new WP_Query(array('post_type' => 'lugar-lazer', 'posts_per_page' =>'-1', 'post_status' => array('publish', 'pending', 'draft', 'private', 'trash') ) ); ?>
+			<?php $query = new WP_Query(array('post_type' => array('lugar-lazer', 'lugar-saude'), 'posts_per_page' =>'-1', 'post_status' => array('publish', 'pending', 'draft', 'private', 'trash') ) ); ?>
 
 			<?php if ($query->have_posts()) : while ($query->have_posts()) : $query->the_post(); ?>
 
@@ -247,7 +247,9 @@ $(document).ready(function(){
 				<td><?php echo get_the_title(); ?></td>
 				<td><?php if(get_post_status(get_the_ID()) == 'publish'){echo 'publicado';}elseif(get_post_status(get_the_ID()) == 'pending'){echo 'em moderação';} ?></td>
 
-				<?php $edit_post = add_query_arg('post', get_the_ID(), get_permalink(154 + $_POST['_wp_http_referer'])); ?>
+				<?php $segmento =  substr(get_post_type(get_the_ID()), 6); ?>
+
+				<?php $edit_post = add_query_arg(array('l' => get_the_ID(), 's' => $segmento), get_permalink(154 + $_POST['_wp_http_referer'])); ?>
 
 				<td>
 					<a href="<?php echo $edit_post; ?>">Editar</a>

@@ -1,7 +1,5 @@
-<?php
-
-	/**
-	 * Template Name: Criar lugar lazer
+<?php/**
+	 * Template Name: Criar lugar
 	 */
 
 
@@ -28,7 +26,7 @@
 					
 					$current_post = $post->ID;
 
-					$segmento = $_GET['s'];
+					
 
 				}
 			}
@@ -36,6 +34,9 @@
 
 
 	}
+
+
+	$segmento = $_GET['seg'];
 
 
 	// pega a url do template
